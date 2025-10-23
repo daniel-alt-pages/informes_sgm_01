@@ -321,6 +321,28 @@
         }
     }
 
+    // --- (NUEVO) Helper para parsear una línea de CSV respetando comillas ---
+    function parseCSVLine(line) {
+        const values = [];
+        let inQuote = false;
+        let value = '';
+        
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+
+            if (char === '"') {
+                inQuote = !inQuote;
+            } else if (char === ',' && !inQuote) {
+                values.push(value.trim());
+                value = '';
+            } else {
+                value += char;
+            }
+        }
+        values.push(value.trim()); // Añadir el último valor
+        return values;
+    }
+
     // --- Función para parsear el texto CSV ---
     function parseCSVData(csvText) {
         STUDENT_DATA_INTERNAL = {};
@@ -337,8 +359,8 @@
             return;
         }
 
-        // (CORREGIDO) Limpiar encabezados de forma más robusta
-        const headers = lines[0].split(',').map(h => h.trim());
+        // (CORREGIDO) Usar el nuevo parser para los encabezados
+        const headers = parseCSVLine(lines[0]);
 
         // (CORREGIDO) Cambiado de .includes() a .toLowerCase() === para coincidencia exacta
         const nameIndex = headers.findIndex(h => h.toLowerCase() === 'nombre completo del estudiante');
@@ -368,7 +390,9 @@
 
          // (CORREGIDO) Iterar desde la línea 1 (datos)
         for (let i = 1; i < lines.length; i++) {
-            const values = lines[i].split(',').map(v => v.trim());
+            // (CORREGIDO) Usar el nuevo parser para las líneas de datos
+            const values = parseCSVLine(lines[i]);
+            
             if (values.length < headers.length) continue;
 
             // (RESTAURADO) Definir docNumber y crear el objeto
@@ -700,6 +724,7 @@
     </script>
 </body>
 </html>
+
 
 
 
