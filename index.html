@@ -537,6 +537,26 @@
         // 2. Inicializar Flatpickr
         birthDatePicker = flatpickr(elements.birthDateInput, { locale: "es", dateFormat: "d/m/Y", allowInput: true, disableMobile: "true" });
 
+        // (NUEVO) Añadir auto-formateo de fecha (input mask)
+        // Esto previene el error de parseo al escribir números seguidos
+        elements.birthDateInput.addEventListener('input', (e) => {
+            // Eliminar todo lo que no sea dígito
+            let value = e.target.value.replace(/\D/g, ''); 
+            
+            // Añadir primer slash
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2);
+            }
+            // Añadir segundo slash y limitar longitud
+            if (value.length > 5) {
+                // Tomar dd/mm/ + yyyy (limitado a 4 dígitos)
+                value = value.substring(0, 5) + '/' + value.substring(5, 9); 
+            }
+            
+            // Actualizar el valor del input
+            e.target.value = value;
+        });
+
         // 3. Cargar datos de GitHub (siempre necesario)
         await loadStudentDataFromGitHub();
 
@@ -627,4 +647,5 @@
     </script>
 </body>
 </html>
+
 
