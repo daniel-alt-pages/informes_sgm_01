@@ -349,12 +349,35 @@
         const ingIndex = headers.findIndex(h => h.toLowerCase() === 'inglés');
         const globalIndex = headers.findIndex(h => h.toLowerCase() === 'puntaje global');
 
+        // (RESTAURADO) Funciones helper de parseo
+        const parseGlobalScore = (scoreString) => {
+             return parseInt((scoreString || '0/').split('/')[0], 10) || 0;
+        };
+        const parseBirthDate = (dateString) => {
+            if (!dateString) return '';
+            const m = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            return m ? `${parseInt(m[1])}/${parseInt(m[2])}/${m[3]}` : dateString;
+        };
+
         for (let i = 1; i < lines.length; i++) {
              // (CORREGIDO) Ignorar líneas vacías
             if (!lines[i] || lines[i].trim() === "") continue;
             
             const values = lines[i].replace(/\r/g, '').split(',').map(v => v.trim());
             if (values.length < headers.length) continue;
+
+            // (RESTAURADO) Definir docNumber y crear el objeto
+            const docNumber = values[docNumberIndex];
+            if (!docNumber) continue;
+
+            STUDENT_DATA_INTERNAL[docNumber] = {
+                nombre: values[nameIndex] || 'N/A',
+                email: values[emailIndex] || '-',
+                docType: values[docTypeIndex] || '-',
+                docNumber: docNumber,
+                birthDate: parseBirthDate(values[birthDateIndex]),
+                departamento: "", // Esta columna parece no usarse
+                colegio: values[colegioIndex] || 'seamosgenios',
                 puntajes: {
                     matematicas: parseInt(values[matIndex], 10) || 0,
                     lectura: parseInt(values[lecIndex], 10) || 0,
@@ -660,6 +683,7 @@
     </script>
 </body>
 </html>
+
 
 
 
