@@ -328,10 +328,17 @@
         if (csvText.charCodeAt(0) === 0xFEFF) {
             csvText = csvText.substring(1);
         }
-        const lines = csvText.trim().split('\n');
         
+        // (CORREGIDO) División de líneas más robusta (maneja \n y \r\n) y filtra líneas vacías
+        const lines = csvText.trim().split(/\r?\n/).filter(Boolean);
+        
+        if (lines.length < 2) {
+            console.error("CSV vacío o sin datos.");
+            return;
+        }
+
         // (CORREGIDO) Limpiar encabezados de forma más robusta
-        const headers = lines[0].split(',').map(h => h.trim().replace(/\r/g, ''));
+        const headers = lines[0].split(',').map(h => h.trim());
 
         // (CORREGIDO) Cambiado de .includes() a .toLowerCase() === para coincidencia exacta
         const nameIndex = headers.findIndex(h => h.toLowerCase() === 'nombre completo del estudiante');
@@ -359,11 +366,9 @@
             return m ? `${parseInt(m[1])}/${parseInt(m[2])}/${m[3]}` : dateString;
         };
 
+         // (CORREGIDO) Iterar desde la línea 1 (datos)
         for (let i = 1; i < lines.length; i++) {
-             // (CORREGIDO) Ignorar líneas vacías
-            if (!lines[i] || lines[i].trim() === "") continue;
-            
-            const values = lines[i].replace(/\r/g, '').split(',').map(v => v.trim());
+            const values = lines[i].split(',').map(v => v.trim());
             if (values.length < headers.length) continue;
 
             // (RESTAURADO) Definir docNumber y crear el objeto
@@ -497,6 +502,18 @@
              return;
         }
         const studentData = STUDENT_DATA_INTERNAL[docNumber];
+
+        // (NUEVO) Log de depuración para ver qué se está comparando
+        console.log("Intento de Login:", {
+            inputDocType: docType,
+            inputDocNumber: docNumber,
+            inputBirthDate: birthDate,
+            foundStudentData: studentData ? {
+                docType: studentData.docType,
+                birthDate: studentData.birthDate
+            } : "No se encontró estudiante con ese Número de Documento"
+        });
+
         if (studentData && studentData.docType === docType && studentData.birthDate === birthDate) {
             // Guardar sesión
             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'student');
@@ -683,6 +700,7 @@
     </script>
 </body>
 </html>
+
 
 
 
