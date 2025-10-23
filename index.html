@@ -1,1 +1,993 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe Estudiante / Admin - Saber 11</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-primary': '#F97316',
+                        'brand-secondary': '#3B82F6',
+                        'brand-text': '#5c5d5c',
+                        'brand-bg': '#f1f1eb',
+                        'brand-header': '#5c5d5c',
+                        'brand-red': '#ac3236',
+                        'brand-blue-dark': '#1e40af', 
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --color-lectura: #0284c7;
+            --color-matematicas: #dc2626;
+            --color-sociales: #ca8a04;
+            --color-ciencias: #16a34a;
+            --color-ingles: #9333ea;
+            /* (NUEVO) Variables para que el botón "Ver" funcione */
+            --brand-secondary: #3B82F6; 
+            --brand-blue-dark: #1e40af;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--brand-bg);
+            color: var(--brand-text);
+            overflow-x: hidden;
+        }
+        .main-container {
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Estilos Informe Individual --- */
+        
+        /* --- (NUEVO) Estilos para la nueva sección de Niveles de Desempeño --- */
+        .level-steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .level-step-item {
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Nivel futuro (aún no alcanzado) */
+        .level-step-item.future {
+            background-color: #f3f4f6;
+            border-color: #e5e7eb;
+            color: #6b7280;
+        }
+        /* Nivel superado */
+        .level-step-item.passed {
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            opacity: 0.8;
+        }
+         /* Nivel actual (activo) */
+        .level-step-item.active {
+            color: white;
+            font-weight: 700;
+            /* El color de fondo se aplica con style="" desde JS */
+            box-shadow: 0 4px 10px -1px rgba(0,0,0,0.1), 0 2px 6px -2px rgba(0,0,0,0.1);
+            transform: scale(1.05);
+        }
+        .level-step-item .level-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .level-step-item .level-range {
+            display: block;
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+        .level-step-item.active .level-range {
+            opacity: 1;
+        }
+         /* Indicador "Estás aquí" */
+        .level-step-item.active::after {
+            content: 'Estás aquí';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .level-step-item.active:hover::after {
+            bottom: 5px;
+            opacity: 1;
+        }
+        /* --- Fin nuevos estilos de Nivel --- */
+
+        .skills-container { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease; opacity: 0; }
+        .skills-container.expanded { max-height: 5000px; opacity: 1; }
+        .toggle-skills-btn svg { transition: transform 0.3s ease; }
+        .toggle-skills-btn.expanded svg { transform: rotate(180deg); }
+        .skill-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border-radius: 0.5rem; transition: background-color 0.2s ease; }
+        .skill-item:hover { background-color: #f3f4f6; }
+        /* (RESTAURADO) Definición de estilo que faltaba */
+        .competency-card { background-color: #f9fafb; border: 1px solid #e5e7eb; padding: 1.25rem; border-radius: 0.75rem; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05); transition: all 0.3s ease; margin-bottom: 1rem; }
+        .competency-card:hover { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); transform: translateY(-2px); border-color: rgba(59, 130, 246, 0.3); }
+        .global-score-container { background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 1.5rem; border-radius: 1rem; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 8px 10px -6px rgba(249, 115, 22, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .global-score-container:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.5), 0 10px 15px -6px rgba(249, 115, 22, 0.4); }
+        
+        /* --- Estilos Vista Admin --- */
+        #admin-screen .sortable-header { cursor: pointer; user-select: none; position: relative; padding-right: 1.5rem; /* Space for icon */ }
+        #admin-screen .sort-icon { display: inline-block; width: 1em; height: 1em; margin-left: 0.5rem; opacity: 0.5; transition: opacity 0.2s; position: absolute; right: 0.25rem; top: 50%; transform: translateY(-50%); }
+        #admin-screen .sortable-header:hover .sort-icon { opacity: 1; }
+        #admin-table-body tr:hover { background-color: #f0f9ff; /* Light blue on hover */}
+        /* (MODIFICADO) Color de texto cambiado a oscuro para alto contraste */
+        #admin-table thead th { background-color: var(--brand-primary); color: #431407; /* Naranja muy oscuro (casi negro) */ white-space: nowrap; text-shadow: none; /* Sombra eliminada */ vertical-align: middle; font-weight: 600; } /* add bold */
+        #admin-table th, #admin-table td {
+            padding-left: 0.5rem; /* px-2 */
+            padding-right: 0.5rem; /* px-2 */
+            padding-top: 0.75rem; /* py-3 */
+            padding-bottom: 0.75rem; /* py-3 */
+            vertical-align: middle; /* Align vertically */
+            border-bottom: 1px solid #e5e7eb; /* Add subtle row separator */
+        }
+        #admin-table tbody tr:last-child td { border-bottom: none; } /* Remove border on last row */
+        
+        /* --- (MODIFICADO) Estilos de columna de administrador para 11 columnas --- */
+        #admin-table th:nth-child(2), #admin-table td:nth-child(2) { width: 25%; min-width: 180px; } /* Name column */
+        /* (NUEVO) Columna de Registro/Credencial */
+        #admin-table th:nth-child(3), #admin-table td:nth-child(3) { width: 15%; min-width: 150px; } /* Registro/Credential column */
+        /* (MODIFICADO) Rango de puntajes movido */
+        #admin-table th:nth-child(n+4):nth-child(-n+9),
+        #admin-table td:nth-child(n+4):nth-child(-n+9) {
+            width: 5%; /* Equal width for score columns */
+            min-width: 50px;
+            text-align: center;
+        }
+        /* (MODIFICADO) Columna de Municipio movida */
+        #admin-table th:nth-child(10), #admin-table td:nth-child(10) { width: 15%; min-width: 140px; } /* Municipio column */
+        /* (MODIFICADO) Columna de Acción movida */
+        #admin-table th:nth-child(11), #admin-table td:nth-child(11) { width: 10%; min-width: 80px; text-align: center; } /* Action column */
+        /* --- Fin de modificaciones de estilo de tabla --- */
+        
+        .view-report-btn {
+            background-color: var(--brand-secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+            border: none;
+            cursor: pointer;
+        }
+        .view-report-btn:hover {
+            background-color: var(--brand-blue-dark);
+        }
+        .action-btn {
+            transition: all 0.3s ease;
+            font-weight: bold;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: auto;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* (MODIFICADO) Estilos Botón Cerrar Sesión */
+        .logout-btn { background-color: #e5e7eb; /* Gris claro */ color: var(--brand-red); /* Texto rojo */ }
+        .logout-btn:hover { background-color: #d1d5db; /* Gris un poco más oscuro */ color: #991b1b; /* Rojo más oscuro */ }
+        .back-btn { background-color: var(--brand-secondary); color: white; }
+        .back-btn:hover { background-color: var(--brand-blue-dark); }
+
+        /* --- (NUEVO) Estilos para la Modal de Administrador --- */
+        #admin-modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* (MODIFICADO) Fondo blanco semitransparente, sin desenfoque */
+            background-color: rgba(255, 255, 255, 0.85); 
+            display: none; 
+            align-items: center;
+            justify-content: center;
+            z-index: 40;
+            /* backdrop-filter: blur(5px); -- Eliminado */
+        }
+        #admin-modal-container {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 900px; /* Ancho modal */
+            height: 90vh; /* Alto modal */
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e5e7eb;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #admin-modal-backdrop.shown #admin-modal-container {
+            transform: scale(1);
+            opacity: 1;
+        }
+        #admin-modal-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        #admin-modal-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--brand-header);
+        }
+        #admin-modal-close-btn {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            border: none;
+            border-radius: 99px;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #admin-modal-close-btn:hover {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            transform: scale(1.1);
+        }
+        #admin-modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            /* Usar el fondo del body para la modal */
+            background-color: var(--brand-bg);
+        }
+
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-text">
+
+    <!-- ========== PANTALLA DE LOGIN ========== -->
+    <div id="login-screen" class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+        <div class="bg-white p-8 sm:p-10 rounded-xl shadow-2xl w-full max-w-md border border-gray-200">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-brand-header">Consulta de Resultados</h2>
+                <p class="text-gray-500 mt-2">Inicia sesión para ver tu informe.</p>
+            </div>
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Usuario</label>
+                    <div class="mt-1">
+                        <input id="username" name="username" type="text" autocomplete="username" required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-brand-secondary transition duration-200">
+                    </div>
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-brand-secondary transition duration-200">
+                    </div>
+                </div>
+                <div>
+                    <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-white font-medium bg-brand-primary hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition duration-300 transform hover:scale-105">
+                        Consultar
+                    </button>
+                </div>
+                <div id="login-error-container" class="h-6 text-center">
+                    <p id="login-error" class="text-brand-red text-sm font-medium hidden"></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== PANTALLA DE INFORME INDIVIDUAL (Oculta por defecto) ========== -->
+    <div id="report-screen" class="hidden">
+        <div class="main-container mx-auto p-4 sm:p-6 lg:p-8">
+             <header class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+                 <div>
+                     <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-header tracking-tight text-center sm:text-left">Informe de Desempeño Individual</h1>
+                     <p id="student-name-header" class="mt-1 text-lg text-gray-600 text-center sm:text-left">Nombre del Estudiante</p>
+                 </div>
+                 <div id="report-action-buttons">
+                     <button id="logout-btn-report" class="action-btn logout-btn">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V5.414l7.293 7.293a1 1 0 001.414-1.414L5.414 4H13a1 1 0 100-2H4a1 1 0 00-1 1z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M15 17a1 1 0 100-2H7a1 1 0 100 2h8z" clip-rule="evenodd" /></svg>
+                         Cerrar Sesión
+                     </button>
+                     <button id="back-to-admin-btn" class="action-btn back-btn hidden">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                         Volver a Admin
+                     </button>
+                 </div>
+             </header>
+             <main>
+                 <div id="global-score-section" class="global-score-container">
+                     <p class="text-sm font-semibold uppercase tracking-wider opacity-80 mb-1">Puntaje Global</p>
+                     <p id="global-score-value" class="text-5xl font-extrabold">
+                         <span id="global-score-number">0</span><span class="text-3xl font-medium opacity-70">/500</span>
+                     </p>
+                 </div>
+                 <!-- El contenido se genera aquí -->
+                 <div id="individual-report-content"></div>
+             </main>
+             <footer class="text-center mt-12 text-gray-500"><p>&copy; 2025 SeamosGenios. Todos los derechos reservados.</p></footer>
+        </div>
+    </div>
+
+    <!-- ========== PANTALLA DE ADMINISTRADOR (Oculta por defecto) ========== -->
+    <div id="admin-screen" class="hidden">
+         <div class="main-container mx-auto p-4 sm:p-6 lg:p-8">
+             <header class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+                 <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-header tracking-tight text-center sm:text-left">Vista de Administrador</h1>
+                 <button id="logout-btn-admin" class="action-btn logout-btn">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V5.414l7.293 7.293a1 1 0 001.414-1.414L5.414 4H13a1 1 0 100-2H4a1 1 0 00-1 1z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M15 17a1 1 0 100-2H7a1 1 0 100 2h8z" clip-rule="evenodd" /></svg>
+                     Cerrar Sesión
+                 </button>
+             </header>
+             <main>
+                 <div class="mb-6 relative">
+                     <!-- (MODIFICADO) Placeholder actualizado -->
+                     <input type="text" id="admin-search" placeholder="Buscar por nombre, municipio o registro..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-primary">
+                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                         <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                     </div>
+                 </div>
+
+                 <div class="overflow-x-auto bg-white rounded-xl shadow-lg border">
+                     <table id="admin-table" class="w-full table-auto text-left text-sm">
+                         <!-- (MODIFICADO) Cabecera de tabla con 11 columnas -->
+                         <thead>
+                             <tr>
+                                 <th class="px-2 py-3 text-center sortable-header w-12" data-sort-key="rank">#</th>
+                                 <th class="px-2 py-3 sortable-header" data-sort-key="nombre">Nombre</th>
+                                 <!-- (NUEVO) Columna de Credencial/Registro -->
+                                 <th class="px-2 py-3 sortable-header" data-sort-key="registro">Registro (Credencial)</th>
+                                 <th class="px-2 py-3 text-center sortable-header w-20" data-sort-key="puntajeGlobal">Global</th>
+                                 <th class="px-2 py-3 text-center sortable-header w-16" data-sort-key="puntajes.lectura">Lec.</th>
+                                 <th class="px-2 py-3 text-center sortable-header w-16" data-sort-key="puntajes.matematicas">Mat.</th>
+                                 <th class="px-2 py-3 text-center sortable-header w-16" data-sort-key="puntajes.sociales">Soc.</th>
+                                 <th class="px-2 py-3 text-center sortable-header w-16" data-sort-key="puntajes.ciencias">Cien.</th>
+                                 <th class="px-2 py-3 text-center sortable-header w-16" data-sort-key="puntajes.ingles">Ing.</th>
+                                 <th class="px-2 py-3 sortable-header" data-sort-key="municipio">Municipio</th>
+                                 <th class="px-2 py-3 text-center w-20">Acción</th>
+                             </tr>
+                         </thead>
+                         <tbody id="admin-table-body" class="divide-y divide-gray-200">
+                             <!-- Filas generadas dinámicamente -->
+                         </tbody>
+                     </table>
+                 </div>
+                 <div id="admin-no-results" class="text-center p-8 text-gray-500 hidden">No se encontraron estudiantes que coincidan con la búsqueda.</div>
+             </main>
+              <footer class="text-center mt-12 text-gray-500"><p>&copy; 2025 SeamosGenios. Todos los derechos reservados.</p></footer>
+         </div>
+    </div>
+
+    <!-- ========== (NUEVO) MODAL DE ADMINISTRADOR ========== -->
+    <div id="admin-modal-backdrop">
+        <div id="admin-modal-container">
+            <div id="admin-modal-header-container">
+                <h2 id="admin-modal-header">Informe del Estudiante</h2>
+                <button id="admin-modal-close-btn" title="Cerrar">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                </button>
+            </div>
+            <!-- El contenido del informe (generado por JS) se inserta aquí -->
+            <div id="admin-modal-body">
+                <!-- Contenido generado dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- CREDENCIALES SUPER USUARIO ---
+        const SUPER_USER_CREDENTIALS = { username: "admin", password: "admin123" };
+
+        // --- BASE DE DATOS DE HABILIDADES (completa) ---
+        const skillsData = {
+            "lectura": [
+                { level: 1, label: "Insuficiente", min: 0, max: 40, description: "Identificas información explícita en textos literarios e informativos sencillos. Reconoces el significado de palabras y puedes identificar quién habla en un texto.", competencies: { "Identificar y entender los contenidos locales que conforman un texto": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>`, tasks: ["Entiende el significado de los elementos locales que constituyen un texto.","Identifica los eventos narrados de manera explícita en un texto (literario, descriptivo, caricatura o cómic) y los personajes involucrados (si los hay)."] } } },
+                { level: 2, label: "Mínimo", min: 41, max: 55, description: "Comprendes la estructura de un texto y la función de sus partes (introducción, argumento, conclusión). Puedes identificar y caracterizar las ideas principales de un texto informativo.", competencies: { "Comprender cómo se articulan las partes de un texto para darle un sentido global": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>`, tasks: ["Comprende la estructura formal de un texto y la función de sus partes.","Identifica y caracteriza las diferentes voces o situaciones presentes en un texto.","Comprende las relaciones entre diferentes partes o enunciados de un texto."] } } },
+                { level: 3, label: "Satisfactorio", min: 56, max: 70, description: "Analizas el contenido de un texto para establecer la validez de sus argumentos. Eres capaz de identificar prejuicios, anticipar supuestos y reconocer las estrategias discursivas utilizadas por el autor.", competencies: { "Reflexionar a partir de un texto y evaluar su contenido": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>`, tasks: ["Establece la validez e implicaciones de un enunciado de un texto (argumentativo o expositivo).","Reconoce contenidos valorativos presentes en un texto.","Reconoce las estrategias discursivas en un texto."] } } },
+                { level: 4, label: "Avanzado", min: 71, max: 100, description: "Asumes una postura crítica frente a los textos. Comparas y evalúas diferentes perspectivas, contextualizas la información y reconoces las relaciones entre diferentes textos y las estrategias discursivas empleadas.", competencies: { "Reflexionar a partir de un texto y evaluar su contenido": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`, tasks: ["Establece relaciones entre un texto y otros textos o enunciados.","Contextualiza adecuadamente un texto o la información contenida en este."] } } }
+            ],
+            "matematicas": [
+                { level: 1, label: "Insuficiente", min: 0, max: 35, description: "Puedes leer información puntual (un dato, por ejemplo) relacionada con situaciones cotidianas y presentada en tablas o gráficas sencillas.", competencies: { "Interpretación y representación": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>`, tasks: ["Da cuenta de las características básicas de la información presentada en diferentes formatos como series, gráficas, tablas y esquemas."] } } },
+                { level: 2, label: "Mínimo", min: 36, max: 50, description: "Eres capaz de comparar y establecer relaciones entre los datos presentados, e identificar y extraer información local y global de manera directa en contextos familiares o personales.", competencies: { "Interpretación y representación": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>`, tasks: ["Transforma la representación de una o más piezas de información."] } } },
+                { level: 3, label: "Satisfactorio", min: 51, max: 70, description: "Seleccionas información, señalas errores y haces distintos tipos de transformaciones y manipulaciones aritméticas y algebraicas sencillas para resolver problemas.", competencies: { "Formulación y ejecución": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" /></svg>`, tasks: ["Diseña planes para la solución de problemas que involucran información cuantitativa o esquemática.","Ejecuta un plan de solución para un problema que involucra información cuantitativa o esquemática."] } } },
+                { level: 4, label: "Avanzado", min: 71, max: 100, description: "Resuelves problemas y justificas la veracidad o falsedad de afirmaciones que requieren el uso de conceptos de probabilidad, propiedades algebraicas, relaciones trigonométricas y características de funciones, incluso en contextos abstractos.", competencies: { "Argumentación": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`, tasks: ["Plantea afirmaciones que sustentan o refutan una interpretación dada a la información.","Argumenta a favor o en contra de un procedimiento para resolver un problema.","Establece la validez o pertinencia de una solución propuesta a un problema dado."] } } }
+            ],
+             "sociales": [
+                { level: 1, label: "Insuficiente", min: 0, max: 40, description: "Identificas y usas conceptos sociales básicos (económicos, políticos, culturales y geográficos). Puedes localizar en el tiempo y en el espacio algunos eventos históricos y prácticas sociales.", competencies: { "Pensamiento Social": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>`, tasks: ["Identifica y usa conceptos sociales básicos (económicos, políticos, culturales y geográficos).","Localiza en el tiempo y en el espacio eventos históricos y prácticas sociales."] } } },
+                { level: 2, label: "Mínimo", min: 41, max: 55, description: "Comprendes las perspectivas de distintos actores y grupos sociales. Reconoces que las cosmovisiones, ideologías y roles sociales influyen en diferentes argumentos y conductas.", competencies: { "Interpretación y Análisis de Perspectivas": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`, tasks: ["Reconoce y compara perspectivas de actores y grupos sociales.","Reconoce que las cosmovisiones, ideologías y roles sociales, influyen en diferentes argumentos, posiciones y conductas."] } } },
+                { level: 3, label: "Satisfactorio", min: 56, max: 70, description: "Analizas problemáticas sociales y evalúas la aplicabilidad de sus posibles soluciones. Reconoces las relaciones entre el espacio geográfico y las prácticas sociales.", competencies: { "Pensamiento Reflexivo y Sistémico": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>`, tasks: ["Establece relaciones que hay entre dimensiones presentes en una situación problemática.","Analiza los efectos en distintas dimensiones que tendría una posible intervención."] } } },
+                { level: 4, label: "Avanzado", min: 71, max: 100, description: "Conoces la estructura del Estado colombiano y los mecanismos de participación ciudadana. Evalúas el uso de fuentes y argumentos, y develas prejuicios e intenciones en ellos.", competencies: { "Pensamiento Social": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>`, tasks: ["Conoce el modelo de Estado Social de Derecho y su aplicación en Colombia.","Conoce la organización del Estado, las funciones y alcances de las ramas del poder y de los organismos de control.","Conoce los mecanismos de participación ciudadana."] } } }
+            ],
+            "ciencias": [
+                { level: 1, label: "Insuficiente", min: 0, max: 40, description: "Reconoces información explícita, presentada de manera ordenada en tablas o gráficas, con un lenguaje cotidiano y que implica la lectura de una sola variable independiente.", competencies: { "Indagación": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>`, tasks: ["Reconoce la importancia de la evidencia para comprender fenómenos naturales."] } } },
+                { level: 2, label: "Mínimo", min: 41, max: 55, description: "Reconoces información suministrada en tablas y gráficas, y la asocias con nociones y conceptos básicos de las ciencias naturales (tiempo, posición, velocidad, etc.).", competencies: { "Uso comprensivo del conocimiento científico": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>`, tasks: ["Identifica características de organismos y ecosistemas.","Identifica variables físicas que determinan la dinámica de un sistema."] } } },
+                { level: 3, label: "Satisfactorio", min: 56, max: 70, description: "Interrelacionas conceptos, leyes y teorías científicas con información de diversos contextos para hacer inferencias sobre una situación problema o un fenómeno natural.", competencies: { "Explicación de fenómenos": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>`, tasks: ["Construye explicaciones y comprende argumentos y modelos que dan razón de fenómenos.","Establece la validez o coherencia de una afirmación o argumento relacionado con un fenómeno."] } } },
+                { level: 4, label: "Avanzado", min: 71, max: 100, description: "Usas conceptos, teorías o leyes en la solución de situaciones problema que involucran procedimientos, habilidades, conocimientos y un lenguaje propio de las ciencias naturales.", competencies: { "Indagación": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`, tasks: ["Plantea preguntas de investigación desde las ciencias naturales.","Establece conclusiones válidas derivadas de una investigación y comunica sus resultados."] }, "Explicación de fenómenos": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2 1M4 7l2-1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" /></svg>`, tasks: ["Resuelve situaciones problema complejas haciendo uso de conceptos, leyes y teorías."] } } }
+            ],
+            "ingles": [
+                { level: 0, label: "A-", min: 0, max: 47, description: "No alcanzas el nivel A1. Tu comprensión se limita a palabras y frases muy básicas y familiares, lo cual es normal al empezar a aprender un nuevo idioma.", competencies: { "Habilidades Limitadas": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>`, tasks: ["Puede reconocer palabras familiares y frases muy básicas.","Identifica el lugar donde se puede encontrar un aviso corto."] } } },
+                { level: 1, label: "A1", min: 48, max: 57, description: "Puedes comprender y usar expresiones cotidianas y frases sencillas para satisfacer necesidades inmediatas, como presentarte o pedir algo en un restaurante.", competencies: { "Comprensión Básica": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>`, tasks: ["Relaciona descripciones de personas con palabras que las definen.","Completa una conversación sencilla sobre temas familiares.","Entiende textos cortos y sencillos, como anuncios o menús."] } } },
+                { level: 2, label: "A2", min: 58, max: 67, description: "Comprendes frases de uso frecuente sobre temas familiares (información personal, compras, geografía local). Puedes comunicarte en tareas simples y rutinarias.", competencies: { "Comprensión de Textos Cotidianos": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`, tasks: ["Selecciona la palabra adecuada para completar un texto sobre un tema de conocimiento general.","Encuentra información específica en material de uso diario, como cartas personales cortas."] } } },
+                { level: 3, label: "B1", min: 68, max: 78, description: "Puedes comprender las ideas principales de textos claros sobre temas que te son familiares. Ya puedes describir experiencias, eventos, sueños y ambiciones de forma coherente.", competencies: { "Lectura Independiente": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>`, tasks: ["Comprende las ideas principales y algunos detalles de textos sobre temas conocidos.","Infiere información a partir de la lectura de un artículo.","Selecciona vocabulario y estructuras gramaticales adecuadas para completar un texto."] } } },
+                { level: 4, label: "B+", min: 79, max: 100, description: "Puedes entender las ideas principales de textos complejos, incluso si son de carácter técnico. Puedes relacionarte con hablantes nativos con fluidez y naturalidad.", competencies: { "Habilidades Superiores": { icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`, tasks: ["Demuestra una comprensión detallada de textos, incluyendo la identificación de actitudes, opiniones y propósitos del autor."] } } }
+            ]
+        };
+
+        // --- DESCRIPCIONES DE MATERIAS ---
+        const subjectDescriptions = {
+            lectura: "Evalúa tu capacidad para comprender, interpretar y evaluar críticamente diferentes tipos de textos.",
+            matematicas: "Mide tu habilidad para enfrentar y resolver problemas utilizando herramientas y conceptos matemáticos.",
+            sociales: "Evalúa tu conocimiento sobre eventos sociales, el Estado colombiano y el pensamiento ciudadano.",
+            ciencias: "Mide tu capacidad para usar conceptos de física, química y biología para explicar fenómenos naturales.",
+            ingles: "Evalúa tu nivel de competencia comunicativa en inglés, según el Marco Común Europeo."
+        };
+
+        // --- BASE DE DATOS INTERNA DE USUARIOS (LOGIN) ---
+        const USERS_DB = {
+            "KEVIN ESTEBAN ALDERETE LOZANO": "AC202534800058",
+            "KATY YULIETH TERAN MERCADO": "AC202531403336",
+            "VALERIA OCAMPO SERPA": "AC202533758190",
+            "RICARDO JESÚS NARVÁEZ ROSERO": "AC202533377306",
+            "BREYNER SANTIAGO URIBE GOMEZ": "AC202531410216",
+            "JHOSEP HERNEY VARGAS VARGAS": "AC202510043380",
+            "ALEJANDRO JOSÉ NIETO SANABRIA": "AC202533134897",
+            "SAUL DANIEL FONTIVEROS DEJANON": "AC202532715654",
+            "YEFERSON ELIAN URBANO ERASO": "AC202531747948",
+            "EDUARD SEBASTIAN JIMENEZ MUÑOZ": "AC202530158188",
+            "CARLOS ORLANDO RUIZ ORTIZ": "AC202510794214",
+            "SANTIAGO ANDRÉS CAMACHO VEGA": "AC202536310098",
+            "SAMUEL ANDRES GIL GONZALEZ": "AC202533641768",
+            "JHEAN CARLOS MARÍN LEÓN": "AC202530571950",
+            "VALENTINA ARCINIEGAS ZAPATA": "AC202530561100",
+            "DAIRO DUVAN MENDOZA PEINADO": "AC202533628401",
+            "MARIA PAULA MELO RINCON": "AC202531011014",
+            "LUCY CATALINA SAMBONI ARTUNDUAGA": "AC202535793880",
+            "JOSE ALEJANDRO GÓMEZ BERRIO": "AC202535085154",
+            "VALENTINA OCAMPO ORDOÑEZ": "AC202536334106",
+            "ERICK ANDREY FANDIÑO FANDIÑO": "AC202530382630",
+            "DIEGO JOSUÉ BARBOSA GUZMÁN": "AC202531633064",
+            "MARIA JOSÉ ERAZO TORRES": "AC202530055608",
+            "ROSA ISABELLA MARIMON CERVANTES": "AC202531213230",
+            "JUAN DAVID GARZON CASTILLO": "AC202534295283",
+            "JUAN JOSÉ QUINCHIA GÓMEZ": "AC202533036332",
+            "SHARLENE TAPIA RODRÍGUEZ": "AC202531072586",
+            "SARA JIMENA PARRA SIACHOQUE": "AC202530354746",
+            "JHON ENMANUEL PAYARES CASTRO": "AC202535304381",
+            "HELLEN SOFIA ARANDA TOVAR": "AC202531054113",
+             "YUSNEILYS DEL CARMEN BLANCO PEREZ": "AC202531213396",
+        };
+
+        // --- DATOS INTERNOS DE ESTUDIANTES (PARA MOSTRAR RESULTADOS) ---
+        const STUDENT_DATA_INTERNAL = {
+            "KEVIN ESTEBAN ALDERETE LOZANO": { nombre: "KEVIN ESTEBAN ALDERETE LOZANO", registro: "AC202534800058", puntajes: { lectura: 75, matematicas: 83, sociales: 69, ciencias: 60, ingles: 57 }, puntajeGlobal: 353, municipio: "Cali - Valle del Cauca" },
+            "KATY YULIETH TERAN MERCADO": { nombre: "KATY YULIETH TERAN MERCADO", registro: "AC202531403336", puntajes: { lectura: 74, matematicas: 74, sociales: 74, ciencias: 75, ingles: 74 }, puntajeGlobal: 378, municipio: "Sincelejo - Sucre" },
+            "VALERIA OCAMPO SERPA": { nombre: "VALERIA OCAMPO SERPA", registro: "AC202533758190", puntajes: { lectura: 76, matematicas: 100, sociales: 76, ciencias: 100, ingles: 84 }, puntajeGlobal: 438, municipio: "Turbaco - Bolívar" },
+            "RICARDO JESÚS NARVÁEZ ROSERO": { nombre: "RICARDO JESÚS NARVÁEZ ROSERO", registro: "AC202533377306", puntajes: { lectura: 68, matematicas: 69, sociales: 76, ciencias: 61, ingles: 69 }, puntajeGlobal: 343, municipio: "Consacá - Nariño" },
+            "BREYNER SANTIAGO URIBE GOMEZ": { nombre: "BREYNER SANTIAGO URIBE GOMEZ", registro: "AC202531410216", puntajes: { lectura: 70, matematicas: 73, sociales: 71, ciencias: 81, ingles: 63 }, puntajeGlobal: 365, municipio: "Sabana de Torres - Santander" },
+            "JHOSEP HERNEY VARGAS VARGAS": { nombre: "JHOSEP HERNEY VARGAS VARGAS", registro: "AC202510043380", puntajes: { lectura: 78, matematicas: 100, sociales: 79, ciencias: 100, ingles: 81 }, puntajeGlobal: 443, municipio: "Aguachica - Cesar" },
+            "ALEJANDRO JOSÉ NIETO SANABRIA": { nombre: "ALEJANDRO JOSÉ NIETO SANABRIA", registro: "AC202533134897", puntajes: { lectura: 81, matematicas: 84, sociales: 72, ciencias: 79, ingles: 60 }, puntajeGlobal: 388, municipio: "Villa del Rosario - Norte de Santander" },
+            "SAUL DANIEL FONTIVEROS DEJANON": { nombre: "SAUL DANIEL FONTIVEROS DEJANON", registro: "AC202532715654", puntajes: { lectura: 75, matematicas: 84, sociales: 70, ciencias: 72, ingles: 80 }, puntajeGlobal: 378, municipio: "Cúcuta - Norte de Santander" },
+            "YEFERSON ELIAN URBANO ERASO": { nombre: "YEFERSON ELIAN URBano ERASO", registro: "AC202531747948", puntajes: { lectura: 71, matematicas: 75, sociales: 79, ciencias: 72, ingles: 81 }, puntajeGlobal: 374, municipio: "La Unión - Nariño" },
+            "EDUARD SEBASTIAN JIMENEZ MUÑOZ": { nombre: "EDUARD SEBASTIAN JIMENEZ MUÑOZ", registro: "AC202530158188", puntajes: { lectura: 68, matematicas: 73, sociales: 82, ciencias: 78, ingles: 70 }, puntajeGlobal: 374, municipio: "Pasto - Nariño" },
+            "CARLOS ORLANDO RUIZ ORTIZ": { nombre: "CARLOS ORLANDO RUIZ ORTIZ", registro: "AC202510794214", puntajes: { lectura: 80, matematicas: 100, sociales: 100, ciencias: 100, ingles: 100 }, puntajeGlobal: 477, municipio: "Popayán - Cauca" },
+            "SANTIAGO ANDRÉS CAMACHO VEGA": { nombre: "SANTIAGO ANDRÉS CAMACHO VEGA", registro: "AC202536310098", puntajes: { lectura: 100, matematicas: 100, sociales: 100, ciencias: 81, ingles: 100 }, puntajeGlobal: 478, municipio: "Bucaramanga - Santander" },
+            "SAMUEL ANDRES GIL GONZALEZ": { nombre: "SAMUEL ANDRES GIL GONZALEZ", registro: "AC202533641768", puntajes: { lectura: 72, matematicas: 74, sociales: 77, ciencias: 76, ingles: 82 }, puntajeGlobal: 377, municipio: "Bogotá D.C. - Bogotá" },
+            "JHEAN CARLOS MARÍN LEÓN": { nombre: "JHEAN CARLOS MARÍN LEÓN", registro: "AC202530571950", puntajes: { lectura: 80, matematicas: 100, sociales: 83, ciencias: 77, ingles: 66 }, puntajeGlobal: 418, municipio: "Cali - Valle del Cauca" },
+            "VALENTINA ARCINIEGAS ZAPATA": { nombre: "VALENTINA ARCINIEGAS ZAPATA", registro: "AC202530561100", puntajes: { lectura: 100, matematicas: 100, sociales: 80, ciencias: 81, ingles: 100 }, puntajeGlobal: 455, municipio: "La Tebaida - Quindío" },
+            "DAIRO DUVAN MENDOZA PEINADO": { nombre: "DAIRO DUVAN MENDOZA PEINADO", registro: "AC202533628401", puntajes: { lectura: 56, matematicas: 54, sociales: 50, ciencias: 58, ingles: 55 }, puntajeGlobal: 273, municipio: "Carmen de Darién - Chocó" },
+            "MARIA PAULA MELO RINCON": { nombre: "MARIA PAULA MELO RINCON", registro: "AC202531011014", puntajes: { lectura: 73, matematicas: 61, sociales: 70, ciencias: 66, ingles: 54 }, puntajeGlobal: 332, municipio: "Sogamoso - Boyacá" },
+            "LUCY CATALINA SAMBONI ARTUNDUAGA": { nombre: "LUCY CATALINA SAMBONI ARTUNDUAGA", registro: "AC202535793880", puntajes: { lectura: 80, matematicas: 100, sociales: 81, ciencias: 100, ingles: 100 }, puntajeGlobal: 455, municipio: "Bogotá D.C. - Bogotá" },
+            "JOSE ALEJANDRO GÓMEZ BERRIO": { nombre: "JOSE ALEJANDRO GÓMEZ BERRIO", registro: "AC202535085154", puntajes: { lectura: 69, matematicas: 80, sociales: 73, ciencias: 68, ingles: 80 }, puntajeGlobal: 365, municipio: "Planeta Rica - Córdoba" },
+            "VALENTINA OCAMPO ORDOÑEZ": { nombre: "VALENTINA OCAMPO ORDOÑEZ", registro: "AC202536334106", puntajes: { lectura: 80, matematicas: 100, sociales: 100, ciencias: 79, ingles: 100 }, puntajeGlobal: 453, municipio: "Palmira - Valle del Cauca" },
+            "ERICK ANDREY FANDIÑO FANDIÑO": { nombre: "ERICK ANDREY FANDIÑO FANDIÑO", registro: "AC202530382630", puntajes: { lectura: 52, matematicas: 57, sociales: 58, ciencias: 52, ingles: 36 }, puntajeGlobal: 267, municipio: "Villa de San Diego de Ubaté - Cundinamarca" },
+            "DIEGO JOSUÉ BARBOSA GUZMÁN": { nombre: "DIEGO JOSUÉ BARBOSA GUZMÁN", registro: "AC202531633064", puntajes: { lectura: 75, matematicas: 80, sociales: 70, ciencias: 72, ingles: 65 }, puntajeGlobal: 368, municipio: "Fortul - Arauca" },
+            "MARIA JOSÉ ERAZO TORRES": { nombre: "MARIA JOSÉ ERAZO TORRES", registro: "AC202530055608", puntajes: { lectura: 79, matematicas: 100, sociales: 82, ciencias: 100, ingles: 82 }, puntajeGlobal: 448, municipio: "Armenia - Quindío" },
+            "ROSA ISABELLA MARIMON CERVANTES": { nombre: "ROSA ISABELLA MARIMON CERVANTES", registro: "AC202531213230", puntajes: { lectura: 54, matematicas: 64, sociales: 51, ciencias: 59, ingles: 62 }, puntajeGlobal: 287, municipio: "San Onofre - Sucre" },
+            "JUAN DAVID GARZON CASTILLO": { nombre: "JUAN DAVID GARZON CASTILLO", registro: "AC202534295283", puntajes: { lectura: 72, matematicas: 100, sociales: 74, ciencias: 77, ingles: 76 }, puntajeGlobal: 402, municipio: "Chocontá - Cundinamarca" },
+            "JUAN JOSÉ QUINCHIA GÓMEZ": { nombre: "JUAN JOSÉ QUINCHIA GÓMEZ", registro: "AC202533036332", puntajes: { lectura: 67, matematicas: 73, sociales: 65, ciencias: 74, ingles: 61 }, puntajeGlobal: 345, municipio: "Mompós - Bolívar" },
+            "SHARLENE TAPIA RODRÍGUEZ": { nombre: "SHARLENE TAPIA RODRÍGUEZ", registro: "AC202531072586", puntajes: { lectura: 77, matematicas: 79, sociales: 100, ciencias: 81, ingles: 100 }, puntajeGlobal: 427, municipio: "Sahagún - Córdoba" },
+            "SARA JIMENA PARRA SIACHOQUE": { nombre: "SARA JIMENA PARRA SIACHOQUE", registro: "AC202530354746", puntajes: { lectura: 74, matematicas: 68, sociales: 72, ciencias: 71, ingles: 81 }, puntajeGlobal: 360, municipio: "Fusagasugá - Cundinamarca" },
+            "JHON ENMANUEL PAYARES CASTRO": { nombre: "JHON ENMANUEL PAYARES CASTRO", registro: "AC202535304381", puntajes: { lectura: 78, matematicas: 100, sociales: 69, ciencias: 60, ingles: 82 }, puntajeGlobal: 386, municipio: "Arjona - Bolívar" },
+            "HELLEN SOFIA ARANDA TOVAR": { nombre: "HELLEN SOFIA ARANDA TOVAR", registro: "AC202531054113", puntajes: { lectura: 78, matematicas: 100, sociales: 79, ciencias: 77, ingles: 100 }, puntajeGlobal: 424, municipio: "Ibagué - Tolima" },
+             "YUSNEILYS DEL CARMEN BLANCO PEREZ": { nombre: "YUSNEILYS DEL CARMEN BLANCO PEREZ", registro: "AC202531213396", puntajes: { lectura: 50, matematicas: 50, sociales: 30, ciencias: 43, ingles: 44 }, puntajeGlobal: 217, municipio: "San Onofre - Sucre" },
+        };
+
+        // --- Convertir datos a array para la tabla admin ---
+        const ALL_STUDENTS_ARRAY = Object.values(STUDENT_DATA_INTERNAL);
+        ALL_STUDENTS_ARRAY.sort((a, b) => b.puntajeGlobal - a.puntajeGlobal); 
+        ALL_STUDENTS_ARRAY.forEach((student, index) => student.rank = index + 1); 
+        // ----------------------------------------------------------------
+
+        // --- (NUEVO) Calcular Promedios Grupales ---
+        const groupAverages = { lectura: 0, matematicas: 0, sociales: 0, ciencias: 0, ingles: 0 };
+        const subjects = ['lectura', 'matematicas', 'sociales', 'ciencias', 'ingles'];
+        const studentCount = ALL_STUDENTS_ARRAY.length;
+        
+        ALL_STUDENTS_ARRAY.forEach(student => {
+            subjects.forEach(subject => {
+                groupAverages[subject] += student.puntajes[subject] || 0;
+            });
+        });
+        subjects.forEach(subject => {
+            groupAverages[subject] = Math.round(groupAverages[subject] / studentCount);
+        });
+        // ----------------------------------------------------------------
+
+
+        const elements = {
+            loginScreen: document.getElementById('login-screen'),
+            reportScreen: document.getElementById('report-screen'),
+            adminScreen: document.getElementById('admin-screen'),
+            loginForm: document.getElementById('login-form'),
+            usernameInput: document.getElementById('username'),
+            passwordInput: document.getElementById('password'),
+            loginError: document.getElementById('login-error'),
+            studentNameHeader: document.getElementById('student-name-header'),
+            individualReportContent: document.getElementById('individual-report-content'),
+            logoutBtnReport: document.getElementById('logout-btn-report'),
+            backToAdminBtn: document.getElementById('back-to-admin-btn'), 
+            logoutBtnAdmin: document.getElementById('logout-btn-admin'),
+            body: document.body,
+            globalScoreNumber: document.getElementById('global-score-number'),
+            adminTableBody: document.getElementById('admin-table-body'),
+            adminSearchInput: document.getElementById('admin-search'),
+            adminTable: document.getElementById('admin-table'),
+            adminNoResults: document.getElementById('admin-no-results'),
+            // (NUEVO) Elementos de la Modal
+            adminModalBackdrop: document.getElementById('admin-modal-backdrop'),
+            adminModalContainer: document.getElementById('admin-modal-container'),
+            adminModalHeader: document.getElementById('admin-modal-header'),
+            adminModalBody: document.getElementById('admin-modal-body'),
+            adminModalCloseBtn: document.getElementById('admin-modal-close-btn'),
+        };
+
+        const filterOptions = [
+             { key: 'puntajes.lectura', label: 'Lectura Crítica', colorVar: 'var(--color-lectura)', subjectKey: 'lectura' },
+             { key: 'puntajes.matematicas', label: 'Matemáticas', colorVar: 'var(--color-matematicas)', subjectKey: 'matematicas' },
+             { key: 'puntajes.sociales', label: 'Sociales', colorVar: 'var(--color-sociales)', subjectKey: 'sociales' },
+             { key: 'puntajes.ciencias', label: 'Ciencias', colorVar: 'var(--color-ciencias)', subjectKey: 'ciencias' },
+             { key: 'puntajes.ingles', label: 'Inglés', colorVar: 'var(--color-ingles)', subjectKey: 'ingles' },
+        ];
+
+        let currentAdminSort = { key: 'rank', direction: 'asc' };
+        let currentAdminFilter = '';
+        let isAdminViewingReport = false; 
+
+        // --- (NUEVO) Función REUTILIZABLE para generar el HTML del informe ---
+        // Esta función ahora genera todo el HTML para cualquier estudiante
+        function generateReportHtml(studentData) {
+            if (!studentData) return ''; // Devuelve string vacío si no hay datos
+
+            const subjectCardsHtml = filterOptions.map(subjectInfo => {
+                const subjectKey = subjectInfo.subjectKey;
+                const score = studentData.puntajes[subjectKey];
+                const subjectLevels = skillsData[subjectKey];
+                
+                let studentLevelIndex = subjectLevels.findIndex(level => score >= level.min && score <= level.max);
+                if (studentLevelIndex === -1) { studentLevelIndex = 0; } // Fallback
+
+                const studentLevelData = subjectLevels[studentLevelIndex];
+                const nextLevelData = (studentLevelIndex < subjectLevels.length - 1) ? subjectLevels[studentLevelIndex + 1] : null;
+
+                // (NUEVO) Obtener el promedio y la mejora
+                const groupAverage = groupAverages[subjectKey];
+                const improvementPoints = 100 - score;
+
+                let accumulatedSkillsHtml = '';
+                const competencyNames = new Set();
+                
+                // 1. Descripción del Nivel Actual
+                accumulatedSkillsHtml += `<p class="text-gray-600 mb-6">${studentLevelData.description || ''}</p>`;
+                
+                // 2. Competencias del Nivel Actual y Anteriores
+                for (let i = 0; i <= studentLevelIndex; i++) {
+                    const currentLevelData = subjectLevels[i];
+                    if (currentLevelData && currentLevelData.competencies) {
+                        Object.entries(currentLevelData.competencies).forEach(([competency, data]) => {
+                            if (!competencyNames.has(competency)) {
+                                competencyNames.add(competency);
+                                accumulatedSkillsHtml += `<div class="competency-card"><div class="flex items-center gap-4 mb-3"><div class="w-10 h-10 bg-brand-secondary/10 text-brand-secondary rounded-lg flex items-center justify-center flex-shrink-0">${data.icon || ''}</div><h4 class="font-bold text-brand-secondary text-lg">${competency}</h4></div><ul class="space-y-2">${(data.tasks || []).map(task => `<li class="skill-item"><svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span class="text-gray-700">${task}</span></li>`).join('')}</ul></div>`;
+                            }
+                        });
+                    }
+                }
+                
+                // 3. (NUEVO) Sección "Tu Próximo Nivel"
+                let nextLevelSkillsHtml = '';
+                if (nextLevelData) {
+                    nextLevelSkillsHtml = `<div class="mt-8 border-t-2 border-dashed border-gray-300 pt-6"><h3 class="text-xl font-bold text-gray-800 mb-4">Tu Próximo Nivel: ${nextLevelData.label}</h3><p class="text-gray-600 mb-6">${nextLevelData.description || ''}</p>`;
+                    if (nextLevelData.competencies) {
+                        Object.entries(nextLevelData.competencies).forEach(([competency, data]) => {
+                            // Mostrar solo competencias nuevas del próximo nivel
+                            if (!competencyNames.has(competency)) {
+                                nextLevelSkillsHtml += `<div class="competency-card opacity-90 bg-white"><div class="flex items-center gap-4 mb-3"><div class="w-10 h-10 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center flex-shrink-0">${data.icon || ''}</div><h4 class="font-bold text-gray-700 text-lg">${competency}</h4></div><ul class="space-y-2">${(data.tasks || []).map(task => `<li class="skill-item"><svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414l-3-3z" clip-rule="evenodd" /></svg><span class="text-gray-700">${task}</span></li>`).join('')}</ul></div>`;
+                            }
+                        });
+                    }
+                    nextLevelSkillsHtml += `</div>`;
+                } else {
+                    nextLevelSkillsHtml = `<div class="mt-8 border-t-2 border-dashed border-gray-300 pt-6"><h3 class="text-xl font-bold text-green-600 mb-4">¡Felicidades!</h3><p class="text-gray-600 mb-6">Has alcanzado el nivel más alto en esta área. Sigue practicando para mantener tus habilidades.</p></div>`;
+                }
+
+                const isIngles = subjectKey === 'ingles';
+                const levelTooltips = subjectLevels.map(l => `${l.label} (${l.min}-${l.max} pts)`).join(', ');
+
+                // --- (NUEVO) Lógica para las cajas de Nivel ---
+                const levelStepsHtml = subjectLevels.map((level, index) => {
+                    let itemClass = 'future'; // Por defecto, es un nivel futuro
+                    let style = '';
+
+                    if (index < studentLevelIndex) {
+                        itemClass = 'passed'; // Nivel superado
+                    } else if (index === studentLevelIndex) {
+                        itemClass = 'active'; // Nivel actual
+                        style = `background-color: ${subjectInfo.colorVar}; border-color: ${subjectInfo.colorVar};`;
+                    }
+                    
+                    const levelRange = `${level.min}-${level.max} pts`;
+                    const displayRange = (isIngles && index === 0) ? `${level.min}-${level.max} pts` : levelRange;
+
+                    return `
+                        <div class="level-step-item ${itemClass}" style="${style}" title="${level.label} (${level.min}-${level.max} pts)">
+                            <span class="level-label">${level.label}</span>
+                            <span class="level-range">${displayRange}</span>
+                        </div>
+                    `;
+                }).join('');
+                // --- Fin lógica cajas de Nivel ---
+
+                return `<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex flex-col sm:flex-row items-start gap-4 mb-4">
+                        <div class="flex-grow">
+                            <span class="text-2xl font-bold" style="color: ${subjectInfo.colorVar};">${subjectInfo.label}</span>
+                            <p class="text-sm text-gray-500 max-w-md mt-1">${subjectDescriptions[subjectKey] || ''}</p>
+                        </div>
+                        <div class="flex-shrink-0 text-left sm:text-right w-full sm:w-auto">
+                            <span class="text-3xl font-bold text-gray-800">${score}<span class="text-xl text-gray-400">/100</span></span>
+                            <div class="flex gap-2 mt-1 justify-start sm:justify-end">
+                                <span class="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded-full">Promedio Grupal: ${groupAverage} pts</span>
+                                <span class="text-xs font-semibold text-blue-800 bg-blue-100 px-2 py-1 rounded-full">Mejora: ${improvementPoints} pts</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-sm font-semibold mb-2 text-gray-600">Nivel de Desempeño: <span class="font-bold text-gray-800">${studentLevelData.label}</span></p>
+                    
+                    <!-- (NUEVO) Cajas de Nivel -->
+                    <div class="level-steps-container" title="Niveles: ${levelTooltips}">
+                        ${levelStepsHtml}
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <button class="toggle-skills-btn text-brand-secondary font-semibold inline-flex items-center gap-2" data-target="skills-${subjectKey}-${studentData.registro}">
+                            <span>Ver Habilidades (${studentLevelData.label})</span> 
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
+                    <div id="skills-${subjectKey}-${studentData.registro}" class="skills-container mt-4 border-t pt-4 space-y-4">
+                        ${accumulatedSkillsHtml}
+                        ${nextLevelSkillsHtml}
+                    </div>
+                </div>`;
+            }).join('');
+
+            return subjectCardsHtml;
+        }
+
+        // --- (MODIFICADO) Función para añadir listeners (ahora recibe el ID del contenedor) ---
+        function addToggleListeners(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+             // Limpiar listeners anteriores para evitar duplicados
+             const oldButtons = container.querySelectorAll('.toggle-skills-btn');
+             oldButtons.forEach(btn => {
+                 const newBtn = btn.cloneNode(true);
+                 btn.parentNode.replaceChild(newBtn, btn);
+             });
+
+            // Añadir nuevos listeners
+            const toggleButtons = container.querySelectorAll('.toggle-skills-btn');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const targetContainer = document.getElementById(targetId);
+                    if (targetContainer) {
+                        targetContainer.classList.toggle('expanded');
+                        button.classList.toggle('expanded');
+                    }
+                });
+            });
+        }
+
+        // --- (MODIFICADO) Función para mostrar el informe individual ---
+        function showIndividualReport(studentData) {
+            if (!studentData) return;
+
+            elements.studentNameHeader.textContent = studentData.nombre;
+            elements.globalScoreNumber.textContent = studentData.puntajeGlobal;
+
+            // (NUEVO) Llamar a la función reutilizable
+            const reportHtml = generateReportHtml(studentData);
+            elements.individualReportContent.innerHTML = reportHtml;
+            
+            // (NUEVO) Añadir listeners al contenedor específico
+            addToggleListeners('individual-report-content'); 
+
+            // Mostrar/Ocultar botones de acción correctos
+            elements.logoutBtnReport.classList.toggle('hidden', isAdminViewingReport);
+            elements.backToAdminBtn.classList.toggle('hidden', !isAdminViewingReport);
+        }
+
+        // --- Función para mostrar la vista Admin ---
+        function showAdminView() {
+            renderAdminTable();
+            elements.loginScreen.classList.add('hidden');
+            elements.reportScreen.classList.add('hidden');
+            elements.adminScreen.classList.remove('hidden');
+            elements.body.classList.remove('overflow-hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // --- Renderizar la tabla Admin ---
+        function renderAdminTable() {
+            const searchTerm = currentAdminFilter.toLowerCase();
+            // (MODIFICADO) Filtro de búsqueda incluye registro
+            const filteredData = ALL_STUDENTS_ARRAY.filter(student => 
+                (student.nombre && student.nombre.toLowerCase().includes(searchTerm)) ||
+                (student.municipio && student.municipio.toLowerCase().includes(searchTerm)) ||
+                // (NUEVO) Permitir búsqueda por registro/credencial
+                (student.registro && student.registro.toLowerCase().includes(searchTerm))
+            );
+
+            filteredData.sort((a, b) => {
+                const key = currentAdminSort.key;
+                let valA, valB;
+                if (key.includes('.')) {
+                    const [obj, prop] = key.split('.');
+                    valA = a[obj]?.[prop] ?? 0;
+                    valB = b[obj]?.[prop] ?? 0;
+                } else {
+                    valA = a[key]; valB = b[key];
+                }
+                let comparison = (typeof valA === 'string' && typeof valB === 'string') ? valA.localeCompare(valB) : (valA ?? 0) - (valB ?? 0);
+                let primaryDiff = (currentAdminSort.direction === 'asc') ? comparison : -comparison;
+                return primaryDiff !== 0 ? primaryDiff : a.rank - b.rank;
+            });
+
+            elements.adminTableBody.innerHTML = '';
+            if (filteredData.length === 0) {
+                elements.adminNoResults.classList.remove('hidden');
+                elements.adminTable.classList.add('hidden');
+            } else {
+                elements.adminNoResults.classList.add('hidden');
+                elements.adminTable.classList.remove('hidden');
+                filteredData.forEach(student => {
+                    const row = document.createElement('tr');
+                    // (MODIFICADO) innerHTML de la fila con 11 celdas
+                    row.innerHTML = `
+                        <td class="px-2 py-3 text-center">${student.rank}</td>
+                        <td class="px-2 py-3 font-medium">${student.nombre}</td>
+                        <!-- (NUEVO) Celda para Credencial/Registro -->
+                        <td class="px-2 py-3 text-xs text-gray-600">${student.registro}</td>
+                        <td class="px-2 py-3 text-center font-bold text-brand-primary">${student.puntajeGlobal}</td>
+                        <td class="px-2 py-3 text-center" style="color:var(--color-lectura)">${student.puntajes.lectura}</td>
+                        <td class="px-2 py-3 text-center" style="color:var(--color-matematicas)">${student.puntajes.matematicas}</td>
+                        <td class="px-2 py-3 text-center" style="color:var(--color-sociales)">${student.puntajes.sociales}</td>
+                        <td class="px-2 py-3 text-center" style="color:var(--color-ciencias)">${student.puntajes.ciencias}</td>
+                        <td class="px-2 py-3 text-center" style="color:var(--color-ingles)">${student.puntajes.ingles}</td>
+                        <td class="px-2 py-3">${student.municipio}</td>
+                        <td class="px-2 py-3 text-center">
+                           <button class="view-report-btn" data-student-name="${student.nombre}">Ver</button>
+                        </td>
+                    `;
+                    elements.adminTableBody.appendChild(row);
+                });
+            }
+            updateAdminSortIcons();
+        }
+
+        // --- Actualizar iconos de orden Admin ---
+        function updateAdminSortIcons() {
+            elements.adminTable.querySelectorAll('.sort-icon').forEach(icon => icon.remove());
+            const activeHeader = elements.adminTable.querySelector(`.sortable-header[data-sort-key="${currentAdminSort.key}"]`);
+            if (activeHeader) {
+                const icon = document.createElement('span');
+                icon.className = 'sort-icon';
+                icon.textContent = currentAdminSort.direction === 'asc' ? '▲' : '▼';
+                activeHeader.appendChild(icon);
+            }
+        }
+
+        // --- Manejar Login ---
+        function handleLogin(e) {
+            e.preventDefault();
+            const usernameInput = elements.usernameInput.value.trim();
+            const password = elements.passwordInput.value.trim();
+            const normalizedUsernameInput = usernameInput.toUpperCase();
+
+            // Check Admin
+            if (usernameInput === SUPER_USER_CREDENTIALS.username && password === SUPER_USER_CREDENTIALS.password) {
+                elements.loginError.classList.add('hidden');
+                isAdminViewingReport = false;
+                showAdminView();
+                return;
+            }
+
+            // Check Student
+            const dbUsernames = Object.keys(USERS_DB);
+            const foundKey = dbUsernames.find(key => key.toUpperCase() === normalizedUsernameInput);
+            
+            if (foundKey && USERS_DB[foundKey] === password) {
+                const studentData = STUDENT_DATA_INTERNAL[foundKey];
+                if (studentData) {
+                    elements.loginError.classList.add('hidden');
+                    elements.loginScreen.classList.add('hidden');
+                    elements.adminScreen.classList.add('hidden');
+                    isAdminViewingReport = false; 
+                    elements.reportScreen.classList.remove('hidden');
+                    elements.body.classList.remove('overflow-hidden');
+                    showIndividualReport(studentData); 
+                    window.scrollTo(0, 0);
+                } else {
+                    elements.loginError.textContent = 'Credenciales correctas, pero no se encontraron resultados.';
+                    elements.loginError.classList.remove('hidden');
+                }
+            } else {
+                elements.loginError.textContent = 'Usuario o contraseña incorrectos.';
+                elements.loginError.classList.remove('hidden');
+            }
+        }
+
+         // --- Manejar Logout ---
+         function handleLogout() {
+             elements.usernameInput.value = '';
+             elements.passwordInput.value = '';
+             elements.loginError.classList.add('hidden');
+             elements.reportScreen.classList.add('hidden');
+             elements.adminScreen.classList.add('hidden');
+             elements.individualReportContent.innerHTML = '';
+             elements.adminTableBody.innerHTML = '';
+             isAdminViewingReport = false; 
+             elements.loginScreen.classList.remove('hidden');
+             elements.body.classList.remove('overflow-hidden');
+             window.scrollTo(0, 0);
+             handleCloseModal(); // Asegurarse de cerrar modal si está abierta
+         }
+
+        // --- Manejar Volver a Admin ---
+        function handleBackToAdmin() {
+             elements.reportScreen.classList.add('hidden');
+             elements.individualReportContent.innerHTML = ''; 
+             isAdminViewingReport = false;
+             elements.adminScreen.classList.remove('hidden');
+             elements.body.classList.remove('overflow-hidden');
+             window.scrollTo(0, 0);
+             renderAdminTable(); 
+        }
+
+        // --- (NUEVO) Manejar Cierre de Modal ---
+        function handleCloseModal() {
+            elements.adminModalBackdrop.classList.remove('shown');
+            setTimeout(() => {
+                elements.adminModalBackdrop.style.display = 'none';
+                elements.adminModalBody.innerHTML = ''; // Limpiar contenido
+                elements.body.classList.remove('overflow-hidden');
+            }, 200); // Esperar a que termine la transición
+        }
+
+        // --- INICIALIZACIÓN y Listeners ---
+        elements.loginForm.addEventListener('submit', handleLogin);
+        elements.logoutBtnReport.addEventListener('click', handleLogout);
+        elements.logoutBtnAdmin.addEventListener('click', handleLogout);
+        elements.backToAdminBtn.addEventListener('click', handleBackToAdmin);
+
+        // (NUEVO) Listeners de la Modal
+        elements.adminModalCloseBtn.addEventListener('click', handleCloseModal);
+        elements.adminModalBackdrop.addEventListener('click', (e) => {
+            if (e.target === elements.adminModalBackdrop) {
+                handleCloseModal();
+            }
+        });
+
+        elements.adminSearchInput.addEventListener('input', (e) => {
+            currentAdminFilter = e.target.value;
+            renderAdminTable();
+        });
+
+        elements.adminTable.querySelector('thead').addEventListener('click', (e) => {
+             const header = e.target.closest('.sortable-header');
+             if (!header) return;
+             const key = header.dataset.sortKey;
+             if (currentAdminSort.key === key) {
+                 currentAdminSort.direction = currentAdminSort.direction === 'asc' ? 'desc' : 'asc';
+             } else {
+                 currentAdminSort.key = key;
+                 // (MODIFICADO) Lógica de ordenamiento para incluir 'registro'
+                 currentAdminSort.direction = (key === 'nombre' || key === 'municipio' || key === 'registro') ? 'asc' : 'desc';
+             }
+             renderAdminTable();
+        });
+
+        // (MODIFICADO) Listener de la tabla para ABRIR LA MODAL
+        elements.adminTableBody.addEventListener('click', (e) => {
+             const viewButton = e.target.closest('.view-report-btn');
+             if (viewButton) {
+                 const studentName = viewButton.dataset.studentName;
+                 const studentData = STUDENT_DATA_INTERNAL[studentName];
+                 if (studentData) {
+                     // 1. Generar HTML
+                     const reportHtml = generateReportHtml(studentData);
+                     elements.adminModalBody.innerHTML = reportHtml;
+                     elements.adminModalHeader.textContent = `Informe: ${studentData.nombre}`;
+                     
+                     // 2. Mostrar Modal
+                     elements.adminModalBackdrop.style.display = 'flex';
+                     setTimeout(() => { // Pequeño delay para que la transición de opacidad/escala funcione
+                         elements.adminModalBackdrop.classList.add('shown');
+                     }, 10);
+                     elements.body.classList.add('overflow-hidden');
+                     
+                     // 3. Añadir listeners a la modal
+                     addToggleListeners('admin-modal-body'); 
+                 } else {
+                     console.error("No se encontraron datos para:", studentName);
+                     // Aquí podríamos mostrar un error simple si fallara
+                 }
+             }
+        });
+
+    });
+    </script>
+</body>
+</html>
+
+
+
 
