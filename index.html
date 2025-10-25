@@ -5,26 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informe Estudiante / Admin - Saber 11</title>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <!-- Flatpickr (Calendario) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <!-- Chart.js (Gráficos) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
-                        'brand-primary': '#F97316',
-                        'brand-secondary': '#3B82F6',
-                        'brand-text': '#5c5d5c',
-                        'brand-bg': '#f1f1eb',
-                        'brand-header': '#5c5d5c',
-                        'brand-red': '#ac3236',
-                        'brand-blue-dark': '#1e40af',
+                        'brand-primary': '#F97316', // Naranja principal (sin cambios)
+                        'brand-primary-dark': '#EA580C', // Naranja más oscuro
+                        'brand-secondary': '#3B82F6', // Azul (sin cambios)
+                        'brand-secondary-dark': '#2563EB', // Azul más oscuro
+                        'brand-text': '#374151',     // Gris oscuro para texto (antes 5c5d5c)
+                        'brand-text-light': '#6B7280', // Gris más claro para subtítulos
+                        'brand-bg': '#F9FAFB',       // Fondo general (un gris muy claro, antes f1f1eb)
+                        'brand-header': '#1F2937',  // Texto de encabezado (más oscuro, antes 5c5d5c)
+                        'brand-red': '#EF4444',       // Rojo (un poco más brillante, antes ac3236)
+                        'brand-blue-dark': '#1E3A8A', // Azul marino (antes 1e40af)
                     }
                 }
             }
@@ -38,13 +50,132 @@
             --color-sociales: #ca8a04;
             --color-ciencias: #16a34a;
             --color-ingles: #9333ea;
+            --brand-primary: #F97316;
             --brand-secondary: #3B82F6;
-            --brand-blue-dark: #1e40af;
+            --brand-blue-dark: #1E3A8A;
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--brand-bg); color: var(--brand-text); overflow-x: hidden; }
-        .main-container { max-width: 1400px; margin-left: auto; margin-right: auto; }
-        /* ... (Estilos OMITIDOS por brevedad, son idénticos al original) ... */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--brand-bg); 
+            color: var(--brand-text); 
+            overflow-x: hidden; 
+        }
+        
+        .main-container { max-width: 1600px; margin-left: auto; margin-right: auto; }
+        
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl */
+            border: 1px solid #E5E7EB; /* border-gray-200 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08); /* shadow-xl */
+            transform: translateY(-2px);
+        }
+
+        /* --- Estilos Login --- */
+        #login-screen .login-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+        }
+        .login-input {
+            width: 100%;
+            padding: 0.875rem 1.25rem; /* py-3.5 px-5 */
+            border: 1px solid #D1D5DB; /* border-gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: var(--brand-secondary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* ring-brand-secondary/20 */
+        }
+        .login-btn {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 0.875rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600; /* font-semibold */
+            color: white;
+            background-color: var(--brand-primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px -3px rgba(249, 115, 22, 0.3);
+        }
+        .login-btn:hover {
+            background-color: var(--brand-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px -3px rgba(249, 115, 22, 0.4);
+        }
+        
+        /* --- Estilos Reporte Individual --- */
+        .global-score-container {
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 8px 10px -6px rgba(249, 115, 22, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .percentile-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Estilos Informe Detallado (Preguntas) */
+        #detailed-report-toggle { transition: all 0.3s ease; }
+        #detailed-report-toggle.expanded svg { transform: rotate(180deg); }
+        #detailed-report-container {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+        }
+        #detailed-report-container.expanded { max-height: 10000px; opacity: 1; }
+        .detailed-report-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 0.875rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            overflow: hidden; /* Para que el border-radius afecte a las celdas */
+        }
+        .detailed-report-table th, .detailed-report-table td {
+            padding: 0.875rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detailed-report-table th {
+            background-color: #f9fafb; /* gray-50 */
+            color: var(--brand-text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .detailed-report-table tr:last-child td { border-bottom: none; }
+        .detailed-report-table tr:hover { background-color: #f9fafb; }
+        .status-icon-correct { color: #22c55e; /* green-500 */ }
+        .status-icon-incorrect { color: var(--brand-red); /* red-500 */ }
+        .answer-correct { font-weight: 600; color: #16a34a; /* green-600 */ }
+        .answer-incorrect { font-weight: 600; color: var(--brand-red); text-decoration: line-through; }
+        .correct-answer-col { color: #16a34a; font-weight: 600; }
+        
+        /* Estilos Informe por Competencias (El original) */
         .level-steps-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; margin-bottom: 1.5rem; }
         .level-step-item { border-radius: 0.75rem; padding: 0.75rem; text-align: center; border: 2px solid transparent; transition: all 0.3s ease; position: relative; overflow: hidden; }
         .level-step-item.future { background-color: #f3f4f6; border-color: #e5e7eb; color: #6b7280; }
@@ -63,39 +194,208 @@
         .skill-item:hover { background-color: #f3f4f6; }
         .competency-card { background-color: #f9fafb; border: 1px solid #e5e7eb; padding: 1.25rem; border-radius: 0.75rem; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05); transition: all 0.3s ease; margin-bottom: 1rem; }
         .competency-card:hover { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); transform: translateY(-2px); border-color: rgba(59, 130, 246, 0.3); }
-        .global-score-container { background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 1.5rem; border-radius: 1rem; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.4), 0 8px 10px -6px rgba(249, 115, 22, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .global-score-container:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.5), 0 10px 15px -6px rgba(249, 115, 22, 0.4); }
+
+        /* --- Estilos Admin Dashboard --- */
+        .stat-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .stat-card-title {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            color: var(--brand-text-light);
+            margin-bottom: 0.5rem;
+        }
+        .stat-card-value {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 800; /* font-extrabold */
+            color: var(--brand-header);
+            line-height: 1;
+        }
+        .stat-card-sub-value {
+            font-size: 1rem; /* text-base */
+            font-weight: 600; /* font-semibold */
+            color: var(--brand-text);
+        }
+        
+        /* Estilos Admin Table */
         #admin-screen .sortable-header { cursor: pointer; user-select: none; position: relative; padding-right: 1.5rem; }
         #admin-screen .sort-icon { display: inline-block; width: 1em; height: 1em; margin-left: 0.5rem; opacity: 0.5; transition: opacity 0.2s; position: absolute; right: 0.25rem; top: 50%; transform: translateY(-50%); }
         #admin-screen .sortable-header:hover .sort-icon { opacity: 1; }
-        #admin-table-body tr:hover { background-color: #f0f9ff; }
-        #admin-table thead th { background-color: var(--brand-primary); color: #431407; white-space: nowrap; text-shadow: none; vertical-align: middle; font-weight: 600; }
-        #admin-table th, #admin-table td { padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 0.75rem; padding-bottom: 0.75rem; vertical-align: middle; border-bottom: 1px solid #e5e7eb; }
+        #admin-table-body tr:hover { background-color: #f0f9ff; } /* blue-50 */
+        #admin-table thead th {
+            background-color: var(--brand-primary); 
+            color: #431407; /* orange-950 */
+            white-space: nowrap; 
+            text-shadow: none; 
+            vertical-align: middle; 
+            font-weight: 600;
+            position: sticky; top: 0; z-index: 10;
+        }
+        
+        #admin-table th, #admin-table td { padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 0.875rem; padding-bottom: 0.875rem; vertical-align: middle; border-bottom: 1px solid #e5e7eb; }
         #admin-table tbody tr:last-child td { border-bottom: none; }
-        #admin-table th:nth-child(2), #admin-table td:nth-child(2) { width: 20%; min-width: 160px; }
-        #admin-table th:nth-child(3), #admin-table td:nth-child(3) { width: 15%; min-width: 150px; }
-        #admin-table th:nth-child(4), #admin-table td:nth-child(4) { width: 5%; min-width: 60px; text-align: center; }
-        #admin-table th:nth-child(5), #admin-table td:nth-child(5) { width: 10%; min-width: 100px; }
-        #admin-table th:nth-child(n+6):nth-child(-n+11),
-        #admin-table td:nth-child(n+6):nth-child(-n+11) { width: 4%; min-width: 45px; text-align: center; }
-        #admin-table th:nth-child(12), #admin-table td:nth-child(12) { width: 10%; min-width: 100px; }
-        #admin-table th:nth-child(13), #admin-table td:nth-child(13) { width: 6%; min-width: 70px; text-align: center; }
-        .view-report-btn { background-color: var(--brand-secondary); color: white; padding: 0.25rem 0.75rem; border-radius: 0.375rem; font-weight: 500; transition: background-color 0.2s; white-space: nowrap; border: none; cursor: pointer; }
-        .view-report-btn:hover { background-color: var(--brand-blue-dark); }
-        .action-btn { transition: all 0.3s ease; font-weight: bold; padding: 0.5rem 1.5rem; border-radius: 0.5rem; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); width: auto; justify-content: center; border: none; cursor: pointer; }
-        .action-btn:hover { transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        .logout-btn { background-color: #e5e7eb; color: var(--brand-red); }
-        .logout-btn:hover { background-color: #d1d5db; color: #991b1b; }
+
+        /* Columna 1 (#) - Pegajosa */
+        #admin-table thead th:nth-child(1) {
+            position: sticky; left: 0; z-index: 12; /* Aumentado */
+            background-color: var(--brand-primary); /* Forzar fondo */
+            width: 3.5rem; min-width: 3.5rem;
+        }
+        #admin-table tbody td:nth-child(1) {
+            position: sticky; left: 0; z-index: 2; /* Aumentado */
+            background-color: white; 
+            text-align: center;
+        }
+        #admin-table-body tr:hover td:nth-child(1) { background-color: #f0f9ff; }
+
+        /* Columna 2 (Nombre) - Pegajosa */
+        #admin-table thead th:nth-child(2) {
+            position: sticky; left: 3.5rem; /* Ancho de la col 1 */ 
+            z-index: 12; /* Aumentado */
+            background-color: var(--brand-primary); /* Forzar fondo */
+        }
+        #admin-table tbody td:nth-child(2) {
+            position: sticky; left: 3.5rem; /* Ancho de la col 1 */ 
+            z-index: 2; /* Aumentado */
+            background-color: white;
+        }
+        #admin-table-body tr:hover td:nth-child(2) { background-color: #f0f9ff; }
+        
+        /* Anchos de columnas */
+        #admin-table th:nth-child(2), #admin-table td:nth-child(2) { width: 18%; min-width: 160px; } /* Nombre */
+        #admin-table th:nth-child(3), #admin-table td:nth-child(3) { width: 18%; min-width: 160px; } /* Email */
+        #admin-table th:nth-child(4), #admin-table td:nth-child(4) { width: 8%; min-width: 80px; text-align: center; } /* Aciertos */
+        #admin-table th:nth-child(5), #admin-table td:nth-child(5) { width: 8%; min-width: 80px; text-align: center; } /* Errores */
+        #admin-table th:nth-child(6), #admin-table td:nth-child(6) { width: 10%; min-width: 100px; text-align: center; } /* % Global */
+        #admin-table th:nth-child(7), #admin-table td:nth-child(7) { width: 6%; min-width: 70px; text-align: center; } /* Acción */
+        
+        .view-report-btn { 
+            background-color: var(--brand-secondary); 
+            color: white; 
+            padding: 0.375rem 0.875rem; /* py-1.5 px-3.5 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-weight: 500; 
+            transition: background-color 0.2s; 
+            white-space: nowrap; border: none; cursor: pointer; 
+            font-size: 0.875rem; /* text-sm */
+        }
+        .view-report-btn:hover { background-color: var(--brand-secondary-dark); }
+        
+        .action-btn { 
+            transition: all 0.3s ease; font-weight: 600; padding: 0.625rem 1.25rem; border-radius: 0.5rem; display: inline-flex; align-items: center; gap: 0.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); 
+            width: auto; justify-content: center; border: 1px solid transparent; cursor: pointer;
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px -3px rgba(0, 0, 0, 0.08); }
+        .logout-btn { background-color: #FEE2E2; color: var(--brand-red); border-color: #FECACA; }
+        .logout-btn:hover { background-color: #FCA5A5; color: #991B1B; }
         .back-btn { background-color: var(--brand-secondary); color: white; }
-        .back-btn:hover { background-color: var(--brand-blue-dark); }
-        #admin-modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.85); display: none; align-items: center; justify-content: center; z-index: 40; }
+        .back-btn:hover { background-color: var(--brand-secondary-dark); }
+
+        /* Estilos Paginación */
+        .pagination-container {
+            display: flex;
+            flex-direction: column;
+            sm:flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0.5rem;
+            margin-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .pagination-info { font-size: 0.875rem; color: var(--brand-text-light); margin-bottom: 0.75rem; sm:margin-bottom: 0; }
+        .pagination-controls { display: flex; align-items: center; gap: 0.25rem; }
+        .pagination-btn {
+            font-family: 'Inter', sans-serif;
+            border: 1px solid #D1D5DB; /* gray-300 */
+            background-color: #ffffff;
+            color: var(--brand-text);
+            font-weight: 600;
+            font-size: 0.875rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.5rem 0.875rem;
+            min-width: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+        }
+        .pagination-btn:hover {
+            background-color: #F9FAFB; /* gray-50 */
+            border-color: #9CA3AF; /* gray-400 */
+        }
+        .pagination-btn.active {
+            background-color: var(--brand-secondary);
+            border-color: var(--brand-secondary);
+            color: white;
+            box-shadow: 0 4px 10px -3px rgba(59, 130, 246, 0.3);
+        }
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #F9FAFB;
+        }
+        .pagination-ellipsis {
+            padding: 0.5rem 0.25rem;
+            color: var(--brand-text-light);
+        }
+
+        /* --- Estilos Modal Admin --- */
+        #admin-modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(17, 24, 39, 0.6); /* gray-900/60 */ backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 40; }
         #admin-modal-container { background-color: white; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); width: 100%; max-width: 900px; height: 90vh; display: flex; flex-direction: column; border: 1px solid #e5e7eb; transform: scale(0.95); opacity: 0; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         #admin-modal-backdrop.shown #admin-modal-container { transform: scale(1); opacity: 1; }
         #admin-modal-header-container { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; }
         #admin-modal-header { font-size: 1.25rem; font-weight: 700; color: var(--brand-header); }
-        #admin-modal-close-btn { background-color: #f3f4f6; color: #6b7280; border: none; border-radius: 99px; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+        #admin-modal-close-btn { background-color: #f3f4f6; color: #6b7280; border: none; border-radius: 99px; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
         #admin-modal-close-btn:hover { background-color: #e5e7eb; color: #1f2937; transform: scale(1.1); }
-        #admin-modal-body { padding: 1.5rem; overflow-y: auto; flex-grow: 1; background-color: var(--brand-bg); }
+        #admin-modal-body { padding: 0; overflow-y: auto; flex-grow: 1; background-color: var(--brand-bg); }
+        
+        /* Pestañas (Tabs) del Modal */
+        .modal-tabs {
+            display: flex;
+            background-color: #ffffff;
+            padding: 0.75rem 1.5rem 0 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 0.5rem;
+            position: sticky; top: 0;
+            z-index: 5;
+        }
+        .modal-tab-btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            color: var(--brand-text-light);
+            background-color: transparent;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .modal-tab-btn:hover {
+            color: var(--brand-header);
+            background-color: #f9fafb;
+        }
+        .modal-tab-btn.active {
+            color: var(--brand-secondary);
+            border-bottom-color: var(--brand-secondary);
+        }
+        .modal-tab-content {
+            display: none;
+            padding: 1.5rem;
+        }
+        .modal-tab-content.active {
+            display: block;
+        }
+
+        /* --- Estilos Flatpickr --- */
         .flatpickr-calendar { background-color: #ffffff; border-radius: 0.75rem; border: 1px solid #e5e7eb; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
         .flatpickr-day.selected { background-color: var(--brand-secondary); border-color: var(--brand-secondary); }
         .flatpickr-day:hover { background-color: #eff6ff; }
@@ -105,51 +405,63 @@
         .flatpickr-months .flatpickr-prev-month:hover svg,
         .flatpickr-months .flatpickr-next-month:hover svg { fill: var(--brand-primary); }
         .flatpickr-current-month .numInputWrapper:hover { background: #f3f4f6; }
+
+        /* Badges para Tipo de Documento */
+        .doc-type-badge {
+            display: inline-block;
+            padding: 0.125rem 0.625rem; /* py-0.5 px-2.5 */
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 600;
+            font-size: 0.75rem; /* text-xs */
+            line-height: 1.25;
+            text-align: center;
+            min-width: 40px;
+        }
+        .badge-cc { background-color: #dbeafe; color: #1e40af; } /* blue-100 / blue-800 */
+        .badge-ti { background-color: #d1fae5; color: #065f46; } /* green-100 / green-800 */
+        .badge-ce { background-color: #ffedd5; color: #9a3412; } /* orange-100 / orange-800 */
+        .badge-rc { background-color: #fae8ff; color: #701a75; } /* purple-100 / purple-800 */
+        .badge-pa { background-color: #e0e7ff; color: #3730a3; } /* indigo-100 / indigo-800 */
+        .badge-ppt { background-color: #ccfbf1; color: #0f766e; } /* teal-100 / teal-800 */
+        .badge-default { background-color: #e5e7eb; color: #4b5563; } /* gray-200 / gray-600 */
     </style>
 </head>
 <body class="bg-brand-bg text-brand-text">
 
     <!-- ========== PANTALLA DE LOGIN (inicialmente visible) ========== -->
     <div id="login-screen" class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-        <div class="bg-white p-8 sm:p-10 rounded-xl shadow-2xl w-full max-w-md border border-gray-200">
+        <div class="login-card w-full max-w-md p-8 sm:p-10">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-brand-header">Consulta de Resultados</h2>
-                <p class="text-gray-500 mt-2">Ingresa tus datos para ver tu informe.</p>
+                <p class="text-brand-text-light mt-2">Ingresa tus datos para ver tu informe.</p>
             </div>
             <form id="login-form" class="space-y-6">
                 <div>
-                    <label for="doc-type" class="block text-sm font-medium text-gray-700">Tipo de documento <span class="text-brand-red">*</span></label>
-                    <div class="mt-1">
-                        <select id="doc-type" name="doc-type" required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-brand-secondary transition duration-200 bg-white">
-                            <option value="">Seleccione...</option>
-                            <option value="CC">Cédula de Ciudadanía</option>
-                            <option value="TI">Tarjeta de Identidad</option>
-                            <option value="CE">Cédula de Extranjería</option>
-                            <option value="RC">Registro Civil</option>
-                            <option value="PA">Pasaporte</option>
-                        </select>
-                    </div>
+                    <label for="doc-type" class="block text-sm font-medium text-gray-700 mb-1">Tipo de documento <span class="text-brand-red">*</span></label>
+                    <select id="doc-type" name="doc-type" required class="login-input">
+                        <option value="">Seleccione...</option>
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="RC">Registro Civil</option>
+                        <option value="PA">Pasaporte</option>
+                        <option value="PPT">PPT</option>
+                    </select>
                 </div>
                 <div>
-                    <label for="document-number" class="block text-sm font-medium text-gray-700">Número de documento <span class="text-brand-red">*</span></label>
-                    <div class="mt-1">
-                        <input id="document-number" name="document-number" type="text" autocomplete="off" required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-brand-secondary transition duration-200"
-                                placeholder="Ingrese su número de documento">
-                    </div>
+                    <label for="document-number" class="block text-sm font-medium text-gray-700 mb-1">Número de documento <span class="text-brand-red">*</span></label>
+                    <input id="document-number" name="document-number" type="text" autocomplete="off" required
+                           class="login-input"
+                           placeholder="Ingrese su número de documento">
                 </div>
                 <div>
-                    <label for="birth-date" class="block text-sm font-medium text-gray-700">Fecha de nacimiento <span class="text-brand-red">*</span></label>
-                    <div class="mt-1">
-                        <input id="birth-date" name="birth-date" type="text" autocomplete="off" required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-brand-secondary transition duration-200"
-                                placeholder="dd/mm/yyyy">
-                    </div>
+                    <label for="birth-date" class="block text-sm font-medium text-gray-700 mb-1">Fecha de nacimiento <span class="text-brand-red">*</span></label>
+                    <input id="birth-date" name="birth-date" type="text" autocomplete="off" required
+                           class="login-input"
+                           placeholder="dd/mm/yyyy">
                 </div>
                 <div>
-                    <button type="submit"
-                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-white font-medium bg-brand-primary hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition duration-300 transform hover:scale-105">
+                    <button type="submit" class="login-btn">
                         Consultar
                     </button>
                 </div>
@@ -166,9 +478,9 @@
              <header class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
                  <div>
                      <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-header tracking-tight text-center sm:text-left">Informe de Desempeño Individual</h1>
-                     <p id="student-name-header" class="mt-1 text-lg text-gray-600 text-center sm:text-left">Nombre del Estudiante</p>
+                     <p id="student-name-header" class="mt-1 text-xl text-brand-text-light text-center sm:text-left">Nombre del Estudiante</p>
                  </div>
-                 <div id="report-action-buttons">
+                 <div id="report-action-buttons" class="flex items-center gap-3">
                      <button id="logout-btn-report" class="action-btn logout-btn">
                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V5.414l7.293 7.293a1 1 0 001.414-1.414L5.414 4H13a1 1 0 100-2H4a1 1 0 00-1 1z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M15 17a1 1 0 100-2H7a1 1 0 100 2h8z" clip-rule="evenodd" /></svg>
                          Cerrar Sesión
@@ -182,13 +494,47 @@
              <main>
                  <div id="global-score-section" class="global-score-container">
                      <p class="text-sm font-semibold uppercase tracking-wider opacity-80 mb-1">Puntaje Global</p>
-                     <p id="global-score-value" class="text-5xl font-extrabold">
-                         <span id="global-score-number">0</span><span class="text-3xl font-medium opacity-70">/500</span>
+                     <p id="global-score-value" class="text-6xl font-extrabold">
+                         <span id="global-score-number">0</span><span class="text-4xl font-medium opacity-70">/500</span>
+                     </p>
+                     <p id="percentile-badge-container" class="percentile-badge hidden">
+                         Te encuentras en el <strong id="percentile-value"></strong>
                      </p>
                  </div>
-                 <div id="individual-report-content"></div>
+
+                 <!-- (NUEVO) Contenedor del Gráfico Radar -->
+                 <div id="radar-chart-container" class="card p-4 sm:p-6 mb-6">
+                     <h3 class="text-xl font-semibold text-brand-header mb-4 text-center">Comparativa de Desempeño por Materia</h3>
+                     <div class="relative w-full max-w-lg mx-auto h-64 sm:h-80 md:h-96">
+                         <canvas id="subject-radar-chart"></canvas>
+                     </div>
+                 </div>
+
+                 <!-- (NUEVO) Botón para Informe Detallado de Preguntas -->
+                 <div class="mb-6">
+                     <button id="detailed-report-toggle" class="w-full flex justify-between items-center p-5 card hover:bg-gray-50">
+                         <span class="text-xl font-bold text-brand-secondary">
+                             Análisis Detallado de Preguntas
+                         </span>
+                         <svg class="h-6 w-6 text-brand-secondary transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                         </svg>
+                     </button>
+                 </div>
+                 
+                 <!-- (NUEVO) Contenedor del Informe Detallado de Preguntas -->
+                 <div id="detailed-report-container" class="card mb-6">
+                     <div id="detailed-report-content" class="p-4 sm:p-6 overflow-x-auto">
+                         <!-- El contenido se generará por JS -->
+                     </div>
+                 </div>
+
+                 <!-- (Original) Contenedor del Informe de Competencias -->
+                 <div id="individual-report-content">
+                     <!-- El contenido se generará por JS -->
+                 </div>
              </main>
-             <footer class="text-center mt-12 text-gray-500"><p>&copy; 2025 SeamosGenios. Todos los derechos reservados.</p></footer>
+             <footer class="text-center mt-12 text-brand-text-light"><p>&copy; 2025 SeamosGenios. Todos los derechos reservados.</p></footer>
         </div>
     </div>
 
@@ -196,124 +542,321 @@
     <div id="admin-screen" class="hidden">
          <div class="main-container mx-auto p-4 sm:p-6 lg:p-8">
              <header class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-                 <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-header tracking-tight text-center sm:text-left">Dashboard de Administrador</h1>
+                 <h1 class="text-3xl sm:text-4xl font-extrabold text-brand-header tracking-tight text-center sm:text-left">Dashboard Analítico</h1>
                  <button id="logout-btn-admin" class="action-btn logout-btn">
                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V5.414l7.293 7.293a1 1 0 001.414-1.414L5.414 4H13a1 1 0 100-2H4a1 1 0 00-1 1z" clip-rule="evenodd" /><path fill-rule="evenodd" d="M15 17a1 1 0 100-2H7a1 1 0 100 2h8z" clip-rule="evenodd" /></svg>
                      Cerrar Sesión
                  </button>
              </header>
              <main>
-                 <div id="admin-stats-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                     <div class="bg-white rounded-xl shadow-lg border p-6 flex items-center gap-6">
-                         <div class="w-12 h-12 rounded-full bg-blue-100 text-brand-secondary flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></div>
-                         <div><p class="text-sm text-gray-500">Total Estudiantes</p><p id="stat-total-students" class="text-3xl font-bold text-gray-800">0</p></div>
+                 <!-- (NUEVO) Stats Bar Analítico -->
+                 <div id="admin-stats-bar" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                     <div class="stat-card">
+                         <p class="stat-card-title">Total Estudiantes</p>
+                         <p id="stat-total-students" class="stat-card-value">0</p>
                      </div>
-                     <div class="bg-white rounded-xl shadow-lg border p-6 flex items-center gap-6">
-                         <div class="w-12 h-12 rounded-full bg-orange-100 text-brand-primary flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg></div>
-                         <div><p class="text-sm text-gray-500">Promedio Global</p><p id="stat-avg-score" class="text-3xl font-bold text-gray-800">0</p></div>
+                     <div class="stat-card">
+                         <p class="stat-card-title">Promedio Global (Acierto)</p>
+                         <p id="stat-avg-score" class="stat-card-value">0%</p>
                      </div>
-                     <div class="bg-white rounded-xl shadow-lg border p-6 flex items-center gap-6">
-                         <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg></div>
-                         <div><p class="text-sm text-gray-500">Puntaje Alto</p><p id="stat-max-score" class="text-3xl font-bold text-gray-800">0</p></div>
+                     <div class="stat-card">
+                        <p class="stat-card-title">Desviación Estándar (DE)</p>
+                        <p id="stat-std-dev" class="stat-card-value">0%</p>
                      </div>
-                     <div class="bg-white rounded-xl shadow-lg border p-6 flex items-center gap-6">
-                         <div class="w-12 h-12 rounded-full bg-red-100 text-brand-red flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" /></svg></div>
-                         <div><p class="text-sm text-gray-500">Puntaje Bajo</p><p id="stat-min-score" class="text-3xl font-bold text-gray-800">0</p></div>
+                     <div class="stat-card">
+                         <p class="stat-card-title">Rango de Desempeño</p>
+                         <div>
+                             <p class="stat-card-sub-value text-green-600">Alto: <span id="stat-max-score">0%</span></p>
+                             <p class="stat-card-sub-value text-brand-red">Bajo: <span id="stat-min-score">0%</span></p>
+                         </div>
                      </div>
                  </div>
-                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
-                     <div class="lg:col-span-3 bg-white rounded-xl shadow-lg border p-6"><h2 class="text-2xl font-bold text-brand-header mb-4">Promedio por Materia</h2><div class="h-64 sm:h-80"><canvas id="subject-avg-chart"></canvas></div></div>
-                     <div class="lg:col-span-2 bg-white rounded-xl shadow-lg border p-6"><h2 class="text-2xl font-bold text-brand-header mb-4">Distribución de Puntajes</h2><div class="h-64 sm:h-80 flex items-center justify-center"><canvas id="score-dist-chart"></canvas></div></div>
+                 
+                 <!-- (NUEVO) Gráficos Analíticos -->
+                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                     <div class="lg:col-span-1 card p-6"><h2 class="text-xl font-bold text-brand-header mb-4">Ranking de Áreas (% Acierto)</h2><div class="h-80"><canvas id="subject-avg-chart"></canvas></div></div>
+                     <div class="lg:col-span-1 card p-6"><h2 class="text-xl font-bold text-brand-header mb-4">Distribución de Aciertos</h2><div class="h-80 flex items-center justify-center"><canvas id="score-dist-chart"></canvas></div></div>
+                     <div class="lg:col-span-1 card p-6"><h2 class="text-xl font-bold text-brand-header mb-4">Top 10 Preguntas Difíciles</h2><div class="h-80"><canvas id="top-errors-chart"></canvas></div></div>
                  </div>
-                 <div class="bg-white rounded-xl shadow-lg border p-6">
+
+                 <!-- (NUEVO) Tabla de Admin Analítica -->
+                 <div class="card p-6">
                      <h2 class="text-2xl font-bold text-brand-header mb-4">Detalle de Estudiantes</h2>
                      <div class="mb-6 relative">
-                         <input type="text" id="admin-search" placeholder="Buscar por nombre, email, documento, municipio..."
-                                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-primary">
-                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
+                         <input type="text" id="admin-search" placeholder="Buscar por nombre, email, documento..."
+                                class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-primary bg-white shadow-sm">
+                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none"><svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg></div>
                      </div>
                      <div class="overflow-x-auto">
                          <table id="admin-table" class="w-full table-auto text-left text-sm">
                              <thead>
                                  <tr>
-                                     <th class="px-2 py-3 text-center sortable-header w-10" data-sort-key="rank">#</th>
-                                     <th class="px-2 py-3 sortable-header" data-sort-key="nombre">Nombre</th>
-                                     <th class="px-2 py-3 sortable-header" data-sort-key="email">Email</th>
-                                     <th class="px-2 py-3 text-center sortable-header" data-sort-key="docType">Tipo Doc.</th>
-                                     <th class="px-2 py-3 sortable-header" data-sort-key="docNumber">Núm. Doc.</th>
-                                     <th class="px-2 py-3 text-center sortable-header" data-sort-key="puntajeGlobal">Global</th>
-                                     <th class="px-2 py-3 text-center sortable-header" data-sort-key="puntajes.lectura">Lec.</th>
-                                     <th class="px-2 py-3 text-center sortable-header" data-sort-key="puntajes.matematicas">Mat.</th>
-                                     <th class="px-2 py-3 text-center sortable-header" data-sort-key="puntajes.sociales">Soc.</th>
-                                     <th class="px-2 py-3 text-center sortable-header" data-sort-key="puntajes.ciencias">Cien.</th>
-                                     <th class="px-2 py-3 text-center sortable-header" data-sort-key="puntajes.ingles">Ing.</th>
-                                     <th class="px-2 py-3 sortable-header" data-sort-key="municipio">Municipio</th>
-                                     <th class="px-2 py-3 text-center">Acción</th>
+                                     <th class="px-3 py-3 text-center sortable-header" data-sort-key="rank">#</th>
+                                     <th class="px-3 py-3 sortable-header" data-sort-key="nombre">Nombre</th>
+                                     <th class="px-3 py-3 sortable-header" data-sort-key="email">Email</th>
+                                     <th class="px-3 py-3 text-center sortable-header" data-sort-key="aciertos">Aciertos</th>
+                                     <th class="px-3 py-3 text-center sortable-header" data-sort-key="errores">Errores</th>
+                                     <th class="px-3 py-3 text-center sortable-header" data-sort-key="porcentaje">% Global</th>
+                                     <th class="px-3 py-3 text-center">Acción</th>
                                  </tr>
                              </thead>
                              <tbody id="admin-table-body" class="divide-y divide-gray-200"></tbody>
                          </table>
                      </div>
-                     <div id="admin-no-results" class="text-center p-8 text-gray-500 hidden">No se encontraron estudiantes que coincidan con la búsqueda.</div>
+                     <div id="admin-no-results" class="text-center p-8 text-brand-text-light hidden">No se encontraron estudiantes que coincidan con la búsqueda.</div>
+                     
+                     <!-- (NUEVO) Contenedor de Paginación -->
+                     <div id="pagination-container" class="pagination-container">
+                         <!-- Info y botones se generan por JS -->
+                     </div>
                  </div>
              </main>
          </div>
-         <footer class="text-center mt-12 mb-8 text-gray-500"><p>&copy; 2025 SeamosGenios. Todos los derechos reservados.</p></footer>
+         <footer class="text-center mt-12 mb-8 text-brand-text-light"><p>&copy; 2025 SeamosGenios. Todos los derechos reservados.</p></footer>
     </div>
 
     <!-- ========== MODAL DE ADMINISTRADOR (oculta) ========== -->
     <div id="admin-modal-backdrop">
         <div id="admin-modal-container">
             <div id="admin-modal-header-container"><h2 id="admin-modal-header">Informe del Estudiante</h2><button id="admin-modal-close-btn" title="Cerrar"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></button></div>
-            <div id="admin-modal-body"></div>
+            <div id="admin-modal-body">
+                <!-- (NUEVO) Pestañas del Modal -->
+                <div class="modal-tabs">
+                    <button class="modal-tab-btn active" data-tab="tab-competencias">Informe de Competencias</button>
+                    <button class="modal-tab-btn" data-tab="tab-preguntas">Informe de Preguntas</button>
+                </div>
+                
+                <!-- (NUEVO) Contenido Pestañas -->
+                <div id="tab-competencias" class="modal-tab-content active">
+                    <!-- Contenedor para el gráfico radar dentro del modal -->
+                    <div id="modal-radar-chart-container" class="card p-4 sm:p-6 mb-6">
+                         <h3 class="text-lg font-semibold text-brand-header mb-4 text-center">Comparativa de Desempeño</h3>
+                         <div class="relative w-full max-w-md mx-auto h-64 sm:h-80">
+                             <canvas id="modal-subject-radar-chart"></canvas>
+                         </div>
+                     </div>
+                    <!-- Contenedor para el informe de competencias (el original) -->
+                    <div id="modal-individual-report-content"></div>
+                </div>
+                <div id="tab-preguntas" class="modal-tab-content">
+                    <!-- Contenedor para el informe detallado de preguntas -->
+                    <div id="modal-detailed-report-content" class="card p-4 sm:p-6 overflow-x-auto"></div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Scripts de Librerías -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
+    <!-- Script Principal de la Aplicación -->
     <script>
-    // --- Variables Globales ---
-    const SUPER_USER_CREDENTIALS = { username: "admin", password: "20/07/2023" };
+    // --- URLs de la Base de Datos (GitHub) ---
+    // Asegúrate de que la URL base sea la correcta (raw.githubusercontent.com)
+    const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/daniel-alt-pages/informes_sgm_01/main/';
+    const GITHUB_CSV_URL = `${GITHUB_BASE_URL}base%20de%20datos%20-%20Hoja%201.csv?t=${Date.now()}`;
     
-    // ========================================================================
-    // --- !! CORRECCIÓN APLICADA !! ---
-    // Se añade un parámetro `t=${Date.now()}` a la URL para forzar
-    // al navegador a descargar una copia nueva del CSV cada vez,
-    // evitando problemas de caché que causan que los datos salgan en 0.
-    // ========================================================================
-    const GITHUB_CSV_URL = `https://raw.githubusercontent.com/daniel-alt-pages/informes_sgm_01/main/base%20de%20datos%20-%20Hoja%201.csv?t=${Date.now()}`;
+    // (NUEVO) URLs para los 4 archivos de análisis de preguntas
+    const CLAVES_S1_URL = `${GITHUB_BASE_URL}Claves_S1.csv?t=${Date.now()}`;
+    const CLAVES_S2_URL = `${GITHUB_BASE_URL}Claves_S2.csv?t=${Date.now()}`;
+    const SESION_1_URL = `${GITHUB_BASE_URL}Sesion1.csv?t=${Date.now()}`;
+    const SESION_2_URL = `${GITHUB_BASE_URL}Sesion2.csv?t=${Date.now()}`;
 
-    // --- Definiciones de Skills y Descripciones (omitidas por brevedad para la respuesta) ---
-    // NOTA: Estas definiciones son cruciales y deben estar presentes en tu código final.
-    // Las he omitido aquí, pero tu archivo original las tiene.
+    // (NUEVO) URLs para los archivos del Dashboard Analítico
+    const ADMIN_GENERAL_URL = `${GITHUB_BASE_URL}Dashboard_Analitico_Profesional%20(1).xlsx%20-%20Dashboard%20General.csv?t=${Date.now()}`;
+    const ADMIN_RANKING_AREAS_URL = `${GITHUB_BASE_URL}Dashboard_Analitico_Profesional%20(1).xlsx%20-%20Ranking%20de%20%C3%81reas.csv?t=${Date.now()}`;
+    const ADMIN_DETALLE_ERRORES_URL = `${GITHUB_BASE_URL}Dashboard_Analitico_Profesional%20(1).xlsx%20-%20Detalle%20de%20Errores.csv?t=${Date.now()}`;
+    const ADMIN_RENDIMIENTO_DETALLADO_URL = `${GITHUB_BASE_URL}Dashboard_Analitico_Profesional%20(1).xlsx%20-%20Rendimiento%20Detallado.csv?t=${Date.now()}`;
+
+
+    // --- Credenciales Admin ---
+    const SUPER_USER_CREDENTIALS = { username: "admin", password: "20/07/2023" };
+
+    // --- Definiciones de Skills y Descripciones (omitidas por brevedad) ---
     const skillsData = {
         lectura: {
             color: 'var(--color-lectura)',
-            levels: [ /* ... (niveles) ... */ ],
-            competencies: [ /* ... (competencias) ... */ ]
+            levels: [
+                { min: 0, label: 'Nivel 1', range: '0-35', color: '#ef4444', desc: 'Dificultad para identificar información explícita en textos simples.' },
+                { min: 36, label: 'Nivel 2', range: '36-50', color: '#f97316', desc: 'Identifica información explícita y la relaciona en textos de estructura simple.' },
+                { min: 51, label: 'Nivel 3', range: '51-70', color: '#eab308', desc: 'Infiere información, evalúa contenidos y asume una postura crítica básica.' },
+                { min: 71, label: 'Nivel 4', range: '71-100', color: '#22c55e', desc: 'Analiza críticamente textos complejos, evalúa estrategias discursivas y compara contenidos.' }
+            ],
+            competencies: [
+                {
+                    name: 'Identificar y entender los contenidos locales que conforman un texto.',
+                    skills: [
+                        { level: 0, name: 'Identificación Básica', desc: 'Reconoce elementos locales como el significado de palabras o frases en su contexto inmediato.' },
+                        { level: 1, name: 'Comprensión de Conectores', desc: 'Entiende la función de conectores lógicos simples (y, pero, entonces) en un párrafo.' },
+                        { level: 2, name: 'Inferencia de Información Local', desc: 'Infiere el significado de palabras o expresiones a partir de información contextual más amplia.' },
+                        { level: 3, name: 'Análisis de Léxico', desc: 'Evalúa el uso de un léxico específico y su intención en el texto.' }
+                    ]
+                },
+                {
+                    name: 'Comprender cómo se articulan las partes de un texto para darle un sentido global.',
+                    skills: [
+                        { level: 0, name: 'Identificación de Tema', desc: 'Reconoce el tema general o el evento principal en textos narrativos o descriptivos simples.' },
+                        { level: 1, name: 'Relación entre Párrafos', desc: 'Comprende cómo se relacionan las ideas entre diferentes párrafos (causa-efecto, problema-solución).' },
+                        { level: 2, name: 'Inferencia de Tesis', desc: 'Identifica la tesis o idea principal en textos argumentativos de estructura clara.' },
+                        { level: 3, name: 'Análisis Estructural', desc: 'Evalúa la estructura del texto y cómo contribuye al propósito comunicativo del autor.' }
+                    ]
+                },
+                {
+                    name: 'Reflexionar a partir de un texto y evaluar su contenido.',
+                    skills: [
+                        { level: 0, name: 'Opinión Simple', desc: 'Expresa una opinión básica (acuerdo/desacuerdo) sobre el texto sin una justificación profunda.' },
+                        { level: 1, name: 'Relación Texto-Contexto', desc: 'Relaciona la información del texto con sus conocimientos previos o su contexto inmediato.' },
+                        { level: 2, name: 'Evaluación de Validez', desc: 'Evalúa la validez de argumentos o la veracidad de la información presentada en el texto.' },
+                        { level: 3, name: 'Postura Crítica Compleja', desc: 'Asume una postura crítica frente al texto, evaluando sus implicaciones, omisiones y estrategias discursivas.' }
+                    ]
+                }
+            ]
         },
         matematicas: {
             color: 'var(--color-matematicas)',
-            levels: [ /* ... (niveles) ... */ ],
-            competencies: [ /* ... (competencias) ... */ ]
+            levels: [
+                { min: 0, label: 'Nivel 1', range: '0-35', color: '#ef4444', desc: 'Dificultad para resolver problemas que involucran información explícita y operaciones básicas.' },
+                { min: 36, label: 'Nivel 2', range: '36-50', color: '#f97316', desc: 'Resuelve problemas simples que requieren traducción de lenguaje natural a simbólico y uso de propiedades básicas.' },
+                { min: 51, label: 'Nivel 3', range: '51-70', color: '#eab308', desc: 'Resuelve problemas que requieren interpretación de información, modelación y justificación de procedimientos.' },
+                { min: 71, label: 'Nivel 4', range: '71-100', color: '#22c55e', desc: 'Formula y resuelve problemas complejos, valida procedimientos y generaliza soluciones.' }
+            ],
+            competencies: [
+                {
+                    name: 'Interpretación y representación',
+                    skills: [
+                        { level: 0, name: 'Lectura de Datos', desc: 'Identifica datos explícitos en tablas y gráficos de barras simples.' },
+                        { level: 1, name: 'Traducción de Lenguaje', desc: 'Traduce expresiones de lenguaje natural a representaciones matemáticas simples (ecuaciones, fórmulas).' },
+                        { level: 2, name: 'Interpretación de Gráficos', desc: 'Interpreta información en gráficos más complejos (circulares, lineales) y establece relaciones.' },
+                        { level: 3, name: 'Modelación y Contexto', desc: 'Utiliza diferentes representaciones (tablas, gráficas, símbolos) para modelar una misma situación y las contrasta.' }
+                    ]
+                },
+                {
+                    name: 'Formulación y ejecución',
+                    skills: [
+                        { level: 0, name: 'Operaciones Básicas', desc: 'Realiza operaciones aritméticas básicas (suma, resta, multiplicación) en contextos familiares.' },
+                        { level: 1, name: 'Resolución de Ecuaciones Simples', desc: 'Resuelve ecuaciones lineales de un paso (ej. x + 5 = 10).' },
+                        { level: 2, name: 'Estrategias de Solución', desc: 'Diseña y ejecuta un plan para resolver problemas que involucran porcentajes, proporcionalidad o geometría básica.' },
+                        { level: 3, name: 'Ejecución Compleja', desc: 'Resuelve sistemas de ecuaciones, aplica conceptos de trigonometría o probabilidad en problemas no rutinarios.' }
+                    ]
+                },
+                {
+                    name: 'Argumentación',
+                    skills: [
+                        { level: 0, name: 'Justificación Simple', desc: 'Justifica un procedimiento basado en la repetición de un ejemplo dado.' },
+                        { level: 1, name: 'Validación de Resultados', desc: 'Verifica si la solución encontrada es plausible en el contexto del problema.' },
+                        { level: 2, name: 'Uso de Propiedades', desc: 'Justifica procedimientos y soluciones utilizando propiedades y definiciones matemáticas básicas.' },
+                        { level: 3, name: 'Generalización y Prueba', desc: 'Valida o refuta afirmaciones, identifica supuestos y puede generalizar soluciones a otros contextos.' }
+                    ]
+                }
+            ]
         },
         sociales: {
             color: 'var(--color-sociales)',
-            levels: [ /* ... (niveles) ... */ ],
-            competencies: [ /* ... (competencias) ... */ ]
+            levels: [
+                { min: 0, label: 'Nivel 1', range: '0-35', color: '#ef4444', desc: 'Dificultad para identificar actores o eventos básicos en un contexto social.' },
+                { min: 36, label: 'Nivel 2', range: '36-50', color: '#f97316', desc: 'Reconoce conceptos sociales básicos (gobierno, norma) e identifica posturas simples.' },
+                { min: 51, label: 'Nivel 3', range: '51-70', color: '#eab308', desc: 'Relaciona eventos, comprende la multicausalidad y analiza críticamente fuentes simples.' },
+                { min: 71, label: 'Nivel 4', range: '71-100', color: '#22c55e', desc: 'Evalúa la intencionalidad de actores, comprende fenómenos sociales complejos y propone soluciones.' }
+            ],
+            competencies: [
+                {
+                    name: 'Pensamiento Social',
+                    skills: [
+                        { level: 0, name: 'Identificación de Actores', desc: 'Reconoce actores individuales o colectivos en un evento social simple (ej. una protesta).' },
+                        { level: 1, name: 'Comprensión de Conceptos', desc: 'Entiende conceptos básicos como "ley", "derecho", "deber" en un contexto dado.' },
+                        { level: 2, name: 'Relación Causa-Efecto', desc: 'Establece relaciones de causa y efecto en procesos históricos o sociales.' },
+                        { level: 3, name: 'Multicausalidad', desc: 'Comprende que los fenómenos sociales responden a múltiples causas (económicas, políticas, culturales).' }
+                    ]
+                },
+                {
+                    name: 'Interpretación y Análisis de Perspectivas',
+                    skills: [
+                        { level: 0, name: 'Identificación de Posturas', desc: 'Reconoce la postura de un actor frente a un problema (a favor o en contra).' },
+                        { level: 1, name: 'Comparación de Perspectivas', desc: 'Compara las posturas de dos actores diferentes sobre un mismo tema.' },
+                        { level: 2, name: 'Análisis de Fuentes', desc: 'Identifica la intención de una fuente primaria (caricatura, discurso) y su contexto.' },
+                        { level: 3, name: 'Evaluación Crítica de Fuentes', desc: 'Evalúa la fiabilidad, intencionalidad y posibles sesgos en diferentes fuentes de información.' }
+                    ]
+                },
+                {
+                    name: 'Pensamiento Reflexivo y Sistémico',
+                    skills: [
+                        { level: 0, name: 'Reconocimiento de Problemas', desc: 'Identifica problemas sociales en su entorno inmediato (ej. basura en el parque).' },
+                        { level: 1, name: 'Análisis de la Constitución', desc: 'Comprende la función de la Constitución y los mecanismos básicos de participación ciudadana.' },
+                        { level: 2, name: 'Análisis de Dimensiones', desc: 'Analiza un problema social desde diferentes dimensiones (política, económica, cultural).' },
+                        { level: 3, name: 'Propuesta de Soluciones', desc: 'Propone soluciones viables y éticas a problemas sociales, considerando sus posibles impactos.' }
+                    ]
+                }
+            ]
         },
         ciencias: {
             color: 'var(--color-ciencias)',
-            levels: [ /* ... (niveles) ... */ ],
-            competencies: [ /* ... (competencias) ... */ ]
+            levels: [
+                { min: 0, label: 'Nivel 1', range: '0-35', color: '#ef4444', desc: 'Dificultad para reconocer conceptos básicos o leer información explícita en gráficos.' },
+                { min: 36, label: 'Nivel 2', range: '36-50', color: '#f97316', desc: 'Comprende conceptos, identifica variables en un experimento simple y describe fenómenos.' },
+                { min: 51, label: 'Nivel 3', range: '51-70', color: '#eab308', desc: 'Interpreta datos, diseña experimentos controlados y aplica conceptos para explicar fenómenos.' },
+                { min: 71, label: 'Nivel 4', range: '71-100', color: '#22c55e', desc: 'Formula hipótesis complejas, valida conclusiones y aplica conocimientos en contextos no familiares.' }
+            ],
+            competencies: [
+                {
+                    name: 'Uso comprensivo del conocimiento científico',
+                    skills: [
+                        { level: 0, name: 'Reconocimiento de Conceptos', desc: 'Reconoce definiciones básicas (ej. célula, átomo, ecosistema).' },
+                        { level: 1, name: 'Descripción de Fenómenos', desc: 'Describe un fenómeno natural (ej. fotosíntesis, ciclo del agua) con sus componentes básicos.' },
+                        { level: 2, name: 'Aplicación de Conceptos', desc: 'Utiliza un concepto científico (ej. conservación de la energía) para explicar un fenómeno cotidiano.' },
+                        { level: 3, name: 'Modelación y Transferencia', desc: 'Aplica leyes y teorías científicas para modelar y explicar fenómenos en contextos complejos o nuevos.' }
+                    ]
+                },
+                {
+                    name: 'Explicación de fenómenos',
+                    skills: [
+                        { level: 0, name: 'Identificación de Causa Simple', desc: 'Identifica una causa directa para un fenómeno observable (ej. el hielo se derrite por el calor).' },
+                        { level: 1, name: 'Relación Causa-Efecto', desc: 'Establece relaciones de causa y efecto en un sistema simple (ej. deforestación y erosión).' },
+                        { level: 2, name: 'Argumentación Basada en Evidencia', desc: 'Construye explicaciones utilizando datos y evidencia presentada en tablas o gráficos.' },
+                        { level: 3, name: 'Explicación Sistémica', desc: 'Explica un fenómeno como parte de un sistema complejo, considerando múltiples variables e interacciones.' }
+                    ]
+                },
+                {
+                    name: 'Indagación',
+                    skills: [
+                        { level: 0, name: 'Lectura de Gráficos', desc: 'Lee datos explícitos presentados en tablas de una sola entrada o gráficos de barras.' },
+                        { level: 1, name: 'Identificación de Variables', desc: 'Identifica la variable independiente y dependiente en un experimento simple.' },
+                        { level: 2, name: 'Diseño Experimental', desc: 'Propone un diseño experimental básico para responder una pregunta, controlando las variables más evidentes.' },
+                        { level: 3, name: 'Validación de Hipótesis', desc: 'Interpreta datos complejos, evalúa la validez de un experimento y saca conclusiones fundamentadas.' }
+                    ]
+                }
+            ]
         },
         ingles: {
             color: 'var(--color-ingles)',
-            levels: [ /* ... (niveles) ... */ ],
-            competencies: [ /* ... (competencias) ... */ ]
+            levels: [
+                { min: 0, label: 'Nivel A-', range: '0-35', color: '#ef4444', desc: 'Dificultad para comprender preguntas simples o información explícita en avisos.' },
+                { min: 36, label: 'Nivel A1', range: '36-50', color: '#f97316', desc: 'Comprende frases y expresiones cotidianas simples sobre sí mismo y su entorno inmediato.' },
+                { min: 51, label: 'Nivel A2', range: '51-70', color: '#eab308', desc: 'Comprende textos cortos sobre temas familiares y puede inferir información básica.' },
+                { min: 71, label: 'Nivel B1', range: '71-100', color: '#22c55e', desc: 'Comprende las ideas principales de textos sobre temas concretos y abstractos, e infiere opiniones.' }
+            ],
+            competencies: [
+                {
+                    name: 'Competencia Lingüística (Lectura)',
+                    skills: [
+                        { level: 0, name: 'Reconocimiento de Vocabulario', desc: 'Identifica palabras familiares y vocabulario básico en avisos o letreros (ej. "Stop", "Open").' },
+                        { level: 1, name: 'Comprensión de Frases', desc: 'Comprende frases simples y preguntas directas sobre información personal (ej. "What is your name?").' },
+                        { level: 2, name: 'Comprensión de Párrafos', desc: 'Entiende la idea principal y detalles clave en un párrafo corto sobre temas familiares (ej. una rutina diaria).' },
+                        { level: 3, name: 'Inferencia de Propósito', desc: 'Infiere el propósito del autor, el tono (ej. formal/informal) y opiniones en textos más extensos.' }
+                    ]
+                },
+                {
+                    name: 'Competencia Pragmática y Sociolingüística',
+                    skills: [
+                        { level: 0, name: 'Identificación de Situación', desc: 'Reconoce dónde podría encontrarse un aviso simple (ej. un menú en un restaurante).' },
+                        { level: 1, name: 'Función Comunicativa Simple', desc: 'Entiende la función de un texto corto (ej. una invitación, una advertencia).' },
+                        { level: 2, name: 'Contexto y Audiencia', desc: 'Identifica la relación entre los hablantes o el contexto de una conversación corta.' },
+                        { level: 3, name: 'Análisis del Discurso', desc: 'Comprende cómo el lenguaje se adapta a diferentes situaciones sociales y culturales.' }
+                    ]
+                }
+            ]
         }
-    }; // Asegúrate de que este objeto esté completo en tu código
+    };
     
     const subjectDescriptions = {
         lectura: "Evalúa la capacidad de comprender y tomar posturas críticas frente a textos.",
@@ -321,7 +864,7 @@
         sociales: "Valora la comprensión de eventos históricos y sociales, y el pensamiento crítico.",
         ciencias: "Examina la capacidad de analizar fenómenos naturales y proponer explicaciones.",
         ingles: "Determina el nivel de competencia en la comprensión y uso del idioma inglés."
-    }; // Asegúrate de que este objeto esté completo en tu código
+    };
 
     const filterOptions = [
         { id: 'lectura', name: 'Lectura Crítica', color: 'var(--color-lectura)' },
@@ -329,53 +872,55 @@
         { id: 'sociales', name: 'Sociales y Ciudadanas', color: 'var(--color-sociales)' },
         { id: 'ciencias', name: 'Ciencias Naturales', color: 'var(--color-ciencias)' },
         { id: 'ingles', name: 'Inglés', color: 'var(--color-ingles)' },
-    ]; // Asegúrate de que este objeto esté completo en tu código
-
+    ];
 
     const subjects = ['lectura', 'matematicas', 'sociales', 'ciencias', 'ingles'];
 
     // --- Variables de Estado ---
-    let STUDENT_DATA_INTERNAL = {};
+    let STUDENT_DATA_INTERNAL = {}; // Datos de `base de datos - Hoja 1.csv`
     let ALL_STUDENTS_ARRAY = [];
+    
+    // (NUEVO) Almacenes para los datos de preguntas
+    let CORRECT_ANSWERS = {}; // Almacena Claves_S1.csv y Claves_S2.csv
+    let STUDENT_ANSWERS = {}; // Almacena Sesion1.csv y Sesion2.csv
+    
+    // (NUEVO) Almacenes para el Dashboard Analítico
+    let ADMIN_GENERAL_DATA = {};
+    let ADMIN_RANKING_AREAS_DATA = [];
+    let ADMIN_DETALLE_ERRORES_DATA = [];
+    let ADMIN_RENDIMIENTO_DETALLADO_DATA = {};
+    let ALL_ADMIN_STUDENTS_ARRAY = []; // Basado en ADMIN_GENERAL_DATA
+    
     let groupAverages = { lectura: 0, matematicas: 0, sociales: 0, ciencias: 0, ingles: 0 };
+    let globalPercentiles = {}; // Almacena el percentil para cada puntaje global
+
+    // Estado de UI
     let currentAdminSort = { key: 'rank', direction: 'asc' };
     let currentAdminFilter = '';
     let isAdminViewingReport = false;
     let birthDatePicker;
+    
+    // Estado de Paginación
+    let currentPage = 1;
+    let rowsPerPage = 10;
+    let totalPages = 1;
+    
+    // Instancias de Gráficos
     let subjectAvgChartInstance = null;
     let scoreDistChartInstance = null;
+    let topErrorsChartInstance = null;
+    let subjectRadarChartInstance = null;
+    let modalSubjectRadarChartInstance = null;
+    
     let elements; // Se asignará en DOMContentLoaded
 
     // --- Constantes para sessionStorage ---
     const SESSION_USER_TYPE_KEY = 'informeSaberUserType';
     const SESSION_USER_ID_KEY = 'informeSaberUserId';
 
-
-    // --- Función para cargar y parsear el CSV desde GitHub ---
-    async function loadStudentDataFromGitHub() {
-        // ... (código sin cambios)
-        try {
-            // Usamos la URL corregida (con el parámetro anti-caché)
-            const response = await fetch(GITHUB_CSV_URL, { cache: "no-store" });
-            if (!response.ok) {
-                throw new Error(`Error al cargar CSV: ${response.statusText}`);
-            }
-            const csvText = await response.text();
-            parseCSVData(csvText);
-            console.log("Datos de estudiantes cargados desde GitHub.");
-            calculateGroupAverages();
-        } catch (error) {
-            console.error("Error cargando o parseando datos desde GitHub:", error);
-            if (elements && elements.loginError) {
-                elements.loginError.textContent = 'Error al cargar datos. Intente más tarde.';
-                elements.loginError.classList.remove('hidden');
-            }
-        }
-    }
-
+    
     // --- (NUEVO) Helper para parsear una línea de CSV respetando comillas ---
     function parseCSVLine(line) {
-        // ... (código sin cambios)
         const values = [];
         let inQuote = false;
         let value = '';
@@ -396,9 +941,21 @@
         return values;
     }
 
-    // --- Función para parsear el texto CSV ---
+    // --- (NUEVO) Helper para obtener clase de color para Tipo Doc ---
+    function getDocTypeBadgeClass(docType) {
+        switch (docType) {
+            case 'CC': return 'badge-cc';
+            case 'TI': return 'badge-ti';
+            case 'CE': return 'badge-ce';
+            case 'RC': return 'badge-rc';
+            case 'PA': return 'badge-pa';
+            case 'PPT': return 'badge-ppt';
+            default: return 'badge-default';
+        }
+    }
+
+    // --- (NUEVO) Función para parsear el texto CSV (Datos Estudiante Login) ---
     function parseCSVData(csvText) {
-        // ... (código sin cambios, idéntico al original)
         STUDENT_DATA_INTERNAL = {};
         if (csvText.charCodeAt(0) === 0xFEFF) {
             csvText = csvText.substring(1);
@@ -407,7 +964,7 @@
         const lines = csvText.trim().split(/\r?\n/).filter(Boolean);
         
         if (lines.length < 2) {
-            console.error("CSV vacío o sin datos.");
+            console.error("CSV (Login) vacío o sin datos.");
             return;
         }
 
@@ -422,7 +979,7 @@
         const municipioIndex = headers.findIndex(h => h.toLowerCase() === 'departamento'); 
         const matIndex = headers.findIndex(h => h.toLowerCase() === 'matemáticas');
         const lecIndex = headers.findIndex(h => h.toLowerCase() === 'lectura crítica');
-        const sodex = headers.findIndex(h => h.toLowerCase() === 'sociales');
+        const socIndex = headers.findIndex(h => h.toLowerCase() === 'sociales');
         const cienIndex = headers.findIndex(h => h.toLowerCase() === 'ciencias naturales');
         const ingIndex = headers.findIndex(h => h.toLowerCase() === 'inglés');
         const globalIndex = headers.findIndex(h => h.toLowerCase() === 'puntaje global');
@@ -433,10 +990,11 @@
         const parseBirthDate = (dateString) => {
             if (!dateString) return '';
             const m = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            // Normalizar a d/m/yyyy (sin ceros iniciales en día/mes)
             return m ? `${parseInt(m[1])}/${parseInt(m[2])}/${m[3]}` : dateString;
         };
 
-         for (let i = 1; i < lines.length; i++) {
+        for (let i = 1; i < lines.length; i++) {
             const values = parseCSVLine(lines[i]);
             
             if (values.length < headers.length) continue;
@@ -444,18 +1002,24 @@
             const docNumber = values[docNumberIndex];
             if (!docNumber) continue;
 
+            let originalDocType = values[docTypeIndex] || '-';
+            let processedDocType = originalDocType;
+
+            if (originalDocType.toLowerCase().includes('permiso de protección temporal')) {
+                processedDocType = 'PPT';
+            }
+
             STUDENT_DATA_INTERNAL[docNumber] = {
                 nombre: values[nameIndex] || 'N/A',
                 email: values[emailIndex] || '-',
-                docType: values[docTypeIndex] || '-',
+                docType: processedDocType,
                 docNumber: docNumber,
                 birthDate: parseBirthDate(values[birthDateIndex]),
-                departamento: "", 
                 colegio: values[colegioIndex] || 'seamosgenios',
                 puntajes: {
                     matematicas: parseInt(values[matIndex], 10) || 0,
                     lectura: parseInt(values[lecIndex], 10) || 0,
-                    sociales: parseInt(values[sodex], 10) || 0,
+                    sociales: parseInt(values[socIndex], 10) || 0,
                     ciencias: parseInt(values[cienIndex], 10) || 0,
                     ingles: parseInt(values[ingIndex], 10) || 0,
                 },
@@ -465,178 +1029,579 @@
         }
         ALL_STUDENTS_ARRAY = Object.values(STUDENT_DATA_INTERNAL);
         ALL_STUDENTS_ARRAY.sort((a, b) => (b.puntajeGlobal ?? 0) - (a.puntajeGlobal ?? 0));
-        ALL_STUDENTS_ARRAY.forEach((student, index) => student.rank = index + 1);
+        
+        // Calcular Percentiles
+        const totalStudents = ALL_STUDENTS_ARRAY.length;
+        const scores = ALL_STUDENTS_ARRAY.map(s => s.puntajeGlobal).sort((a, b) => a - b);
+        globalPercentiles = {};
+        scores.forEach((score, index) => {
+            if (typeof globalPercentiles[score] === 'undefined') {
+                // Percentil = (Número de puntajes por debajo / Total) * 100
+                const percentile = Math.round(((index + 1) / totalStudents) * 100);
+                globalPercentiles[score] = percentile;
+            }
+        });
+
+        // Asignar percentil a cada estudiante
+        ALL_STUDENTS_ARRAY.forEach((student, index) => {
+            student.rank = index + 1;
+            student.percentile = globalPercentiles[student.puntajeGlobal] || 0;
+        });
     }
 
-    // --- Función para calcular promedios ---
+    // --- (NUEVO) Parseador genérico para archivos analíticos ---
+    async function parseAdminCSVData(url, keyColumn) {
+        try {
+            const response = await fetch(url, { cache: "no-store" });
+            if (!response.ok) throw new Error(`Error al cargar CSV: ${response.statusText}`);
+            
+            let csvText = await response.text();
+            if (csvText.charCodeAt(0) === 0xFEFF) {
+                csvText = csvText.substring(1);
+            }
+            
+            const lines = csvText.trim().split(/\r?\n/).filter(Boolean);
+            if (lines.length < 2) return { byKey: {}, asArray: [] };
+
+            const headers = parseCSVLine(lines[0]);
+            const dataArray = [];
+            const dataByKey = {};
+
+            const keyIndex = headers.findIndex(h => h.toLowerCase() === keyColumn.toLowerCase());
+            
+            if (keyIndex === -1 && keyColumn) {
+                console.warn(`La columna clave "${keyColumn}" no se encontró en ${url}`);
+            }
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (values.length < headers.length) continue;
+                
+                const entry = {};
+                headers.forEach((header, index) => {
+                    entry[header] = values[index];
+                });
+                
+                dataArray.push(entry);
+                
+                if (keyIndex !== -1) {
+                    const key = values[keyIndex];
+                    if (!dataByKey[key]) {
+                        dataByKey[key] = [];
+                    }
+                    dataByKey[key].push(entry);
+                }
+            }
+            
+            // Si no se usa byKey, dataByKey será un objeto vacío
+            // Si no se usa asArray, dataArray será un array con los datos
+            return { byKey: dataByKey, asArray: dataArray };
+
+        } catch (error) {
+            console.error(`Error procesando ${url}:`, error);
+            return { byKey: {}, asArray: [] };
+        }
+    }
+
+    // --- (NUEVO) Cargar y Parsear Claves de Respuestas ---
+    async function loadCorrectAnswers() {
+        try {
+            const [s1, s2] = await Promise.all([
+                fetch(CLAVES_S1_URL, { cache: "no-store" }),
+                fetch(CLAVES_S2_URL, { cache: "no-store" })
+            ]);
+            
+            if (!s1.ok || !s2.ok) throw new Error("No se pudieron cargar los archivos de claves.");
+
+            const [textS1, textS2] = await Promise.all([s1.text(), s2.text()]);
+            
+            const linesS1 = textS1.trim().split(/\r?\n/);
+            const headersS1 = parseCSVLine(linesS1[0]);
+            const answersS1 = parseCSVLine(linesS1[1]);
+            
+            const linesS2 = textS2.trim().split(/\r?\n/);
+            const headersS2 = parseCSVLine(linesS2[0]);
+            const answersS2 = parseCSVLine(linesS2[1]);
+
+            CORRECT_ANSWERS = {};
+            headersS1.forEach((header, index) => {
+                if(header) CORRECT_ANSWERS[header] = answersS1[index];
+            });
+            headersS2.forEach((header, index) => {
+                if(header) CORRECT_ANSWERS[header] = answersS2[index];
+            });
+            
+            console.log("Claves de respuestas cargadas:", Object.keys(CORRECT_ANSWERS).length, "preguntas");
+
+        } catch (error) {
+            console.error("Error cargando claves de respuestas:", error);
+            // No mostrar error en login, la app puede funcionar parcialmente
+        }
+    }
+
+    // --- (NUEVO) Cargar y Parsear Respuestas de Estudiantes ---
+    async function loadStudentAnswers() {
+        try {
+            const [s1, s2] = await Promise.all([
+                fetch(SESION_1_URL, { cache: "no-store" }),
+                fetch(SESION_2_URL, { cache: "no-store" })
+            ]);
+
+            if (!s1.ok || !s2.ok) throw new Error("No se pudieron cargar los archivos de respuestas.");
+            
+            const [textS1, textS2] = await Promise.all([s1.text(), s2.text()]);
+
+            STUDENT_ANSWERS = {};
+
+            // Procesar Sesión 1
+            const linesS1 = textS1.trim().split(/\r?\n/).filter(Boolean);
+            const headersS1 = parseCSVLine(linesS1[0]);
+            for (let i = 1; i < linesS1.length; i++) {
+                const values = parseCSVLine(linesS1[i]);
+                const studentId = values[0]; // Asumimos que la primera columna es 'ID'
+                if (!studentId) continue;
+                
+                if (!STUDENT_ANSWERS[studentId]) STUDENT_ANSWERS[studentId] = {};
+                
+                headersS1.forEach((header, index) => {
+                    if(header && index > 0) { // Omitir ID, Email, Nombre si están
+                         STUDENT_ANSWERS[studentId][header] = values[index];
+                    }
+                });
+            }
+            
+            // Procesar Sesión 2
+            const linesS2 = textS2.trim().split(/\r?\n/).filter(Boolean);
+            const headersS2 = parseCSVLine(linesS2[0]);
+            for (let i = 1; i < linesS2.length; i++) {
+                const values = parseCSVLine(linesS2[i]);
+                const studentId = values[0];
+                if (!studentId) continue;
+
+                if (!STUDENT_ANSWERS[studentId]) STUDENT_ANSWERS[studentId] = {};
+                
+                headersS2.forEach((header, index) => {
+                    if(header && index > 0) {
+                        STUDENT_ANSWERS[studentId][header] = values[index];
+                    }
+                });
+            }
+            
+            console.log("Respuestas de estudiantes cargadas:", Object.keys(STUDENT_ANSWERS).length, "estudiantes");
+
+        } catch (error) {
+            console.error("Error cargando respuestas de estudiantes:", error);
+        }
+    }
+    
+    // --- (MODIFICADO) Cargar y Parsear Datos de Login (Hoja 1) ---
+    async function loadStudentDataFromGitHub() {
+        try {
+            const response = await fetch(GITHUB_CSV_URL, { cache: "no-store" });
+            if (!response.ok) {
+                throw new Error(`Error al cargar CSV: ${response.statusText}`);
+            }
+            const csvText = await response.text();
+            parseCSVData(csvText); // Esta función ahora llena STUDENT_DATA_INTERNAL
+            console.log("Datos de estudiantes (Login) cargados desde GitHub.");
+            calculateGroupAverages(); // Calcular promedios para el radar
+        } catch (error) {
+            console.error("Error cargando o parseando datos desde GitHub:", error);
+            if (elements && elements.loginError) {
+                elements.loginError.textContent = 'Error al cargar datos. Intente más tarde.';
+                elements.loginError.classList.remove('hidden');
+            }
+        }
+    }
+
+    // --- (NUEVO) Cargar todos los datos del Dashboard de Administrador ---
+    async function loadAdminDashboardData() {
+        try {
+            const [general, ranking, errores, rendimiento] = await Promise.all([
+                parseAdminCSVData(ADMIN_GENERAL_URL, 'ID'),
+                parseAdminCSVData(ADMIN_RANKING_AREAS_URL, null),
+                parseAdminCSVData(ADMIN_DETALLE_ERRORES_URL, 'Pregunta_Completa'),
+                parseAdminCSVData(ADMIN_RENDIMIENTO_DETALLADO_URL, 'ID')
+            ]);
+
+            // Procesar Dashboard General
+            ADMIN_GENERAL_DATA = general.byKey; // Clave: ID de estudiante
+            ALL_ADMIN_STUDENTS_ARRAY = general.asArray.map((student, index) => ({
+                rank: index + 1, // Rango inicial (luego se ordena)
+                id: student['ID'],
+                nombre: student['Nombre'] || 'N/A',
+                email: student['Email'] || '-',
+                aciertos: parseInt(student['Total_Aciertos'] || 0),
+                errores: parseInt(student['Total_Errores'] || 0),
+                porcentaje: parseFloat(student['Porcentaje_Global_Aciertos'] || 0)
+            }));
+            
+            // Procesar Ranking de Áreas
+            ADMIN_RANKING_AREAS_DATA = ranking.asArray
+                .map(area => ({
+                    area: area['Area'],
+                    promedio: parseFloat(area['Promedio_Aciertos_General'] || 0)
+                }))
+                .sort((a, b) => b.promedio - a.promedio); // Ordenar de mayor a menor
+
+            // Procesar Detalle de Errores
+            ADMIN_DETALLE_ERRORES_DATA = Object.entries(errores.byKey)
+                .map(([pregunta, errores]) => ({
+                    pregunta: pregunta,
+                    conteo: errores.length
+                }))
+                .sort((a, b) => b.conteo - a.conteo); // Ordenar de más errores a menos
+            
+            // Procesar Rendimiento Detallado
+            ADMIN_RENDIMIENTO_DETALLADO_DATA = rendimiento.byKey; // Clave: ID de estudiante
+
+            console.log("Datos del Dashboard Analítico cargados.");
+
+        } catch (error) {
+            console.error("Error cargando datos del Dashboard Analítico:", error);
+        }
+    }
+
+    // --- Función para calcular promedios (para el gráfico radar) ---
     function calculateGroupAverages() {
-        // ... (código sin cambios)
          groupAverages = { lectura: 0, matematicas: 0, sociales: 0, ciencias: 0, ingles: 0 };
          const studentCount = ALL_STUDENTS_ARRAY.length;
          if (studentCount > 0) {
-             ALL_STUDENTS_ARRAY.forEach(student => { subjects.forEach(subject => { groupAverages[subject] += student.puntajes?.[subject] || 0; }); });
-             subjects.forEach(subject => { groupAverages[subject] = Math.round(groupAverages[subject] / studentCount); });
+             ALL_STUDENTS_ARRAY.forEach(student => { 
+                 subjects.forEach(subject => { 
+                     groupAverages[subject] += student.puntajes?.[subject] || 0; 
+                 }); 
+             });
+             subjects.forEach(subject => { 
+                 groupAverages[subject] = Math.round(groupAverages[subject] / studentCount); 
+             });
          }
     }
 
-    // --- Función generateReportHtml ---
-    // ESTA FUNCIÓN DEPENDE DE 'skillsData' y 'subjectDescriptions'
+    // --- Función generateReportHtml (Competencias y Habilidades) ---
     function generateReportHtml(studentData) {
-         if (!studentData) return '';
-         const uniqueIdSuffix = studentData.docNumber || Math.random().toString(36).substring(7);
-     
-         // Helper para obtener el nivel de desempeño
-         const getLevel = (score, levels) => {
-             for (let i = levels.length - 1; i >= 0; i--) {
-                 if (score >= levels[i].min) return { ...levels[i], index: i };
-             }
-             return { ...levels[0], index: 0 }; // Default al primer nivel
-         };
-     
-         // Helper para renderizar los pasos de nivel
-         const renderLevelSteps = (score, levels) => {
-             const currentLevel = getLevel(score, levels);
-             return levels.map((level, index) => {
-                 let status = 'future';
-                 if (index < currentLevel.index) status = 'passed';
-                 if (index === currentLevel.index) status = 'active';
-                 return `
-                     <div class="level-step-item ${status}" style="${status === 'active' ? `background-color: ${level.color}; border-color: ${level.color};` : ''}">
-                         <span class="level-label">${level.label}</span>
-                         <span class="level-range">${level.range}</span>
-                     </div>
-                 `;
-             }).join('');
-         };
-     
-         // Helper para renderizar las competencias y habilidades
-         const renderCompetencies = (subjectKey, score, competencies, uniqueId) => {
-             const currentLevel = getLevel(score, skillsData[subjectKey].levels);
-             return competencies.map((comp, compIndex) => {
-                 const compId = `comp-${subjectKey}-${compIndex}-${uniqueId}`;
-                 const skillsHtml = comp.skills.map((skill, skillIndex) => {
-                     const skillId = `skill-${subjectKey}-${compIndex}-${skillIndex}-${uniqueId}`;
-                     const isAchieved = currentLevel.index >= skill.level; // Habilidad lograda si el nivel es <= al actual
-                     const icon = isAchieved
-                         ? `<svg class="h-6 w-6 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`
-                         : `<svg class="h-6 w-6 text-gray-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 101.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`;
-                     
-                     return `
-                         <div class="skill-item ${isAchieved ? 'font-medium text-gray-800' : 'text-gray-600'}">
-                             ${icon}
-                             <p><strong class="text-sm block text-gray-900">${skill.name}</strong> ${skill.desc}</p>
-                         </div>
-                     `;
-                 }).join('');
-     
-                 return `
-                     <div class="competency-card">
-                         <div class="flex justify-between items-center">
-                             <h4 class="text-base sm:text-lg font-semibold text-brand-header">${comp.name}</h4>
-                             <button class="toggle-skills-btn p-1 rounded-full hover:bg-gray-100 text-gray-500" data-target="${compId}">
-                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                             </button>
-                         </div>
-                         <div id="${compId}" class="skills-container mt-4 space-y-3">
-                             ${skillsHtml}
-                         </div>
-                     </div>
-                 `;
-             }).join('');
-         };
-     
-         // Generar el HTML para cada materia
-         const subjectCardsHtml = filterOptions.map(subjectInfo => {
-             const subjectKey = subjectInfo.id;
-             const subjectData = skillsData[subjectKey];
-             const score = studentData.puntajes[subjectKey] || 0;
-             const groupScore = groupAverages[subjectKey] || 0;
-             const scoreDiff = score - groupScore;
-             const levelData = getLevel(score, subjectData.levels);
-     
-             let comparisonHtml;
-             if (scoreDiff > 5) {
-                 comparisonHtml = `<p class="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full font-medium"><strong>+${scoreDiff}</strong> vs Promedio Grupal (${groupScore})</p>`;
-             } else if (scoreDiff < -5) {
-                 comparisonHtml = `<p class="text-sm text-red-700 bg-red-100 px-3 py-1 rounded-full font-medium"><strong>${scoreDiff}</strong> vs Promedio Grupal (${groupScore})</p>`;
-             } else {
-                 comparisonHtml = `<p class="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-full font-medium"><strong>${scoreDiff}</strong> vs Promedio Grupal (${groupScore})</p>`;
-             }
-     
-             return `
-                 <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6 border-t-8" style="border-top-color: ${subjectData.color};">
-                     <!-- Encabezado de la materia -->
-                     <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
-                         <div>
-                             <h2 class="text-2xl font-bold" style="color: ${subjectData.color};">${subjectInfo.name}</h2>
-                             <p class="text-gray-600 mt-1">${subjectDescriptions[subjectKey] || ''}</p>
-                         </div>
-                         <div class="flex-shrink-0 text-left sm:text-right">
-                             <p class="text-4xl font-extrabold text-gray-800">${score}<span class="text-2xl font-medium text-gray-500">/100</span></p>
-                             ${comparisonHtml}
-                         </div>
-                     </div>
-     
-                     <!-- Niveles de Desempeño -->
-                     <div class="mb-6">
-                         <h3 class="text-lg font-semibold text-brand-header mb-2">Tu Nivel de Desempeño: <span style="color: ${levelData.color};">${levelData.label}</span></h3>
-                         <p class="text-sm text-gray-600 mb-3">${levelData.desc}</p>
-                         <div class="level-steps-container">
-                             ${renderLevelSteps(score, subjectData.levels)}
-                         </div>
-                     </div>
-     
-                     <!-- Competencias y Habilidades -->
-                     <div>
-                         <h3 class="text-lg font-semibold text-brand-header mb-3">Competencias y Habilidades</h3>
-                         <div class="space-y-4">
-                             ${renderCompetencies(subjectKey, score, subjectData.competencies, uniqueIdSuffix)}
-                         </div>
-                     </div>
-                 </div>
-             `;
-         }).join('');
-     
-         return subjectCardsHtml;
+        if (!studentData) return '';
+        const uniqueIdSuffix = studentData.docNumber || Math.random().toString(36).substring(7);
+    
+        const getLevel = (score, levels) => {
+            for (let i = levels.length - 1; i >= 0; i--) {
+                if (score >= levels[i].min) return { ...levels[i], index: i };
+            }
+            return { ...levels[0], index: 0 };
+        };
+    
+        const renderLevelSteps = (score, levels) => {
+            const currentLevel = getLevel(score, levels);
+            return levels.map((level, index) => {
+                let status = 'future';
+                if (index < currentLevel.index) status = 'passed';
+                if (index === currentLevel.index) status = 'active';
+                return `
+                    <div class="level-step-item ${status}" style="${status === 'active' ? `background-color: ${level.color}; border-color: ${level.color};` : ''}">
+                        <span class="level-label">${level.label}</span>
+                        <span class="level-range">${level.range}</span>
+                    </div>
+                `;
+            }).join('');
+        };
+    
+        const renderCompetencies = (subjectKey, score, competencies, uniqueId) => {
+            const currentLevel = getLevel(score, skillsData[subjectKey].levels);
+            return competencies.map((comp, compIndex) => {
+                const compId = `comp-${subjectKey}-${compIndex}-${uniqueId}`;
+                const skillsHtml = comp.skills.map((skill, skillIndex) => {
+                    const isAchieved = currentLevel.index >= skill.level;
+                    const icon = isAchieved
+                        ? `<svg class="h-6 w-6 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`
+                        : `<svg class="h-6 w-6 text-gray-400 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 101.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`;
+                    
+                    return `
+                        <div class="skill-item ${isAchieved ? 'font-medium text-gray-800' : 'text-gray-600'}">
+                            ${icon}
+                            <p><strong class="text-sm block text-gray-900">${skill.name}</strong> ${skill.desc}</p>
+                        </div>
+                    `;
+                }).join('');
+    
+                return `
+                    <div class="competency-card">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-base sm:text-lg font-semibold text-brand-header">${comp.name}</h4>
+                            <button class="toggle-skills-btn p-1 rounded-full hover:bg-gray-100 text-gray-500" data-target="${compId}">
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
+                        <div id="${compId}" class="skills-container mt-4 space-y-3">
+                            ${skillsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+    
+        const subjectCardsHtml = filterOptions.map(subjectInfo => {
+            const subjectKey = subjectInfo.id;
+            const subjectData = skillsData[subjectKey];
+            const score = studentData.puntajes[subjectKey] || 0;
+            const groupScore = groupAverages[subjectKey] || 0;
+            const scoreDiff = score - groupScore;
+            const levelData = getLevel(score, subjectData.levels);
+    
+            let comparisonHtml;
+            if (scoreDiff > 5) {
+                comparisonHtml = `<p class="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full font-medium"><strong>+${scoreDiff}</strong> vs Promedio Grupal (${groupScore})</p>`;
+            } else if (scoreDiff < -5) {
+                comparisonHtml = `<p class="text-sm text-red-700 bg-red-100 px-3 py-1 rounded-full font-medium"><strong>${scoreDiff}</strong> vs Promedio Grupal (${groupScore})</p>`;
+            } else {
+                comparisonHtml = `<p class="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-full font-medium"><strong>${scoreDiff}</strong> vs Promedio Grupal (${groupScore})</p>`;
+            }
+    
+            return `
+                <div class="card p-4 sm:p-6 mb-6 border-t-8" style="border-top-color: ${subjectData.color};">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold" style="color: ${subjectData.color};">${subjectInfo.name}</h2>
+                            <p class="text-brand-text-light mt-1">${subjectDescriptions[subjectKey] || ''}</p>
+                        </div>
+                        <div class="flex-shrink-0 text-left sm:text-right">
+                            <p class="text-4xl font-extrabold text-gray-800">${score}<span class="text-2xl font-medium text-gray-500">/100</span></p>
+                            ${comparisonHtml}
+                        </div>
+                    </div>
+    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-brand-header mb-2">Tu Nivel de Desempeño: <span style="color: ${levelData.color};">${levelData.label}</span></h3>
+                        <p class="text-sm text-brand-text-light mb-3">${levelData.desc}</p>
+                        <div class="level-steps-container">
+                            ${renderLevelSteps(score, subjectData.levels)}
+                        </div>
+                    </div>
+    
+                    <div>
+                        <h3 class="text-lg font-semibold text-brand-header mb-3">Competencias y Habilidades</h3>
+                        <div class="space-y-4">
+                            ${renderCompetencies(subjectKey, score, subjectData.competencies, uniqueIdSuffix)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    
+        return subjectCardsHtml;
+    }
+    
+    // --- (NUEVO) Función generateDetailedReportHtml (Pregunta a Pregunta) ---
+    function generateDetailedReportHtml(studentDocNumber) {
+        const studentResponses = STUDENT_ANSWERS[studentDocNumber];
+        if (!studentResponses) {
+            return '<p class="text-brand-text-light text-center">No se encontraron respuestas detalladas para este estudiante.</p>';
+        }
+
+        const iconCorrect = `<svg class="h-5 w-5 status-icon-correct" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`;
+        const iconIncorrect = `<svg class="h-5 w-5 status-icon-incorrect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 101.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`;
+
+        let tableHtml = `
+            <table class="detailed-report-table">
+                <thead>
+                    <tr>
+                        <th>Pregunta</th>
+                        <th class="text-center">Tu Respuesta</th>
+                        <th class="text-center">Respuesta Correcta</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        // Iterar sobre las claves de respuestas correctas para mantener el orden
+        for (const questionId of Object.keys(CORRECT_ANSWERS)) {
+            const correctAnswer = CORRECT_ANSWERS[questionId];
+            const studentAnswer = studentResponses[questionId] || '---'; // '---' si no respondió
+            
+            const isCorrect = (studentAnswer === correctAnswer);
+            
+            tableHtml += `
+                <tr>
+                    <td class="font-medium text-brand-header">${questionId}</td>
+                    <td class="text-center ${isCorrect ? 'answer-correct' : 'answer-incorrect'}">
+                        ${studentAnswer}
+                    </td>
+                    <td class="text-center correct-answer-col">
+                        ${correctAnswer}
+                    </td>
+                    <td class="text-center">
+                        ${isCorrect ? iconCorrect : iconIncorrect}
+                    </td>
+                </tr>
+            `;
+        }
+
+        tableHtml += `</tbody></table>`;
+        return tableHtml;
     }
 
+    // --- (NUEVO) Función para Gráfico Radar ---
+    function renderSubjectRadarChart(studentData, canvasId = 'subject-radar-chart') {
+        let chartInstance;
+        if (canvasId === 'subject-radar-chart') {
+            if (subjectRadarChartInstance) subjectRadarChartInstance.destroy();
+            chartInstance = subjectRadarChartInstance;
+        } else {
+            if (modalSubjectRadarChartInstance) modalSubjectRadarChartInstance.destroy();
+            chartInstance = modalSubjectRadarChartInstance;
+        }
+        
+        const radarCtx = document.getElementById(canvasId)?.getContext('2d');
+        if (!radarCtx) return;
 
-    // --- Función addToggleListeners ---
+        const studentScores = [
+            studentData.puntajes.lectura || 0,
+            studentData.puntajes.matematicas || 0,
+            studentData.puntajes.sociales || 0,
+            studentData.puntajes.ciencias || 0,
+            studentData.puntajes.ingles || 0
+        ];
+        
+        const groupScores = [
+            groupAverages.lectura || 0,
+            groupAverages.matematicas || 0,
+            groupAverages.sociales || 0,
+            groupAverages.ciencias || 0,
+            groupAverages.ingles || 0
+        ];
+
+        const newChart = new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Lectura', 'Matemáticas', 'Sociales', 'Ciencias', 'Inglés'],
+                datasets: [
+                    {
+                        label: 'Tu Puntaje',
+                        data: studentScores,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)', // brand-secondary-alpha
+                        borderColor: 'rgba(59, 130, 246, 1)', // brand-secondary
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                    },
+                    {
+                        label: 'Promedio Grupal',
+                        data: groupScores,
+                        backgroundColor: 'rgba(107, 114, 128, 0.2)', // gray-500-alpha
+                        borderColor: 'rgba(107, 114, 128, 1)', // gray-500
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(107, 114, 128, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(107, 114, 128, 1)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        angleLines: { color: '#e5e7eb' }, // grid color
+                        grid: { color: '#e5e7eb' }, // grid color
+                        pointLabels: {
+                            font: { size: 13, weight: '600' },
+                            color: '#374151' // text color
+                        },
+                        ticks: {
+                            backdropColor: 'rgba(255, 255, 255, 0.75)',
+                            color: '#4b5563',
+                            stepSize: 20
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#374151',
+                            font: { size: 14, weight: '500' },
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#1f2937',
+                        titleFont: { weight: 'bold' },
+                        bodyFont: { size: 14 },
+                        padding: 12,
+                        cornerRadius: 6,
+                        displayColors: true,
+                        usePointStyle: true
+                    }
+                }
+            }
+        });
+
+        if (canvasId === 'subject-radar-chart') {
+            subjectRadarChartInstance = newChart;
+        } else {
+            modalSubjectRadarChartInstance = newChart;
+        }
+    }
+
+    // --- Función addToggleListeners (Para Acordeones de Competencias) ---
     function addToggleListeners(containerId) {
-        // ... (código sin cambios)
         const container = document.getElementById(containerId);
         if (!container) return;
+        
         container.querySelectorAll('.toggle-skills-btn').forEach(button => {
-            // Remover listener antiguo para evitar duplicados, si existiera
-            button.replaceWith(button.cloneNode(true));
-        });
-        // Añadir nuevos listeners
-        container.querySelectorAll('.toggle-skills-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const targetId = button.dataset.target;
+            // Clonar y reemplazar para evitar listeners duplicados
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            
+            // Añadir nuevo listener
+            newButton.addEventListener('click', () => {
+                const targetId = newButton.dataset.target;
                 const targetElement = document.getElementById(targetId);
                 if (targetElement) {
                     targetElement.classList.toggle('expanded');
-                    button.classList.toggle('expanded');
+                    newButton.classList.toggle('expanded');
                 }
             });
         });
     }
 
-    // --- Función showIndividualReport ---
+    // --- (MODIFICADO) Función showIndividualReport ---
     function showIndividualReport(studentData, fromSession = false) { 
-        // ... (código sin cambios)
         if (!studentData) {
             console.error("Intentando mostrar informe sin datos de estudiante.");
             if (fromSession) handleLogout();
             return;
         }
+        
+        // --- 1. Llenar Encabezado y Puntaje Global ---
         elements.studentNameHeader.textContent = studentData.nombre ?? 'Estudiante';
         elements.globalScoreNumber.textContent = studentData.puntajeGlobal ?? 0;
+        
+        // (NUEVO) Mostrar Percentil
+        const percentile = studentData.percentile || 0;
+        elements.percentileValue.textContent = `${percentile}%`;
+        elements.percentileBadgeContainer.classList.remove('hidden');
+
+        // --- 2. (NUEVO) Renderizar Gráfico Radar Principal ---
+        renderSubjectRadarChart(studentData, 'subject-radar-chart');
+
+        // --- 3. (NUEVO) Generar Informe Detallado de Preguntas (HTML) ---
+        const detailedReportHtml = generateDetailedReportHtml(studentData.docNumber);
+        elements.detailedReportContent.innerHTML = detailedReportHtml;
+
+        // --- 4. Generar Informe de Competencias (HTML) ---
         const reportHtml = generateReportHtml(studentData);
         elements.individualReportContent.innerHTML = reportHtml;
         addToggleListeners('individual-report-content');
 
+        // --- 5. Mostrar/Ocultar Pantallas ---
         elements.loginScreen.classList.add('hidden');
         elements.adminScreen.classList.add('hidden');
         elements.reportScreen.classList.remove('hidden');
@@ -649,275 +1614,395 @@
     }
 
 
-    // --- Funciones del Dashboard Admin ---
+    // --- (NUEVO) Funciones del Dashboard Admin ---
+    
+    // Calcular Stats (DE, Promedio, etc. desde los datos analíticos)
     function calculateAdminStats() {
-        // ... (código sin cambios)
-         const studentCount = ALL_STUDENTS_ARRAY.length;
-         elements.statTotalStudents.textContent = studentCount;
-     
-         if (studentCount === 0) {
-             elements.statAvgScore.textContent = '0';
-             elements.statMaxScore.textContent = '0';
-             elements.statMinScore.textContent = '0';
-             return { scoreDistribution: { '0-100': 0, '101-200': 0, '201-300': 0, '301-400': 0, '401-500': 0 } };
-         }
-     
-         let totalScore = 0;
-         let maxScore = 0;
-         let minScore = 500;
-         const scoreDistribution = { '0-100': 0, '101-200': 0, '201-300': 0, '301-400': 0, '401-500': 0 };
-     
-         ALL_STUDENTS_ARRAY.forEach(student => {
-             const score = student.puntajeGlobal || 0;
-             totalScore += score;
-             if (score > maxScore) maxScore = score;
-             if (score < minScore) minScore = score;
-     
-             if (score <= 100) scoreDistribution['0-100']++;
-             else if (score <= 200) scoreDistribution['101-200']++;
-             else if (score <= 300) scoreDistribution['201-300']++;
-             else if (score <= 400) scoreDistribution['301-400']++;
-             else scoreDistribution['401-500']++;
-         });
-     
-         elements.statAvgScore.textContent = Math.round(totalScore / studentCount);
-         elements.statMaxScore.textContent = maxScore;
-         elements.statMinScore.textContent = minScore;
-         
-         return { scoreDistribution };
+        const studentCount = ALL_ADMIN_STUDENTS_ARRAY.length;
+        elements.statTotalStudents.textContent = studentCount;
+    
+        if (studentCount === 0) {
+            elements.statAvgScore.textContent = '0%';
+            elements.statStdDev.textContent = '0%';
+            elements.statMaxScore.textContent = '0%';
+            elements.statMinScore.textContent = '0%';
+            return {
+                scoreDistribution: { '0-20': 0, '21-40': 0, '41-60': 0, '61-80': 0, '81-100': 0 }
+            };
+        }
+    
+        const percentages = ALL_ADMIN_STUDENTS_ARRAY.map(s => s.porcentaje);
+        const totalPercent = percentages.reduce((acc, p) => acc + p, 0);
+        const avgPercent = totalPercent / studentCount;
+        
+        const maxPercent = Math.max(...percentages);
+        const minPercent = Math.min(...percentages);
+
+        // Calcular Desviación Estándar
+        const squaredDiffs = percentages.map(p => Math.pow(p - avgPercent, 2));
+        const avgSquaredDiff = squaredDiffs.reduce((acc, d) => acc + d, 0) / studentCount;
+        const stdDev = Math.sqrt(avgSquaredDiff);
+
+        // Calcular Distribución de Puntajes
+        const scoreDistribution = { '0-20': 0, '21-40': 0, '41-60': 0, '61-80': 0, '81-100': 0 };
+        percentages.forEach(p => {
+            if (p <= 20) scoreDistribution['0-20']++;
+            else if (p <= 40) scoreDistribution['21-40']++;
+            else if (p <= 60) scoreDistribution['41-60']++;
+            else if (p <= 80) scoreDistribution['61-80']++;
+            else scoreDistribution['81-100']++;
+        });
+    
+        elements.statAvgScore.textContent = `${avgPercent.toFixed(1)}%`;
+        elements.statStdDev.textContent = `${stdDev.toFixed(1)}%`;
+        elements.statMaxScore.textContent = `${maxPercent.toFixed(1)}%`;
+        elements.statMinScore.textContent = `${minPercent.toFixed(1)}%`;
+        
+        return { scoreDistribution };
     }
     
+    // Renderizar Gráfico 1: Ranking de Áreas (Barras Horizontales)
     function renderSubjectAvgChart() {
-        // ... (código sin cambios)
-         if (subjectAvgChartInstance) {
-             subjectAvgChartInstance.destroy();
-         }
-         const ctx = elements.subjectAvgChartCanvas.getContext('2d');
-         subjectAvgChartInstance = new Chart(ctx, {
-             type: 'bar',
-             data: {
-                 labels: ['Lectura', 'Matemáticas', 'Sociales', 'Ciencias', 'Inglés'],
-                 datasets: [{
-                     label: 'Promedio Grupal',
-                     data: [
-                         groupAverages.lectura,
-                         groupAverages.matematicas,
-                         groupAverages.sociales,
-                         groupAverages.ciencias,
-                         groupAverages.ingles
-                     ],
-                     backgroundColor: [
-                         'rgba(2, 132, 199, 0.7)',
-                         'rgba(220, 38, 38, 0.7)',
-                         'rgba(202, 138, 4, 0.7)',
-                         'rgba(22, 163, 74, 0.7)',
-                         'rgba(147, 51, 234, 0.7)'
-                     ],
-                     borderColor: [
-                         '#0284c7',
-                         '#dc2626',
-                         '#ca8a04',
-                         '#16a34a',
-                         '#9333ea'
-                     ],
-                     borderWidth: 2,
-                     borderRadius: 8,
-                 }]
-             },
-             options: {
-                 responsive: true,
-                 maintainAspectRatio: false,
-                 scales: {
-                     y: { beginAtZero: true, max: 100, grid: { color: '#e5e7eb' }, ticks: { color: '#374151' } },
-                     x: { grid: { display: false }, ticks: { color: '#374151', font: { weight: '600' } } }
-                 },
-                 plugins: {
-                     legend: { display: false },
-                     tooltip: {
-                         enabled: true,
-                         backgroundColor: '#1f2937',
-                         titleFont: { weight: 'bold' },
-                         bodyFont: { size: 14 },
-                         padding: 12,
-                         cornerRadius: 6,
-                         displayColors: false,
-                     }
-                 }
-             }
-         });
+        if (subjectAvgChartInstance) {
+            subjectAvgChartInstance.destroy();
+        }
+        const ctx = elements.subjectAvgChartCanvas.getContext('2d');
+        
+        // Tomar el Top 10 o todos si son menos
+        const data = ADMIN_RANKING_AREAS_DATA.slice(0, 10).reverse(); // .reverse() para que la más alta quede arriba
+        
+        subjectAvgChartInstance = new Chart(ctx, {
+            type: 'bar', // Cambiado a 'bar'
+            data: {
+                labels: data.map(d => d.area),
+                datasets: [{
+                    label: 'Promedio de Acierto',
+                    data: data.map(d => d.promedio.toFixed(1)),
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)', // brand-secondary-alpha
+                    borderColor: 'rgba(59, 130, 246, 1)', // brand-secondary
+                    borderWidth: 2,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                indexAxis: 'y', // <-- Eje Y para barras horizontales
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { // <-- Eje X es el valor
+                        beginAtZero: true, 
+                        max: 100, 
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#374151', callback: (value) => value + '%' }
+                    },
+                    y: { // <-- Eje Y es la etiqueta
+                        grid: { display: false }, 
+                        ticks: { color: '#374151', font: { weight: '600' } } 
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#1f2937',
+                        padding: 12,
+                        cornerRadius: 6,
+                        displayColors: false,
+                        callbacks: {
+                            label: (context) => `Promedio: ${context.raw}%`
+                        }
+                    }
+                }
+            }
+        });
     }
 
+    // Renderizar Gráfico 2: Distribución de Aciertos (Pastel)
     function renderScoreDistChart(scoreDistribution) {
-        // ... (código sin cambios)
-         if (scoreDistChartInstance) {
-             scoreDistChartInstance.destroy();
-         }
-         const ctx = elements.scoreDistChartCanvas.getContext('2d');
-         scoreDistChartInstance = new Chart(ctx, {
-             type: 'doughnut',
-             data: {
-                 labels: ['0-100', '101-200', '201-300', '301-400', '401-500'],
-                 datasets: [{
-                     label: 'Nro. Estudiantes',
-                     data: [
-                         scoreDistribution['0-100'],
-                         scoreDistribution['101-200'],
-                         scoreDistribution['201-300'],
-                         scoreDistribution['301-400'],
-                         scoreDistribution['401-500']
-                     ],
-                     backgroundColor: [
-                         '#ef4444',
-                         '#f97316',
-                         '#eab308',
-                         '#22c55e',
-                         '#3b82f6'
-                     ],
-                     borderColor: '#ffffff',
-                     borderWidth: 3,
-                 }]
-             },
-             options: {
-                 responsive: true,
-                 maintainAspectRatio: false,
-                 plugins: {
-                     legend: { position: 'bottom', labels: { color: '#374151', padding: 15, font: { weight: '500' } } },
-                     tooltip: {
-                         enabled: true,
-                         backgroundColor: '#1f2937',
-                         titleFont: { weight: 'bold' },
-                         bodyFont: { size: 14 },
-                         padding: 12,
-                         cornerRadius: 6,
-                         displayColors: true,
-                     }
-                 },
-                 cutout: '60%'
-             }
-         });
+        if (scoreDistChartInstance) {
+            scoreDistChartInstance.destroy();
+        }
+        const ctx = elements.scoreDistChartCanvas.getContext('2d');
+        scoreDistChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['0-20%', '21-40%', '41-60%', '61-80%', '81-100%'],
+                datasets: [{
+                    label: 'Nro. Estudiantes',
+                    data: [
+                        scoreDistribution['0-20'],
+                        scoreDistribution['21-40'],
+                        scoreDistribution['41-60'],
+                        scoreDistribution['61-80'],
+                        scoreDistribution['81-100']
+                    ],
+                    backgroundColor: [
+                        '#ef4444', // red-500
+                        '#f97316', // orange-500
+                        '#eab308', // yellow-500
+                        '#22c55e', // green-500
+                        '#3b82f6'  // blue-500
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#374151', padding: 15, font: { weight: '500' } } },
+                    tooltip: {
+                        padding: 12, cornerRadius: 6,
+                    }
+                },
+                cutout: '60%'
+            }
+        });
     }
 
-    function renderAdminDashboard() {
-        // ... (código sin cambios)
-         const { scoreDistribution } = calculateAdminStats();
-         renderSubjectAvgChart();
-         renderScoreDistChart(scoreDistribution);
-         renderAdminTable(); 
+    // Renderizar Gráfico 3: Top 10 Preguntas Difíciles (Barras Verticales)
+    function renderTopErrorsChart() {
+        if (topErrorsChartInstance) {
+            topErrorsChartInstance.destroy();
+        }
+        const ctx = elements.topErrorsChartCanvas.getContext('2d');
+        
+        // Tomar el Top 10
+        const data = ADMIN_DETALLE_ERRORES_DATA.slice(0, 10);
+        
+        topErrorsChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map(d => d.pregunta.split('[')[0].trim()), // "Matemáticas S1"
+                datasets: [{
+                    label: 'Nro. de Errores',
+                    data: data.map(d => d.conteo),
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)', // brand-red-alpha
+                    borderColor: 'rgba(239, 68, 68, 1)', // brand-red
+                    borderWidth: 2,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: '#e5e7eb' }, 
+                        ticks: { color: '#374151' } 
+                    },
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: '#374151', font: { weight: '600' } } 
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#1f2937',
+                        padding: 12,
+                        cornerRadius: 6,
+                        displayColors: false,
+                        callbacks: {
+                            title: (context) => ADMIN_DETALLE_ERRORES_DATA[context[0].dataIndex].pregunta, // Título completo
+                            label: (context) => `Nro. Errores: ${context.raw}`
+                        }
+                    }
+                }
+            }
+        });
     }
-    
+
+    // Renderizar el Dashboard de Admin completo
+    function renderAdminDashboard() { 
+        const { scoreDistribution } = calculateAdminStats();
+        renderSubjectAvgChart();
+        renderScoreDistChart(scoreDistribution);
+        renderTopErrorsChart();
+        renderAdminTable(); 
+    }
+     
+    // Mostrar la Pantalla de Admin
     function showAdminView(fromSession = false) { 
-        // ... (código sin cambios)
-         renderAdminDashboard(); 
-         elements.loginScreen.classList.add('hidden');
-         elements.reportScreen.classList.add('hidden');
-         elements.adminScreen.classList.remove('hidden');
-         elements.body.classList.remove('overflow-hidden');
-         if (!fromSession) window.scrollTo(0, 0);
+        renderAdminDashboard(); 
+        elements.loginScreen.classList.add('hidden');
+        elements.reportScreen.classList.add('hidden');
+        elements.adminScreen.classList.remove('hidden');
+        elements.body.classList.remove('overflow-hidden');
+        if (!fromSession) window.scrollTo(0, 0);
     }
 
-    // --- Renderizar la tabla Admin ---
+    // --- (MODIFICADO) Renderizar la tabla Admin (con paginación) ---
     function renderAdminTable() {
-        // ... (código sin cambios)
-         if (!elements.adminTableBody) return;
-     
-         // 1. Filtrar
-         const filterText = currentAdminFilter.toLowerCase().trim();
-         const filteredStudents = ALL_STUDENTS_ARRAY.filter(student => {
-             if (!filterText) return true;
-             return (
-                 (student.nombre || '').toLowerCase().includes(filterText) ||
-                 (student.email || '').toLowerCase().includes(filterText) ||
-                 (student.docNumber || '').toLowerCase().includes(filterText) ||
-                 (student.municipio || '').toLowerCase().includes(filterText)
-             );
-         });
-     
-         // 2. Ordenar
-         const key = currentAdminSort.key;
-         const direction = currentAdminSort.direction === 'asc' ? 1 : -1;
-     
-         // Helper para acceder a propiedades anidadas (ej: 'puntajes.lectura')
-         const getNestedProperty = (obj, path) => path.split('.').reduce((acc, part) => acc && acc[part], obj);
-     
-         filteredStudents.sort((a, b) => {
-             let valA = getNestedProperty(a, key);
-             let valB = getNestedProperty(b, key);
-     
-             // Tratar valores nulos o indefinidos
-             valA = valA ?? (typeof valA === 'number' ? 0 : '');
-             valB = valB ?? (typeof valB === 'number' ? 0 : '');
-     
-             if (typeof valA === 'string') {
-                 return valA.localeCompare(valB, 'es', { sensitivity: 'base' }) * direction;
-             } else if (typeof valA === 'number') {
-                 return (valA - valB) * direction;
-             }
-             return 0;
-         });
-     
-         // 3. Renderizar
-         elements.adminTableBody.innerHTML = ''; // Limpiar tabla
-     
-         if (filteredStudents.length === 0) {
-             elements.adminNoResults.classList.remove('hidden');
-             elements.adminTable.classList.add('hidden');
-         } else {
-             elements.adminNoResults.classList.add('hidden');
-             elements.adminTable.classList.remove('hidden');
-             
-             const rowsHtml = filteredStudents.map((student, index) => {
-                 const rank = student.rank || (index + 1);
-                 return `
-                     <tr class="hover:bg-gray-50">
-                         <td class="px-2 py-3 text-center font-medium text-gray-700">${rank}</td>
-                         <td class="px-2 py-3 font-medium text-gray-900">${student.nombre || 'N/A'}</td>
-                         <td class="px-2 py-3 text-gray-600">${student.email || '-'}</td>
-                         <td class="px-2 py-3 text-center text-gray-600">${student.docType || '-'}</td>
-                         <td class="px-2 py-3 text-gray-600">${student.docNumber || '-'}</td>
-                         <td class="px-2 py-3 text-center font-bold text-lg" style="color: var(--brand-primary);">${student.puntajeGlobal || 0}</td>
-                         <td class="px-2 py-3 text-center font-semibold" style="color: var(--color-lectura);">${student.puntajes.lectura || 0}</td>
-                         <td class="px-2 py-3 text-center font-semibold" style="color: var(--color-matematicas);">${student.puntajes.matematicas || 0}</td>
-                         <td class="px-2 py-3 text-center font-semibold" style="color: var(--color-sociales);">${student.puntajes.sociales || 0}</td>
-                         <td class="px-2 py-3 text-center font-semibold" style="color: var(--color-ciencias);">${student.puntajes.ciencias || 0}</td>
-                         <td class="px-2 py-3 text-center font-semibold" style="color: var(--color-ingles);">${student.puntajes.ingles || 0}</td>
-                         <td class="px-2 py-3 text-gray-600">${student.municipio || 'Desconocido'}</td>
-                         <td class="px-2 py-3 text-center">
-                             <button class="view-report-btn" data-student-id="${student.docNumber}">Ver</button>
-                         </td>
-                     </tr>
-                 `;
-             }).join('');
-             elements.adminTableBody.innerHTML = rowsHtml;
-         }
-         
-         updateAdminSortIcons();
-    }
+        if (!elements.adminTableBody) return;
     
+        // 1. Filtrar
+        const filterText = currentAdminFilter.toLowerCase().trim();
+        const filteredStudents = ALL_ADMIN_STUDENTS_ARRAY.filter(student => {
+            if (!filterText) return true;
+            return (
+                (student.nombre || '').toLowerCase().includes(filterText) ||
+                (student.email || '').toLowerCase().includes(filterText) ||
+                (student.id || '').toLowerCase().includes(filterText)
+            );
+        });
+    
+        // 2. Ordenar
+        const key = currentAdminSort.key;
+        const direction = currentAdminSort.direction === 'asc' ? 1 : -1;
+    
+        const getNestedProperty = (obj, path) => path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    
+        filteredStudents.sort((a, b) => {
+            let valA = getNestedProperty(a, key);
+            let valB = getNestedProperty(b, key);
+    
+            valA = valA ?? (typeof valA === 'number' ? 0 : '');
+            valB = valB ?? (typeof valB === 'number' ? 0 : '');
+    
+            if (typeof valA === 'string') {
+                return valA.localeCompare(valB, 'es', { sensitivity: 'base' }) * direction;
+            } else if (typeof valA === 'number') {
+                return (valA - valB) * direction;
+            }
+            return 0;
+        });
+
+        // (NUEVO) Asignar rank si se ordena por % (desc) o aciertos (desc)
+        if (key === 'porcentaje' || key === 'aciertos') {
+             filteredStudents.forEach((student, index) => student.rank = index + 1);
+        } else if (key !== 'rank') {
+            // Si no se ordena por rank, quitar el rank
+            filteredStudents.forEach(student => student.rank = null);
+        }
+        // Si se ordena por 'rank' (asc), ya está implícito por el .sort()
+    
+        // 3. Paginación
+        totalPages = Math.ceil(filteredStudents.length / rowsPerPage);
+        if (currentPage > totalPages) currentPage = 1;
+        if (totalPages === 0) currentPage = 1;
+        
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const paginatedStudents = filteredStudents.slice(startIndex, endIndex);
+
+        // 4. Renderizar
+        elements.adminTableBody.innerHTML = ''; // Limpiar tabla
+    
+        if (paginatedStudents.length === 0) {
+            elements.adminNoResults.classList.remove('hidden');
+            elements.adminTable.classList.add('hidden');
+        } else {
+            elements.adminNoResults.classList.add('hidden');
+            elements.adminTable.classList.remove('hidden');
+            
+            const rowsHtml = paginatedStudents.map((student, index) => {
+                // (NUEVO) Mostrar rank solo si la columna es 'rank', o el # de fila
+                const displayRank = student.rank ? student.rank : (startIndex + index + 1);
+
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 py-3 text-center font-medium text-gray-700">${displayRank}</td>
+                        <td class="px-3 py-3 font-medium text-gray-900">${student.nombre || 'N/A'}</td>
+                        <td class="px-3 py-3 text-brand-text-light">${student.email || '-'}</td>
+                        <td class="px-3 py-3 text-center font-semibold text-green-600">${student.aciertos}</td>
+                        <td class="px-3 py-3 text-center font-semibold text-brand-red">${student.errores}</td>
+                        <td class="px-3 py-3 text-center font-bold text-lg text-brand-secondary">${student.porcentaje.toFixed(1)}%</td>
+                        <td class="px-3 py-3 text-center">
+                            <button class="view-report-btn" data-student-id="${student.id}">Ver</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            elements.adminTableBody.innerHTML = rowsHtml;
+        }
+        
+        updateAdminSortIcons();
+        renderPaginationControls(filteredStudents.length, startIndex);
+    }
+     
     // --- Función updateAdminSortIcons ---
     function updateAdminSortIcons() {
-        // ... (código sin cambios)
-         document.querySelectorAll('#admin-screen .sortable-header').forEach(header => {
-             const key = header.dataset.sortKey;
-             const icon = header.querySelector('.sort-icon');
-             if (icon) icon.remove(); // Quitar ícono anterior
-     
-             let iconSvg = '';
-             if (currentAdminSort.key === key) {
-                 if (currentAdminSort.direction === 'asc') {
-                     iconSvg = '<svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>'; // Flecha arriba
-                 } else {
-                     iconSvg = '<svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'; // Flecha abajo
-                 }
-             } else {
-                 iconSvg = '<svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="opacity: 0.3;"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>'; // Flechas dobles
-             }
-             header.insertAdjacentHTML('beforeend', iconSvg);
-         });
+        document.querySelectorAll('#admin-screen .sortable-header').forEach(header => {
+            const key = header.dataset.sortKey;
+            const icon = header.querySelector('.sort-icon');
+            if (icon) icon.remove(); // Quitar ícono anterior
+    
+            let iconSvg = '';
+            if (currentAdminSort.key === key) {
+                if (currentAdminSort.direction === 'asc') {
+                    iconSvg = '<svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>'; // Flecha arriba
+                } else {
+                    iconSvg = '<svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'; // Flecha abajo
+                }
+            } else {
+                iconSvg = '<svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="opacity: 0.3;"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>'; // Flechas dobles
+            }
+            header.insertAdjacentHTML('beforeend', iconSvg);
+        });
+    }
+
+    // --- (NUEVO) Renderizar Paginación ---
+    function renderPaginationControls(totalItems, startIndex) {
+        const paginationContainer = document.getElementById('pagination-container');
+        if (!paginationContainer) return;
+
+        if (totalItems === 0) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        const endIndex = Math.min(startIndex + rowsPerPage, totalItems);
+        const info = `<p class="pagination-info">Mostrando <strong>${startIndex + 1}</strong> - <strong>${endIndex}</strong> de <strong>${totalItems}</strong></p>`;
+        
+        let buttons = '';
+        const maxButtons = 5; // Máx. de botones numéricos a mostrar
+        let startPage = 1, endPage = totalPages;
+
+        if (totalPages > maxButtons) {
+            startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+            endPage = startPage + maxButtons - 1;
+            
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = endPage - maxButtons + 1;
+            }
+        }
+
+        buttons += `<button class="pagination-btn" onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''}>&laquo;</button>`;
+        buttons += `<button class="pagination-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&lsaquo;</button>`;
+
+        if (startPage > 1) {
+            buttons += `<span class="pagination-ellipsis">...</span>`;
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            buttons += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        }
+
+        if (endPage < totalPages) {
+            buttons += `<span class="pagination-ellipsis">...</span>`;
+        }
+
+        buttons += `<button class="pagination-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&rsaquo;</button>`;
+        buttons += `<button class="pagination-btn" onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>&raquo;</button>`;
+
+        paginationContainer.innerHTML = `${info}<div class="pagination-controls">${buttons}</div>`;
+    }
+
+    // --- (NUEVO) Ir a Página ---
+    function goToPage(page) {
+        if (page < 1 || page > totalPages || page === currentPage) return;
+        currentPage = page;
+        renderAdminTable();
+        window.scrollTo(0, 0); // Volver arriba
     }
 
     // --- (MODIFICADO) Manejar Login ---
     function handleLogin(e) {
-        // ... (código sin cambios)
         e.preventDefault();
         const docType = elements.docTypeInput.value;
         const docNumber = elements.docNumberInput.value.trim();
@@ -936,23 +2021,33 @@
 
         // Student login validation
         if (!docType || !docNumber || !birthDate) {
-             elements.loginError.textContent = 'Por favor, complete todos los campos.';
-             elements.loginError.classList.remove('hidden');
-             return;
+            elements.loginError.textContent = 'Por favor, complete todos los campos.';
+            elements.loginError.classList.remove('hidden');
+            return;
         }
+        
+        // (NUEVO) Usamos los datos de login (Hoja 1)
         const studentData = STUDENT_DATA_INTERNAL[docNumber];
+
+        const normalizedInputBirthDate = ((dateStr) => {
+             if (!dateStr) return '';
+             const m = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+             return m ? `${parseInt(m[1])}/${parseInt(m[2])}/${m[3]}` : dateStr;
+        })(birthDate);
 
         console.log("Intento de Login:", {
             inputDocType: docType,
             inputDocNumber: docNumber,
-            inputBirthDate: birthDate,
+            normalizedInputBirthDate: normalizedInputBirthDate,
             foundStudentData: studentData ? {
                 docType: studentData.docType,
                 birthDate: studentData.birthDate
             } : "No se encontró estudiante con ese Número de Documento"
         });
 
-        if (studentData && studentData.docType === docType && studentData.birthDate === birthDate) {
+        // (CORREGIDO) Comparar la fecha normalizada del input con la fecha normalizada de la BD
+        if (studentData && studentData.docType === docType && studentData.birthDate === normalizedInputBirthDate) {
+            // Guardar sesión
             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'student');
             sessionStorage.setItem(SESSION_USER_ID_KEY, docNumber); 
 
@@ -965,71 +2060,83 @@
         }
     }
 
-    // --- (MODIFICADO) Funciones de navegación y modales ---
+    // --- Funciones de navegación y modales ---
     function handleLogout() {
-        // ... (código sin cambios)
-         sessionStorage.removeItem(SESSION_USER_TYPE_KEY);
-         sessionStorage.removeItem(SESSION_USER_ID_KEY);
+        sessionStorage.removeItem(SESSION_USER_TYPE_KEY);
+        sessionStorage.removeItem(SESSION_USER_ID_KEY);
 
-         elements.docTypeInput.value = '';
-         elements.docNumberInput.value = '';
-         elements.birthDateInput.value = '';
-         if (birthDatePicker) birthDatePicker.clear();
-         elements.loginError.classList.add('hidden');
-         elements.reportScreen.classList.add('hidden');
-         elements.adminScreen.classList.add('hidden');
-         elements.individualReportContent.innerHTML = '';
-         if (elements.adminTableBody) elements.adminTableBody.innerHTML = '';
-         isAdminViewingReport = false;
-         elements.loginScreen.classList.remove('hidden'); 
-         elements.body.classList.remove('overflow-hidden');
-         window.scrollTo(0, 0);
-         handleCloseModal(); 
-      }
-      
-      function handleBackToAdmin() {
-        // ... (código sin cambios)
-         elements.reportScreen.classList.add('hidden');
-         elements.individualReportContent.innerHTML = '';
-         isAdminViewingReport = false;
-         elements.adminScreen.classList.remove('hidden');
-         elements.body.classList.remove('overflow-hidden');
-         window.scrollTo(0, 0);
-      }
+        elements.docTypeInput.value = '';
+        elements.docNumberInput.value = '';
+        elements.birthDateInput.value = '';
+        if (birthDatePicker) birthDatePicker.clear();
+        elements.loginError.classList.add('hidden');
+        elements.reportScreen.classList.add('hidden');
+        elements.adminScreen.classList.add('hidden');
+        elements.individualReportContent.innerHTML = '';
+        if (elements.adminTableBody) elements.adminTableBody.innerHTML = '';
+        isAdminViewingReport = false;
+        elements.loginScreen.classList.remove('hidden'); 
+        elements.body.classList.remove('overflow-hidden');
+        window.scrollTo(0, 0);
+        handleCloseModal(); 
+    }
+     
+     function handleBackToAdmin() {
+        elements.reportScreen.classList.add('hidden');
+        elements.individualReportContent.innerHTML = '';
+        elements.detailedReportContent.innerHTML = '';
+        isAdminViewingReport = false;
+        elements.adminScreen.classList.remove('hidden');
+        elements.body.classList.remove('overflow-hidden');
+        window.scrollTo(0, 0);
+     }
 
-      function handleCloseModal() {
-        // ... (código sin cambios)
-         if (!elements || !elements.adminModalBackdrop) return; 
-         elements.adminModalBackdrop.classList.remove('shown');
-         setTimeout(() => {
-             if (elements.adminModalBackdrop) elements.adminModalBackdrop.style.display = 'none';
-             if (elements.adminModalBody) elements.adminModalBody.innerHTML = '';
-             if (elements.body) elements.body.classList.remove('overflow-hidden');
-         }, 200);
-      }
+     function handleCloseModal() {
+        if (!elements || !elements.adminModalBackdrop) return; 
+        elements.adminModalBackdrop.classList.remove('shown');
+        setTimeout(() => {
+            if (elements.adminModalBackdrop) elements.adminModalBackdrop.style.display = 'none';
+            if (elements.modalIndividualReportContent) elements.modalIndividualReportContent.innerHTML = '';
+            if (elements.modalDetailedReportContent) elements.modalDetailedReportContent.innerHTML = '';
+            if (elements.body) elements.body.classList.remove('overflow-hidden');
+            // Destruir gráfico del modal
+            if (modalSubjectRadarChartInstance) {
+                modalSubjectRadarChartInstance.destroy();
+                modalSubjectRadarChartInstance = null;
+            }
+        }, 200);
+     }
 
-    // --- (MODIFICADO) INICIALIZACIÓN y Listeners ---
+    // --- INICIALIZACIÓN y Listeners ---
     document.addEventListener('DOMContentLoaded', async () => {
         // 1. Asignar elementos
-        // ... (código sin cambios)
         elements = {
             loginScreen: document.getElementById('login-screen'), reportScreen: document.getElementById('report-screen'), adminScreen: document.getElementById('admin-screen'),
             loginForm: document.getElementById('login-form'), docTypeInput: document.getElementById('doc-type'), docNumberInput: document.getElementById('document-number'), birthDateInput: document.getElementById('birth-date'), loginError: document.getElementById('login-error'),
             studentNameHeader: document.getElementById('student-name-header'), individualReportContent: document.getElementById('individual-report-content'),
             logoutBtnReport: document.getElementById('logout-btn-report'), backToAdminBtn: document.getElementById('back-to-admin-btn'), logoutBtnAdmin: document.getElementById('logout-btn-admin'),
-            body: document.body, globalScoreNumber: document.getElementById('global-score-number'),
+            body: document.body, globalScoreNumber: document.getElementById('global-score-number'), percentileBadgeContainer: document.getElementById('percentile-badge-container'), percentileValue: document.getElementById('percentile-value'),
             adminTableBody: document.getElementById('admin-table-body'), adminSearchInput: document.getElementById('admin-search'), adminTable: document.getElementById('admin-table'), adminNoResults: document.getElementById('admin-no-results'),
             adminModalBackdrop: document.getElementById('admin-modal-backdrop'), adminModalContainer: document.getElementById('admin-modal-container'), adminModalHeader: document.getElementById('admin-modal-header'), adminModalBody: document.getElementById('admin-modal-body'), adminModalCloseBtn: document.getElementById('admin-modal-close-btn'),
-            statTotalStudents: document.getElementById('stat-total-students'), statAvgScore: document.getElementById('stat-avg-score'), statMaxScore: document.getElementById('stat-max-score'), statMinScore: document.getElementById('stat-min-score'),
-            subjectAvgChartCanvas: document.getElementById('subject-avg-chart'), scoreDistChartCanvas: document.getElementById('score-dist-chart'),
+            statTotalStudents: document.getElementById('stat-total-students'), statAvgScore: document.getElementById('stat-avg-score'), statStdDev: document.getElementById('stat-std-dev'), statMaxScore: document.getElementById('stat-max-score'), statMinScore: document.getElementById('stat-min-score'),
+            subjectAvgChartCanvas: document.getElementById('subject-avg-chart'), scoreDistChartCanvas: document.getElementById('score-dist-chart'), topErrorsChartCanvas: document.getElementById('top-errors-chart'),
+            paginationContainer: document.getElementById('pagination-container'),
+            // (NUEVO) Informe detallado
+            detailedReportToggle: document.getElementById('detailed-report-toggle'),
+            detailedReportContainer: document.getElementById('detailed-report-container'),
+            detailedReportContent: document.getElementById('detailed-report-content'),
+            // (NUEVO) Pestañas del Modal
+            modalTabs: document.querySelector('.modal-tabs'),
+            modalTabCompetencias: document.getElementById('tab-competencias'),
+            modalTabPreguntas: document.getElementById('tab-preguntas'),
+            modalIndividualReportContent: document.getElementById('modal-individual-report-content'),
+            modalDetailedReportContent: document.getElementById('modal-detailed-report-content'),
         };
 
         // 2. Inicializar Flatpickr
-        // ... (código sin cambios)
         birthDatePicker = flatpickr(elements.birthDateInput, { locale: "es", dateFormat: "d/m/Y", allowInput: true, disableMobile: "true" });
 
         // (NUEVO) Añadir auto-formateo de fecha (input mask)
-        // ... (código sin cambios)
         elements.birthDateInput.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, ''); 
             
@@ -1043,12 +2150,22 @@
             e.target.value = value;
         });
 
-        // 3. Cargar datos de GitHub (siempre necesario)
-        // ... (código sin cambios)
-        await loadStudentDataFromGitHub();
+        // 3. (MODIFICADO) Cargar todos los datos en paralelo
+        try {
+            await Promise.all([
+                loadStudentDataFromGitHub(),      // Para Login de Estudiantes (Hoja 1)
+                loadCorrectAnswers(),             // Para informe detallado (Claves S1, S2)
+                loadStudentAnswers(),             // Para informe detallado (Sesion 1, S2)
+                loadAdminDashboardData()          // Para Dashboard Admin (Archivos Analíticos)
+            ]);
+        } catch (error) {
+            console.error("Error crítico durante la carga inicial de datos:", error);
+            elements.loginError.textContent = 'Error fatal al cargar datos. Refresque la página.';
+            elements.loginError.classList.remove('hidden');
+        }
+
 
         // 4. Comprobar Sesión Guardada
-        // ... (código sin cambios)
         const savedUserType = sessionStorage.getItem(SESSION_USER_TYPE_KEY);
         const savedUserId = sessionStorage.getItem(SESSION_USER_ID_KEY);
 
@@ -1071,16 +2188,22 @@
             }
         }
 
-        // 5. Añadir listeners
-        // ... (código sin cambios)
+        // 5. Añadir listeners principales
         elements.loginForm.addEventListener('submit', handleLogin);
         elements.logoutBtnReport.addEventListener('click', handleLogout);
         elements.logoutBtnAdmin.addEventListener('click', handleLogout);
         elements.backToAdminBtn.addEventListener('click', handleBackToAdmin);
         elements.adminModalCloseBtn.addEventListener('click', handleCloseModal);
         elements.adminModalBackdrop.addEventListener('click', (e) => { if (e.target === elements.adminModalBackdrop) handleCloseModal(); });
-        elements.adminSearchInput.addEventListener('input', (e) => { currentAdminFilter = e.target.value; renderAdminTable(); });
         
+        // Listener para búsqueda en tabla admin
+        elements.adminSearchInput.addEventListener('input', (e) => { 
+            currentAdminFilter = e.target.value; 
+            currentPage = 1; // Volver a la página 1 en cada búsqueda
+            renderAdminTable(); 
+        });
+         
+        // Listener para ordenar tabla admin
         const thead = elements.adminTable ? elements.adminTable.querySelector('thead') : null;
         if (thead) {
             thead.addEventListener('click', (e) => {
@@ -1088,37 +2211,92 @@
                 if (!header) return;
                 const key = header.dataset.sortKey;
                 if (!key) return;
-                if (currentAdminSort.key === key) {
-                    currentAdminSort.direction = currentAdminSort.direction === 'asc' ? 'desc' : 'asc';
-                } else {
-                    currentAdminSort.key = key;
-                    currentAdminSort.direction = ['nombre', 'email', 'docType', 'docNumber', 'municipio'].includes(key) ? 'asc' : 'desc';
-                }
-                renderAdminTable();
-           });
+                 if (currentAdminSort.key === key) {
+                     currentAdminSort.direction = currentAdminSort.direction === 'asc' ? 'desc' : 'asc';
+                 } else {
+                     currentAdminSort.key = key;
+                     // (MODIFICADO) Ordenar por % desc por defecto
+                     currentAdminSort.direction = ['nombre', 'email', 'id'].includes(key) ? 'asc' : 'desc';
+                 }
+                 currentPage = 1; // Volver a la página 1 al ordenar
+                 renderAdminTable();
+            });
         }
-        
+         
+        // Listener para botones "Ver" en tabla admin
         if (elements.adminTableBody) {
             elements.adminTableBody.addEventListener('click', (e) => {
                  const viewButton = e.target.closest('.view-report-btn');
                  if (viewButton) {
                      const studentId = viewButton.dataset.studentId;
-                     const studentData = STUDENT_DATA_INTERNAL[studentId];
+                     // (NUEVO) Usamos los datos de login (Hoja 1) para el informe individual
+                     const studentData = STUDENT_DATA_INTERNAL[studentId]; 
+                     
                      if (studentData) {
+                         // --- Llenar Pestaña 1: Competencias ---
                          const reportHtml = generateReportHtml(studentData);
-                         elements.adminModalBody.innerHTML = reportHtml;
+                         elements.modalIndividualReportContent.innerHTML = reportHtml;
+                         addToggleListeners('modal-individual-report-content');
+                         // Renderizar gráfico radar del modal
+                         renderSubjectRadarChart(studentData, 'modal-subject-radar-chart');
+
+                         // --- Llenar Pestaña 2: Preguntas ---
+                         const detailedReportHtml = generateDetailedReportHtml(studentData.docNumber);
+                         elements.modalDetailedReportContent.innerHTML = detailedReportHtml;
+
+                         // --- Mostrar Modal ---
                          elements.adminModalHeader.textContent = `Informe: ${studentData.nombre}`;
                          elements.adminModalBackdrop.style.display = 'flex';
                          setTimeout(() => { elements.adminModalBackdrop.classList.add('shown'); }, 10);
                          elements.body.classList.add('overflow-hidden');
-                         addToggleListeners('admin-modal-body');
+                         
+                         // Resetear a la primera pestaña
+                         elements.modalTabs.querySelector('.modal-tab-btn.active').classList.remove('active');
+                         elements.modalTabs.querySelector('[data-tab="tab-competencias"]').classList.add('active');
+                         elements.modalTabCompetencias.classList.add('active');
+                         elements.modalTabPreguntas.classList.remove('active');
+
                      } else {
-                         console.error("No se encontraron datos para el estudiante con ID:", studentId);
+                         console.error("No se encontraron datos (de Hoja 1) para el estudiante con ID:", studentId);
+                         // (NUEVO) Mostrar un modal de error simple
+                         const studentName = ALL_ADMIN_STUDENTS_ARRAY.find(s => s.id === studentId)?.nombre || `ID ${studentId}`;
+                         elements.modalIndividualReportContent.innerHTML = `<p class="p-6 text-center text-brand-red">No se encontró el informe de competencias (0-500) para ${studentName}. Asegúrese de que esté en "base de datos - Hoja 1.csv".</p>`;
+                         elements.modalDetailedReportContent.innerHTML = `<p class="p-6 text-center text-brand-red">No se encontró el informe de competencias (0-500) para ${studentName}.</p>`;
+                         elements.adminModalHeader.textContent = `Error: Informe no encontrado`;
+                         elements.adminModalBackdrop.style.display = 'flex';
+                         setTimeout(() => { elements.adminModalBackdrop.classList.add('shown'); }, 10);
+                         elements.body.classList.add('overflow-hidden');
                      }
                  }
             });
         }
+        
+        // (NUEVO) Listener para el acordeón de informe detallado (pantalla estudiante)
+        if (elements.detailedReportToggle) {
+            elements.detailedReportToggle.addEventListener('click', () => {
+                elements.detailedReportToggle.classList.toggle('expanded');
+                elements.detailedReportContainer.classList.toggle('expanded');
+            });
+        }
 
+        // (NUEVO) Listener para las pestañas del modal
+        if (elements.modalTabs) {
+            elements.modalTabs.addEventListener('click', (e) => {
+                const tabButton = e.target.closest('.modal-tab-btn');
+                if (!tabButton) return;
+                
+                // Quitar activo de todos
+                elements.modalTabs.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.modal-tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Poner activo en el clickeado
+                tabButton.classList.add('active');
+                const tabId = tabButton.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+            });
+        }
+
+        // 6. Mostrar Login si no se restauró sesión
         if (!restoredSession) {
              elements.loginScreen.classList.remove('hidden'); 
         } else {
@@ -1131,3 +2309,4 @@
     </script>
 </body>
 </html>
+
