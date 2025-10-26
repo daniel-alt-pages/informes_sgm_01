@@ -423,7 +423,7 @@
     const SUPER_USER_CREDENTIALS = { username: "admin", password: "20/07/2023" };
 
     // --- Definiciones Skills, Descripciones, etc. (NECESITAN ESTAR COMPLETAS) ---
-    // !! IMPORTANTE: Pega aquí las definiciones completas de skillsData, subjectDescriptions, filterOptions !!
+    // !! IMPORTANTE: Asegúrate de que estas definiciones estén completas y correctas !!
     const skillsData = {
         lectura: {
             color: 'var(--color-lectura)',
@@ -446,21 +446,21 @@
              color: 'var(--color-ingles)', levels: [ { min: 0, label: 'A-', range: '0-35', color: '#ef4444', desc: 'Desc A-'}, { min: 36, label: 'A1', range: '36-50', color: '#f97316', desc: 'Desc A1'}, { min: 51, label: 'A2', range: '51-70', color: '#eab308', desc: 'Desc A2'}, { min: 71, label: 'B1', range: '71-100', color: '#22c55e', desc: 'Desc B1'} ],
              competencies: [ { name: 'Comp Ing 1', skills: [{ level: 0, name: 'S1', desc: 'Desc S1'}, { level: 1, name: 'S2', desc: 'Desc S2'}, { level: 2, name: 'S3', desc: 'Desc S3'}, { level: 3, name: 'S4', desc: 'Desc S4'}] }, { name: 'Comp Ing 2', skills: [{ level: 0, name: 'S1', desc: 'Desc S1'}, { level: 1, name: 'S2', desc: 'Desc S2'}, { level: 2, name: 'S3', desc: 'Desc S3'}, { level: 3, name: 'S4', desc: 'Desc S4'}] } ]
         },
-    }; // Placeholder - Replace with your actual full definitions
+    }; 
     const subjectDescriptions = {
         lectura: "Evalúa la capacidad de comprender textos.",
         matematicas: "Mide habilidad para resolver problemas matemáticos.",
         sociales: "Valora comprensión de eventos históricos y sociales.",
         ciencias: "Examina capacidad de analizar fenómenos naturales.",
         ingles: "Determina nivel de competencia en inglés."
-    }; // Placeholder - Replace
+    }; 
     const filterOptions = [
         { id: 'lectura', name: 'Lectura Crítica', color: 'var(--color-lectura)' },
         { id: 'matematicas', name: 'Matemáticas', color: 'var(--color-matematicas)' },
         { id: 'sociales', name: 'Sociales y Ciudadanas', color: 'var(--color-sociales)' },
         { id: 'ciencias', name: 'Ciencias Naturales', color: 'var(--color-ciencias)' },
         { id: 'ingles', name: 'Inglés', color: 'var(--color-ingles)' },
-    ]; // Placeholder - Replace
+    ]; 
     const subjects = ['lectura', 'matematicas', 'sociales', 'ciencias', 'ingles'];
 
     // --- Variables de Estado ---
@@ -502,10 +502,17 @@
         }
         values.push(value.trim()); return values;
     }
-    function getDocTypeBadgeClass(docType) { /* ... (Reintegrada) ... */ }
+    function getDocTypeBadgeClass(docType) { 
+        switch (docType) {
+            case 'CC': return 'badge-cc'; case 'TI': return 'badge-ti'; case 'CE': return 'badge-ce';
+            case 'RC': return 'badge-rc'; case 'PA': return 'badge-pa'; case 'PPT': return 'badge-ppt';
+            default: return 'badge-default';
+        }
+     }
     const parseBirthDate = (dateString) => {
         if (!dateString) return '';
         const match = dateString.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        // Devuelve el formato d/m/aaaa (sin ceros forzados) si coincide
         return match ? `${parseInt(match[1])}/${parseInt(match[2])}/${match[3]}` : dateString;
     };
 
@@ -513,12 +520,10 @@
     function parseCSVData(csvText) {
         console.log("Parsing CSV Data (Hoja 1)...");
         STUDENT_DATA_INTERNAL = {};
-        if (csvText.charCodeAt(0) === 0xFEFF) csvText = csvText.substring(1); // Handle BOM
+        if (csvText.charCodeAt(0) === 0xFEFF) csvText = csvText.substring(1); 
         const lines = csvText.trim().split(/\r?\n/).filter(Boolean);
-        if (lines.length < 2) { console.error("CSV (Login) vacío o solo cabecera."); return; }
+        if (lines.length < 2) { console.error("CSV (Login) vacío o solo cabecera."); return false; } // Return false on error
         const headers = parseCSVLine(lines[0]);
-        
-        // Find indices robustly (case-insensitive and trimming)
         const findIndex = (headerName) => headers.findIndex(h => h.trim().toLowerCase() === headerName.toLowerCase());
 
         const nameIndex = findIndex('nombre completo del estudiante');
@@ -526,78 +531,68 @@
         const docTypeIndex = findIndex('tipo de documento');
         const docNumberIndex = findIndex('número de documento');
         const birthDateIndex = findIndex('fecha de nacimiento');
-        const colegioIndex = findIndex('colegio/institución'); // Corrección: Era 'institución'
-        const municipioIndex = findIndex('departamento'); // Corrección: Asumiendo que esta es la columna correcta
+        const colegioIndex = findIndex('colegio/institución'); 
+        const municipioIndex = findIndex('departamento'); 
         const matIndex = findIndex('matemáticas');
         const lecIndex = findIndex('lectura crítica');
-        const socIndex = findIndex('sociales'); // Corrección: Era 'sodex'
+        const SIndex = findIndex('sociales'); 
         const cienIndex = findIndex('ciencias naturales');
         const ingIndex = findIndex('inglés');
         const globalIndex = findIndex('puntaje global');
 
-        // Check if critical indices were found
-        if ([nameIndex, docTypeIndex, docNumberIndex, birthDateIndex, matIndex, lecIndex, socIndex, cienIndex, ingIndex, globalIndex].includes(-1)) {
+        if ([nameIndex, docTypeIndex, docNumberIndex, birthDateIndex, matIndex, lecIndex, SIndex, cienIndex, ingIndex, globalIndex].includes(-1)) {
             console.error("Faltan columnas esenciales en 'base de datos - Hoja 1.csv'. Verifica cabeceras:", headers);
-            // Optionally, list which ones are missing
-            if (nameIndex === -1) console.error("Falta: nombre completo del estudiante");
-            if (docTypeIndex === -1) console.error("Falta: tipo de documento");
-            // ... add others if needed ...
-            return; // Stop parsing if critical columns are missing
+             // Log missing columns
+             const missing = [];
+             if (nameIndex === -1) missing.push('nombre completo del estudiante');
+             if (docTypeIndex === -1) missing.push('tipo de documento');
+             if (docNumberIndex === -1) missing.push('número de documento');
+             if (birthDateIndex === -1) missing.push('fecha de nacimiento');
+             // ... add other checks if needed ...
+             console.error("Columnas faltantes:", missing.join(', '));
+            return false; // Return false on error
         }
 
         const parseGlobalScore = (s) => parseInt((s || '0/').split('/')[0], 10) || 0;
         
         for (let i = 1; i < lines.length; i++) {
-            const values = parseCSVLine(lines[i]);
-            if (values.length < headers.length) {
-                console.warn(`Línea ${i+1} ignorada: número incorrecto de columnas.`);
-                continue;
+            try { // Add try-catch around row processing
+                const values = parseCSVLine(lines[i]);
+                if (values.length < headers.length) { console.warn(`Línea ${i+1} ignorada: ${values.length} columnas, esperaba ${headers.length}.`); continue; }
+                const docNumber = values[docNumberIndex]?.trim(); 
+                if (!docNumber) { console.warn(`Línea ${i+1} ignorada: Número de documento vacío.`); continue; }
+                let originalDocType = values[docTypeIndex] || '-';
+                let processedDocType = originalDocType.toLowerCase().includes('permiso de protección temporal') ? 'PPT' : originalDocType.trim(); 
+                
+                STUDENT_DATA_INTERNAL[docNumber] = {
+                    nombre: values[nameIndex] || 'N/A', email: values[emailIndex] || '-', docType: processedDocType, docNumber: docNumber, 
+                    birthDate: parseBirthDate(values[birthDateIndex]), 
+                    colegio: colegioIndex !== -1 ? (values[colegioIndex] || 'seamosgenios') : 'seamosgenios', 
+                    puntajes: { 
+                        matematicas: parseInt(values[matIndex],10)||0, lectura: parseInt(values[lecIndex],10)||0, 
+                        sociales: parseInt(values[SIndex],10)||0, ciencias: parseInt(values[cienIndex],10)||0, 
+                        ingles: parseInt(values[ingIndex],10)||0 
+                    },
+                    puntajeGlobal: parseGlobalScore(values[globalIndex]), 
+                    municipio: municipioIndex!==-1?(values[municipioIndex]||'Desconocido'):'Desconocido' 
+                };
+            } catch (rowError) {
+                 console.error(`Error procesando línea ${i+1} de Hoja 1:`, rowError, "Datos:", lines[i]);
+                 // Continue to next line instead of stopping
             }
-            const docNumber = values[docNumberIndex]?.trim(); // Trim docNumber
-            if (!docNumber) {
-                 console.warn(`Línea ${i+1} ignorada: Número de documento vacío.`);
-                 continue;
-            }
-            let originalDocType = values[docTypeIndex] || '-';
-            let processedDocType = originalDocType.toLowerCase().includes('permiso de protección temporal') ? 'PPT' : originalDocType.trim(); // Trim DocType too
-            
-            STUDENT_DATA_INTERNAL[docNumber] = {
-                nombre: values[nameIndex] || 'N/A', 
-                email: values[emailIndex] || '-', 
-                docType: processedDocType,
-                docNumber: docNumber, 
-                birthDate: parseBirthDate(values[birthDateIndex]), 
-                colegio: colegioIndex !== -1 ? (values[colegioIndex] || 'seamosgenios') : 'seamosgenios', // Handle missing colegio col
-                puntajes: { 
-                    matematicas: parseInt(values[matIndex],10)||0, 
-                    lectura: parseInt(values[lecIndex],10)||0, 
-                    sociales: parseInt(values[socIndex],10)||0, // Use corrected index
-                    ciencias: parseInt(values[cienIndex],10)||0, 
-                    ingles: parseInt(values[ingIndex],10)||0 
-                },
-                puntajeGlobal: parseGlobalScore(values[globalIndex]), 
-                municipio: municipioIndex!==-1?(values[municipioIndex]||'Desconocido'):'Desconocido' // Handle missing municipio col
-            };
         }
         ALL_STUDENTS_ARRAY = Object.values(STUDENT_DATA_INTERNAL);
         ALL_STUDENTS_ARRAY.sort((a, b) => (b.puntajeGlobal ?? 0) - (a.puntajeGlobal ?? 0));
         
-        // Calcular Percentiles
         const totalStudents = ALL_STUDENTS_ARRAY.length;
         if (totalStudents > 0) {
             const scores = ALL_STUDENTS_ARRAY.map(s => s.puntajeGlobal).sort((a, b) => a - b);
             globalPercentiles = {};
-            scores.forEach((score, index) => {
-                if (typeof globalPercentiles[score] === 'undefined') {
-                    globalPercentiles[score] = Math.round(((index + 1) / totalStudents) * 100);
-                }
-            });
-            ALL_STUDENTS_ARRAY.forEach((student, index) => {
-                student.rank = index + 1; // Rank based on initial sort (highest score first)
-                student.percentile = globalPercentiles[student.puntajeGlobal] || 0;
-            });
+            scores.forEach((score, index) => { if (typeof globalPercentiles[score] === 'undefined') { globalPercentiles[score] = Math.round(((index + 1) / totalStudents) * 100); } });
+            ALL_STUDENTS_ARRAY.forEach((student, index) => { student.rank = index + 1; student.percentile = globalPercentiles[student.puntajeGlobal] || 0; });
         }
         console.log(`Parsed ${ALL_STUDENTS_ARRAY.length} students from Hoja 1.`);
+        return true; // Return true on success
     }
 
     async function loadCorrectAnswers() {
@@ -613,22 +608,23 @@
             const linesS1 = textS1.trim().split(/\r?\n/); 
             if (linesS1.length < 2) throw new Error("Claves_S1.csv está incompleto.");
             const headersS1 = parseCSVLine(linesS1[0]); const answersS1 = parseCSVLine(linesS1[1]);
-            if (headersS1.length !== answersS1.length) console.warn("Discrepancia Claves S1: Headers vs Answers");
-            headersS1.forEach((h, i) => { if(h && answersS1[i] !== undefined) CORRECT_ANSWERS[cleanKey(h)] = answersS1[i]?.trim(); }); // Trim answer
+            if (headersS1.length !== answersS1.length) console.warn(`Discrepancia Claves S1: ${headersS1.length} Headers vs ${answersS1.length} Answers`);
+            headersS1.forEach((h, i) => { if(h && answersS1[i] !== undefined) CORRECT_ANSWERS[cleanKey(h)] = answersS1[i]?.trim(); }); 
 
             const linesS2 = textS2.trim().split(/\r?\n/); 
             if (linesS2.length < 2) throw new Error("Claves_S2.csv está incompleto.");
             const headersS2 = parseCSVLine(linesS2[0]); const answersS2 = parseCSVLine(linesS2[1]);
-            if (headersS2.length !== answersS2.length) console.warn("Discrepancia Claves S2: Headers vs Answers");
-            headersS2.forEach((h, i) => { if(h && answersS2[i] !== undefined) CORRECT_ANSWERS[cleanKey(h)] = answersS2[i]?.trim(); }); // Trim answer
+            if (headersS2.length !== answersS2.length) console.warn(`Discrepancia Claves S2: ${headersS2.length} Headers vs ${answersS2.length} Answers`);
+            headersS2.forEach((h, i) => { if(h && answersS2[i] !== undefined) CORRECT_ANSWERS[cleanKey(h)] = answersS2[i]?.trim(); }); 
 
             const numKeys = Object.keys(CORRECT_ANSWERS).length;
-            if (numKeys === 0) throw new Error("No se cargaron claves de respuestas.");
+            if (numKeys === 0) throw new Error("No se cargaron claves de respuestas (objeto vacío).");
             console.log(`Claves cargadas: ${numKeys}`);
+            return true; // Return true on success
         } catch (error) { 
             console.error("Error crítico cargando claves:", error); 
-            if(elements?.loginError) { elements.loginError.textContent = 'Error fatal: No se cargaron claves de respuestas.'; elements.loginError.classList.remove('hidden'); }
-            throw error; 
+            if(elements?.loginError) { elements.loginError.textContent = 'Error fatal: No se cargaron claves.'; elements.loginError.classList.remove('hidden'); }
+            return false; // Return false on error
         }
     }
 
@@ -650,28 +646,34 @@
                 if (idIndex === -1) { console.error(`No se encontró columna 'ID' en ${sessionName}.csv`); return; }
                 
                 for (let i = 1; i < lines.length; i++) {
-                    const values = parseCSVLine(lines[i]);
-                    if (values.length < headers.length) { console.warn(`Línea ${i+1} (${sessionName}) ignorada: columnas incorrectas.`); continue; }
-                    const studentId = values[idIndex]?.trim(); // Trim ID
-                    if (!studentId) { console.warn(`Línea ${i+1} (${sessionName}) ignorada: ID vacío.`); continue; }
-                    if (!STUDENT_ANSWERS[studentId]) STUDENT_ANSWERS[studentId] = {};
-                    headers.forEach((h, idx) => { 
-                        if(h && idx !== idIndex && values[idx] !== undefined) {
-                            STUDENT_ANSWERS[studentId][cleanKey(h)] = values[idx]?.trim(); // Trim answer
-                        }
-                    });
+                    try { // Add try-catch around row processing
+                        const values = parseCSVLine(lines[i]);
+                        if (values.length < headers.length) { console.warn(`Línea ${i+1} (${sessionName}) ignorada: ${values.length} columnas, esperaba ${headers.length}.`); continue; }
+                        const studentId = values[idIndex]?.trim(); 
+                        if (!studentId) { console.warn(`Línea ${i+1} (${sessionName}) ignorada: ID vacío.`); continue; }
+                        if (!STUDENT_ANSWERS[studentId]) STUDENT_ANSWERS[studentId] = {};
+                        headers.forEach((h, idx) => { 
+                            if(h && idx !== idIndex && values[idx] !== undefined) {
+                                STUDENT_ANSWERS[studentId][cleanKey(h)] = values[idx]?.trim(); 
+                            }
+                        });
+                    } catch (rowError) {
+                        console.error(`Error procesando línea ${i+1} de ${sessionName}:`, rowError, "Datos:", lines[i]);
+                        // Continue to next line
+                    }
                 }
             };
             processSession(textS1, "Sesion1");
             processSession(textS2, "Sesion2");
 
             const numStudents = Object.keys(STUDENT_ANSWERS).length;
-            if (numStudents === 0) throw new Error("No se cargaron respuestas de estudiantes.");
+            if (numStudents === 0) throw new Error("No se cargaron respuestas de estudiantes (objeto vacío).");
             console.log(`Respuestas cargadas para ${numStudents} estudiantes.`);
+            return true; // Return true on success
         } catch (error) { 
             console.error("Error crítico cargando respuestas:", error); 
-            if(elements?.loginError) { elements.loginError.textContent = 'Error fatal: No se cargaron respuestas de estudiantes.'; elements.loginError.classList.remove('hidden'); }
-            throw error; 
+            if(elements?.loginError) { elements.loginError.textContent = 'Error fatal: No se cargaron respuestas.'; elements.loginError.classList.remove('hidden'); }
+            return false; // Return false on error
         }
     }
     
@@ -681,12 +683,14 @@
             const response = await fetch(GITHUB_CSV_URL, { cache: "no-store" });
             if (!response.ok) throw new Error(`Error ${response.status} al cargar CSV (Hoja 1): ${response.statusText}`);
             const csvText = await response.text();
-            parseCSVData(csvText); 
-            calculateGroupAverages(); // Calcular promedios 0-100 para radar individual
+            const parseSuccess = parseCSVData(csvText); // Check success
+            if (!parseSuccess) throw new Error("Fallo al parsear Hoja 1.");
+            calculateGroupAverages(); 
+            return true; // Return true on success
         } catch (error) {
             console.error("Error crítico cargando datos GitHub (Hoja 1):", error);
             if(elements?.loginError) { elements.loginError.textContent = 'Error fatal al cargar datos base.'; elements.loginError.classList.remove('hidden'); }
-            throw error; 
+            return false; // Return false on error
         }
     }
 
@@ -695,12 +699,12 @@
     function calculateAllAdminStatsDynamically() {
         console.time("calculateAllAdminStatsDynamically"); 
         DYNAMIC_ADMIN_DATA = []; DYNAMIC_QUESTION_ERRORS = {};
-        DYNAMIC_GLOBAL_STATS = { avgPercent: 0, stdDev: 0, maxPercent: 0, minPercent: 100, totalStudents: 0 }; // Init min to 100
+        DYNAMIC_GLOBAL_STATS = { avgPercent: 0, stdDev: 0, maxPercent: 0, minPercent: 100, totalStudents: 0 }; 
         DYNAMIC_AREA_AVERAGES = {}; calculatedAdminData = false; 
         
         if (Object.keys(STUDENT_ANSWERS).length === 0 || Object.keys(CORRECT_ANSWERS).length === 0) {
-            console.error("Faltan datos para calcular estadísticas del admin.");
-            if(elements?.adminNoResults) { elements.adminNoResults.textContent = "Error: Faltan datos para estadísticas."; elements.adminNoResults.classList.remove('hidden'); elements.adminTable.classList.add('hidden'); }
+            console.error("Faltan datos para calcular estadísticas del admin (STUDENT_ANSWERS o CORRECT_ANSWERS vacíos).");
+            if(elements?.adminNoResults) { elements.adminNoResults.textContent = "Error: Faltan datos base para estadísticas."; elements.adminNoResults.classList.remove('hidden'); elements.adminTable.classList.add('hidden'); }
             console.timeEnd("calculateAllAdminStatsDynamically"); return;
         }
 
@@ -711,7 +715,13 @@
             DYNAMIC_GLOBAL_STATS.totalStudents = studentIds.length;
 
             for (const studentId of studentIds) {
-                const studentBaseData = STUDENT_DATA_INTERNAL[studentId] || {}; 
+                 // Skip if student doesn't exist in the base data (Hoja 1)
+                 // This ensures we only calculate stats for students we can identify
+                 if (!STUDENT_DATA_INTERNAL[studentId]) {
+                      console.warn(`Estudiante con ID ${studentId} (de Sesion) no encontrado en Hoja 1. Omitiendo cálculos.`);
+                      continue; 
+                 }
+                const studentBaseData = STUDENT_DATA_INTERNAL[studentId]; 
                 const studentResponses = STUDENT_ANSWERS[studentId];
                 let correctCount = 0; let incorrectCount = 0; let totalQuestionsAnswered = 0; 
                 let areaCounts = { lectura: {c:0,t:0}, matematicas: {c:0,t:0}, sociales: {c:0,t:0}, ciencias: {c:0,t:0}, ingles: {c:0,t:0}, desconocida: {c:0,t:0} };
@@ -738,13 +748,24 @@
 
                 DYNAMIC_ADMIN_DATA.push({ id: studentId, nombre: studentBaseData.nombre || `Estudiante ${studentId}`, email: studentBaseData.email || '-', aciertos: correctCount, errores: incorrectCount, porcentaje: percentage, areaPercentages: areaPercentages });
             }
+            
+            // Recalcular totalStudents basado en los que realmente se procesaron
+             DYNAMIC_GLOBAL_STATS.totalStudents = DYNAMIC_ADMIN_DATA.length; 
 
             if (DYNAMIC_GLOBAL_STATS.totalStudents > 0 && allPercentages.length > 0) {
                 DYNAMIC_GLOBAL_STATS.avgPercent = totalPercentageSum / DYNAMIC_GLOBAL_STATS.totalStudents;
-                if (DYNAMIC_GLOBAL_STATS.totalStudents === 0) DYNAMIC_GLOBAL_STATS.minPercent = 0; // Handle case of 0 students for minPercent
+                // If minPercent is still 100, it means no valid percentages were processed
+                if (DYNAMIC_GLOBAL_STATS.minPercent === 100 && DYNAMIC_GLOBAL_STATS.totalStudents > 0) {
+                    DYNAMIC_GLOBAL_STATS.minPercent = Math.min(...allPercentages); // Recalculate min if needed
+                } else if (DYNAMIC_GLOBAL_STATS.totalStudents === 0) {
+                     DYNAMIC_GLOBAL_STATS.minPercent = 0; // Set to 0 if no students
+                }
+                
                 if (DYNAMIC_GLOBAL_STATS.totalStudents > 1) {
                     const squaredDiffs = allPercentages.map(p => Math.pow(p - DYNAMIC_GLOBAL_STATS.avgPercent, 2));
-                    const avgSquaredDiff = squaredDiffs.reduce((acc, d) => acc + d, 0) / DYNAMIC_GLOBAL_STATS.totalStudents;
+                    // Asegurar que no dividimos por cero si solo hay un estudiante procesado
+                    const divisor = DYNAMIC_GLOBAL_STATS.totalStudents > 0 ? DYNAMIC_GLOBAL_STATS.totalStudents : 1; 
+                    const avgSquaredDiff = squaredDiffs.reduce((acc, d) => acc + d, 0) / divisor;
                     DYNAMIC_GLOBAL_STATS.stdDev = Math.sqrt(avgSquaredDiff);
                 } else { DYNAMIC_GLOBAL_STATS.stdDev = 0; }
             } else { DYNAMIC_GLOBAL_STATS = { avgPercent: 0, stdDev: 0, maxPercent: 0, minPercent: 0, totalStudents: 0 }; }
@@ -773,25 +794,15 @@
     function renderScoreDistChart(scoreDistribution) { /* ... (Reintegrada) ... */ }
     function renderTopErrorsChart() { /* ... (Reintegrada, usa DYNAMIC_QUESTION_ERRORS) ... */ }
     function renderAdminDashboard() { 
-        if (!calculatedAdminData && Object.keys(STUDENT_ANSWERS).length > 0 && Object.keys(CORRECT_ANSWERS).length > 0) {
+        if (!calculatedAdminData && Object.keys(STUDENT_ANSWERS).length > 0 && Object.keys(CORRECT_ANSWERS).length > 0 && Object.keys(STUDENT_DATA_INTERNAL).length > 0) { // Check STUDENT_DATA_INTERNAL too
             calculateAllAdminStatsDynamically(); 
         }
-        if (calculatedAdminData) { // Only render if calculation was attempted and potentially successful
-            const { scoreDistribution } = calculateAdminStats(); 
-            renderSubjectAvgChart();
-            renderScoreDistChart(scoreDistribution);
-            renderTopErrorsChart();
-            renderAdminTable(); 
-        } else {
-             console.log("Esperando datos base o cálculo...");
-             // Optionally show a loading state or the error message if data is missing
-             if (Object.keys(STUDENT_ANSWERS).length === 0 || Object.keys(CORRECT_ANSWERS).length === 0){
-                 if(elements?.adminNoResults) { elements.adminNoResults.textContent = "Faltan datos base para mostrar el dashboard."; elements.adminNoResults.classList.remove('hidden'); elements.adminTable.classList.add('hidden');}
-                 // Reset chart canvases if needed
-                 [subjectAvgChartInstance, scoreDistChartInstance, topErrorsChartInstance].forEach(instance => instance?.destroy());
-                 subjectAvgChartInstance = scoreDistChartInstance = topErrorsChartInstance = null;
-             }
-        }
+        // Always try to render, the functions inside will handle empty/error states
+        const { scoreDistribution } = calculateAdminStats(); 
+        renderSubjectAvgChart();
+        renderScoreDistChart(scoreDistribution);
+        renderTopErrorsChart();
+        renderAdminTable(); 
     }
     function showAdminView(fromSession = false) { /* ... (Reintegrada, llama a renderAdminDashboard) ... */ }
     function renderAdminTable() { /* ... (Reintegrada, usa DYNAMIC_ADMIN_DATA) ... */ }
@@ -813,23 +824,50 @@
         // Admin login
         console.log("Comparando con Admin:", { username: SUPER_USER_CREDENTIALS.username, password: SUPER_USER_CREDENTIALS.password });
         if (docType === "CC" && docNumber === SUPER_USER_CREDENTIALS.username && birthDateInput === SUPER_USER_CREDENTIALS.password) {
+            // Check if base data is loaded before proceeding
+            if (Object.keys(STUDENT_ANSWERS).length === 0 || Object.keys(CORRECT_ANSWERS).length === 0 || Object.keys(STUDENT_DATA_INTERNAL).length === 0) {
+                 console.error("Login Admin fallido: Datos base no completamente cargados.");
+                 elements.loginError.textContent = 'Los datos aún se están cargando o hubo un error. Intente de nuevo.';
+                 elements.loginError.classList.remove('hidden');
+                 return; // Stop login if data isn't ready
+            }
             console.log("Login Admin EXITOSO"); 
             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'admin');
             sessionStorage.setItem(SESSION_USER_ID_KEY, 'admin'); 
             elements.loginError.classList.add('hidden');
             isAdminViewingReport = false;
-            // Forzar recálculo al iniciar sesión como admin
-            calculatedAdminData = false; 
+            calculatedAdminData = false; // Force recalculation on login
             showAdminView(); 
             return;
         }
         console.log("No es Admin."); 
 
         // Student login
-        if (!docType || !docNumber || !birthDateInput) { /* ... (Validación sin cambios) ... */ return; }
+        if (!docType || !docNumber || !birthDateInput) { 
+            elements.loginError.textContent = 'Complete todos los campos.';
+            elements.loginError.classList.remove('hidden');
+            return; 
+        }
+         // Check if base data is loaded
+         if (Object.keys(STUDENT_DATA_INTERNAL).length === 0) {
+             console.error("Login Estudiante fallido: Datos de estudiantes no cargados.");
+             elements.loginError.textContent = 'Los datos de estudiantes no están listos. Intente de nuevo.';
+             elements.loginError.classList.remove('hidden');
+             return;
+         }
         const studentData = STUDENT_DATA_INTERNAL[docNumber];
         console.log("Intento Login Estudiante:", { input: { docType, docNumber, birthDateInput }, foundData: studentData ? {bd: studentData.birthDate, dt: studentData.docType} : 'No encontrado'});
-        if (studentData && studentData.docType === docType && studentData.birthDate === birthDateInput) { 
+        
+        // Trim comparison values just in case
+        if (studentData && studentData.docType.trim() === docType.trim() && studentData.birthDate.trim() === birthDateInput.trim()) { 
+            // Check if answer data is ready (optional but good practice)
+             if (Object.keys(STUDENT_ANSWERS).length === 0 || Object.keys(CORRECT_ANSWERS).length === 0) {
+                 console.warn("Login Estudiante OK, pero faltan datos de respuestas/claves.");
+                 // Decide if you want to allow login without detailed report, or show an error
+                 // elements.loginError.textContent = 'Informe detallado no disponible aún.'; 
+                 // elements.loginError.classList.remove('hidden');
+                 // return; 
+             }
             console.log("Login Estudiante EXITOSO"); 
             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'student');
             sessionStorage.setItem(SESSION_USER_ID_KEY, docNumber); 
@@ -849,59 +887,164 @@
     // --- INICIALIZACIÓN ---
     document.addEventListener('DOMContentLoaded', async () => {
          console.time("DOMContentLoaded"); 
-         elements = { /* ... (Asignación completa de elementos reintegrada) ... */ };
-         birthDatePicker = flatpickr(elements.birthDateInput, { locale: "es", dateFormat: "d/m/Y", allowInput: true, disableMobile: "true" });
-         elements.birthDateInput.addEventListener('input', (e) => { /* ... (Input mask reintegrado) ... */ });
+         elements = { // Asegúrate de que todos los IDs coincidan con tu HTML
+            loginScreen: document.getElementById('login-screen'), reportScreen: document.getElementById('report-screen'), adminScreen: document.getElementById('admin-screen'),
+            loginForm: document.getElementById('login-form'), docTypeInput: document.getElementById('doc-type'), docNumberInput: document.getElementById('document-number'), birthDateInput: document.getElementById('birth-date'), loginError: document.getElementById('login-error'),
+            studentNameHeader: document.getElementById('student-name-header'), individualReportContent: document.getElementById('individual-report-content'),
+            logoutBtnReport: document.getElementById('logout-btn-report'), backToAdminBtn: document.getElementById('back-to-admin-btn'), logoutBtnAdmin: document.getElementById('logout-btn-admin'),
+            body: document.body, globalScoreNumber: document.getElementById('global-score-number'), percentileBadgeContainer: document.getElementById('percentile-badge-container'), percentileValue: document.getElementById('percentile-value'),
+            adminTableBody: document.getElementById('admin-table-body'), adminSearchInput: document.getElementById('admin-search'), adminTable: document.getElementById('admin-table'), adminNoResults: document.getElementById('admin-no-results'),
+            adminModalBackdrop: document.getElementById('admin-modal-backdrop'), adminModalContainer: document.getElementById('admin-modal-container'), adminModalHeader: document.getElementById('admin-modal-header'), adminModalBody: document.getElementById('admin-modal-body'), adminModalCloseBtn: document.getElementById('admin-modal-close-btn'),
+            statTotalStudents: document.getElementById('stat-total-students'), statAvgScore: document.getElementById('stat-avg-score'), statStdDev: document.getElementById('stat-std-dev'), statMaxScore: document.getElementById('stat-max-score'), statMinScore: document.getElementById('stat-min-score'),
+            subjectAvgChartCanvas: document.getElementById('subject-avg-chart'), scoreDistChartCanvas: document.getElementById('score-dist-chart'), topErrorsChartCanvas: document.getElementById('top-errors-chart'), // Asegúrate que este ID exista
+            paginationContainer: document.getElementById('pagination-container'),
+            detailedReportToggle: document.getElementById('detailed-report-toggle'),
+            detailedReportContainer: document.getElementById('detailed-report-container'),
+            detailedReportContent: document.getElementById('detailed-report-content'),
+            modalTabs: document.querySelector('.modal-tabs'),
+            modalTabCompetencias: document.getElementById('tab-competencias'),
+            modalTabPreguntas: document.getElementById('tab-preguntas'),
+            modalIndividualReportContent: document.getElementById('modal-individual-report-content'),
+            modalDetailedReportContent: document.getElementById('modal-detailed-report-content'),
+            subjectRadarChartCanvas: document.getElementById('subject-radar-chart'),
+            modalSubjectRadarChartCanvas: document.getElementById('modal-subject-radar-chart'),
+         }; 
 
+         // Initialize Flatpickr and Input Mask
+         try {
+             birthDatePicker = flatpickr(elements.birthDateInput, { locale: "es", dateFormat: "d/m/Y", allowInput: true, disableMobile: "true" });
+             elements.birthDateInput.addEventListener('input', (e) => { 
+                 let v = e.target.value.replace(/\D/g, ''); 
+                 if (v.length > 2) v = v.substring(0,2)+'/'+v.substring(2);
+                 if (v.length > 5) v = v.substring(0,5)+'/'+v.substring(5,9); 
+                 e.target.value = v;
+             });
+         } catch(pickerError) {
+             console.error("Error inicializando Flatpickr:", pickerError);
+             // Optionally disable date input if picker fails
+         }
+
+         // Load base data
+         let loadSuccess = false;
          try {
             console.time("loadBaseData");
-            // Cargar en paralelo y esperar a todas
             const results = await Promise.allSettled([
                 loadStudentDataFromGitHub(), 
                 loadCorrectAnswers(),       
                 loadStudentAnswers()        
             ]);
             console.timeEnd("loadBaseData");
-            let criticalError = false;
-            results.forEach((result, index) => {
-                if (result.status === 'rejected') {
-                    console.error(`Error crítico cargando archivo ${index}:`, result.reason);
-                    criticalError = true; 
-                }
-            });
-            if (criticalError) {
-                 elements.loginError.textContent = 'Error crítico al cargar datos. Refresque.';
+            
+            // Check if ALL loads were successful
+            loadSuccess = results.every(r => r.status === 'fulfilled' && r.value === true); 
+            
+            if (!loadSuccess) {
+                 console.error("Una o más cargas de datos fallaron. Ver logs anteriores.");
+                 results.forEach((result, index) => {
+                     if (result.status === 'rejected') {
+                         console.error(`Detalle Falla Carga ${index}:`, result.reason);
+                     }
+                 });
+                 elements.loginError.textContent = 'Error crítico al cargar datos base. Refresque.';
                  elements.loginError.classList.remove('hidden');
-                 return; // Detener si falla la carga base
+                 // Disable login button if data loading failed critically
+                 const loginButton = elements.loginForm.querySelector('button[type="submit"]');
+                 if(loginButton) loginButton.disabled = true;
+                 return; // Stop initialization
+            } else {
+                 console.log("Todos los datos base cargados exitosamente.");
             }
-         } catch (error) { 
-            console.error("Error inesperado en carga inicial:", error);
-            elements.loginError.textContent = 'Error inesperado. Refresque.';
+         } catch (error) { // Catch unexpected errors during the loading sequence
+            console.error("Error inesperado durante la carga inicial:", error);
+            elements.loginError.textContent = 'Error inesperado al cargar. Refresque.';
             elements.loginError.classList.remove('hidden');
             return; 
          }
 
+        // Restore session ONLY if data loaded successfully
          const savedUserType = sessionStorage.getItem(SESSION_USER_TYPE_KEY);
          const savedUserId = sessionStorage.getItem(SESSION_USER_ID_KEY);
          let restoredSession = false;
-         if (savedUserType && savedUserId) { /* ... (Lógica de restauración de sesión reintegrada) ... */ }
+         if (loadSuccess && savedUserType && savedUserId) { 
+            if (savedUserType === 'admin' && savedUserId === 'admin') {
+                console.log("Restaurando sesión Admin...");
+                isAdminViewingReport = false; 
+                calculatedAdminData = false; // Force recalculation on restore
+                showAdminView(true); 
+                restoredSession = true;
+            } else if (savedUserType === 'student') {
+                const studentData = STUDENT_DATA_INTERNAL[savedUserId];
+                if (studentData) {
+                     console.log("Restaurando sesión Estudiante:", savedUserId);
+                    isAdminViewingReport = false; 
+                    showIndividualReport(studentData, true); 
+                    restoredSession = true;
+                } else {
+                    console.warn("ID de estudiante en sesión no encontrado. Limpiando.");
+                    handleLogout(); // Clear invalid session
+                }
+            }
+         }
 
-         // Asignar Listeners (reintegrados)
-         elements.loginForm.addEventListener('submit', handleLogin);
-         elements.logoutBtnReport.addEventListener('click', handleLogout);
-         elements.logoutBtnAdmin.addEventListener('click', handleLogout);
-         elements.backToAdminBtn.addEventListener('click', handleBackToAdmin);
-         elements.adminModalCloseBtn.addEventListener('click', handleCloseModal);
-         elements.adminModalBackdrop.addEventListener('click', (e) => { if (e.target === elements.adminModalBackdrop) handleCloseModal(); });
-         elements.adminSearchInput.addEventListener('input', (e) => { currentAdminFilter = e.target.value; currentPage = 1; renderAdminTable(); });
-         const thead = elements.adminTable?.querySelector('thead');
-         if (thead) { thead.addEventListener('click', (e) => { /* ... (Listener tabla admin reintegrado) ... */ }); }
-         if (elements.adminTableBody) { elements.adminTableBody.addEventListener('click', (e) => { /* ... (Listener botón "Ver" reintegrado) ... */ }); }
-         elements.detailedReportToggle?.addEventListener('click', () => { /* ... (Listener reintegrado) ... */ });
-         elements.modalTabs?.addEventListener('click', (e) => { /* ... (Listener tabs modal reintegrado) ... */ });
+         // Assign listeners ONLY if data loaded successfully
+         if (loadSuccess) {
+             elements.loginForm.addEventListener('submit', handleLogin);
+             elements.logoutBtnReport.addEventListener('click', handleLogout);
+             elements.logoutBtnAdmin.addEventListener('click', handleLogout);
+             elements.backToAdminBtn.addEventListener('click', handleBackToAdmin);
+             elements.adminModalCloseBtn.addEventListener('click', handleCloseModal);
+             elements.adminModalBackdrop.addEventListener('click', (e) => { if (e.target === elements.adminModalBackdrop) handleCloseModal(); });
+             elements.adminSearchInput.addEventListener('input', (e) => { currentAdminFilter = e.target.value; currentPage = 1; renderAdminTable(); });
+             const thead = elements.adminTable?.querySelector('thead');
+             if (thead) { thead.addEventListener('click', (e) => { 
+                const header = e.target.closest('.sortable-header'); if (!header) return; const key = header.dataset.sortKey; if (!key) return;
+                if (currentAdminSort.key === key) currentAdminSort.direction = currentAdminSort.direction === 'asc' ? 'desc' : 'asc';
+                else { currentAdminSort.key = key; currentAdminSort.direction = ['nombre', 'email', 'id'].includes(key) ? 'asc' : 'desc'; }
+                currentPage = 1; renderAdminTable();
+              }); }
+             if (elements.adminTableBody) { elements.adminTableBody.addEventListener('click', (e) => { 
+                 const viewButton = e.target.closest('.view-report-btn'); if (!viewButton) return;
+                 const studentId = viewButton.dataset.studentId; const studentData = STUDENT_DATA_INTERNAL[studentId]; 
+                 if (studentData) {
+                     // Llenar Modal
+                     elements.modalIndividualReportContent.innerHTML = generateReportHtml(studentData);
+                     addToggleListeners('modal-individual-report-content');
+                     renderSubjectRadarChart(studentData, 'modal-subject-radar-chart');
+                     elements.modalDetailedReportContent.innerHTML = generateDetailedReportHtml(studentData.docNumber); 
+                     elements.adminModalHeader.textContent = `Informe: ${studentData.nombre}`;
+                     // Mostrar Modal y Resetear Tabs
+                     elements.adminModalBackdrop.style.display = 'flex';
+                     setTimeout(() => elements.adminModalBackdrop.classList.add('shown'), 10);
+                     elements.body.classList.add('overflow-hidden');
+                     elements.modalTabs.querySelector('.modal-tab-btn.active')?.classList.remove('active');
+                     elements.modalTabs.querySelector('[data-tab="tab-competencias"]').classList.add('active');
+                     elements.modalTabCompetencias.classList.add('active');
+                     elements.modalTabPreguntas.classList.remove('active');
+                 } else { console.error("Modal: No se encontraron datos (Hoja 1) para ID:", studentId); /* Show error in modal? */ }
+              }); }
+             elements.detailedReportToggle?.addEventListener('click', () => { 
+                 elements.detailedReportToggle.classList.toggle('expanded'); 
+                 elements.detailedReportContainer.classList.toggle('expanded'); 
+             });
+             elements.modalTabs?.addEventListener('click', (e) => { 
+                 const tabButton = e.target.closest('.modal-tab-btn'); if (!tabButton) return;
+                 elements.modalTabs.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+                 document.querySelectorAll('.modal-tab-content').forEach(content => content.classList.remove('active'));
+                 tabButton.classList.add('active');
+                 const targetTab = document.getElementById(tabButton.dataset.tab);
+                 if(targetTab) targetTab.classList.add('active');
+             });
+             console.log("Listeners asignados.");
+         } else {
+             console.warn("Listeners no asignados debido a errores de carga.");
+         }
 
-         if (!restoredSession) elements.loginScreen.classList.remove('hidden'); 
-         else elements.loginScreen.classList.add('hidden'); 
+         // Show login screen if no session was restored OR if loading failed
+         if (!restoredSession) {
+             elements.loginScreen.classList.remove('hidden'); 
+         } else {
+             elements.loginScreen.classList.add('hidden'); 
+         }
 
          console.timeEnd("DOMContentLoaded");
          console.log("Inicialización completa.");
