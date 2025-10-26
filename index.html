@@ -759,7 +759,7 @@
                         { level: 0, name: 'Identificación de Actores', desc: 'Reconoce actores individuales o colectivos en un evento social simple (ej. una protesta).' },
                         { level: 1, name: 'Comprensión de Conceptos', desc: 'Entiende conceptos básicos como "ley", "derecho", "deber" en un contexto dado.' },
                         { level: 2, name: 'Relación Causa-Efecto', desc: 'Establece relaciones de causa y efecto en procesos históricos o sociales.' },
-                        { level: 3, name: 'Multicausalidad', desc: 'Comprende que los fenómenos sociales responden a múltiples causas (económicas, políticas, culturales).' }
+                        { level: 3, name: 'Multicausalidad', desc: 'Comprende que los fenómenos sociais responden a múltiples causas (económicas, políticas, culturais).' }
                     ]
                 },
                 {
@@ -774,10 +774,10 @@
                 {
                     name: 'Pensamiento Reflexivo y Sistémico',
                     skills: [
-                        { level: 0, name: 'Reconocimiento de Problemas', desc: 'Identifica problemas sociales en su entorno inmediato (ej. basura en el parque).' },
+                        { level: 0, name: 'Reconocimiento de Problemas', desc: 'Identifica problemas sociais en su entorno imediato (ej. basura en el parque).' },
                         { level: 1, name: 'Análisis de la Constitución', desc: 'Comprende la función de la Constitución y los mecanismos básicos de participación ciudadana.' },
                         { level: 2, name: 'Análisis de Dimensiones', desc: 'Analiza un problema social desde diferentes dimensiones (política, económica, cultural).' },
-                        { level: 3, name: 'Propuesta de Soluciones', desc: 'Propone soluciones viables y éticas a problemas sociales, considerando sus posibles impactos.' }
+                        { level: 3, name: 'Propuesta de Soluciones', desc: 'Propone soluciones viables y éticas a problemas sociais, considerando sus posibles impactos.' }
                     ]
                 }
             ]
@@ -844,7 +844,7 @@
                         { level: 0, name: 'Identificación de Situación', desc: 'Reconoce dónde podría encontrarse un aviso simple (ej. un menú en un restaurante).' },
                         { level: 1, name: 'Función Comunicativa Simple', desc: 'Entiende la función de un texto corto (ej. una invitación, una advertencia).' },
                         { level: 2, name: 'Contexto y Audiencia', desc: 'Identifica la relación entre los hablantes o el contexto de una conversación corta.' },
-                        { level: 3, name: 'Análisis del Discurso', desc: 'Comprende cómo el lenguaje se adapta a diferentes situaciones sociales y culturales.' }
+                        { level: 3, name: 'Análisis del Discurso', desc: 'Comprende cómo el lenguaje se adapta a diferentes situaciones sociais y culturais.' }
                     ]
                 }
             ]
@@ -854,8 +854,8 @@
     const subjectDescriptions = {
         lectura: "Evalúa la capacidad de comprender y tomar posturas críticas frente a textos.",
         matematicas: "Mide la habilidad para formular y resolver problemas usando conceptos matemáticos.",
-        sociales: "Valora la comprensión de eventos históricos y sociales, y el pensamiento crítico.",
-        ciencias: "Examina la capacidad de analizar fenómenos naturales y proponer explicaciones.",
+        sociales: "Valora la comprensión de eventos históricos y sociais, y el pensamiento crítico.",
+        ciencias: "Examina la capacidad de analizar fenómenos naturais y proponer explicaciones.",
         ingles: "Determina el nivel de competencia en la comprensión y uso del idioma inglés."
     };
 
@@ -963,7 +963,7 @@
         const municipioIndex = headers.findIndex(h => h.toLowerCase() === 'departamento'); 
         const matIndex = headers.findIndex(h => h.toLowerCase() === 'matemáticas');
         const lecIndex = headers.findIndex(h => h.toLowerCase() === 'lectura crítica');
-        const socIndex = headers.findIndex(h => h.toLowerCase() === 'sociales');
+        const SIndex = headers.findIndex(h => h.toLowerCase() === 'sociales');
         const cienIndex = headers.findIndex(h => h.toLowerCase() === 'ciencias naturales');
         const ingIndex = headers.findIndex(h => h.toLowerCase() === 'inglés');
         const globalIndex = headers.findIndex(h => h.toLowerCase() === 'puntaje global');
@@ -983,7 +983,7 @@
                 // Usa la función parseBirthDate corregida
                 birthDate: parseBirthDate(values[birthDateIndex]), 
                 colegio: values[colegioIndex] || 'seamosgenios',
-                puntajes: { matematicas: parseInt(values[matIndex],10)||0, lectura: parseInt(values[lecIndex],10)||0, sociales: parseInt(values[socIndex],10)||0, ciencias: parseInt(values[cienIndex],10)||0, ingles: parseInt(values[ingIndex],10)||0 },
+                puntajes: { matematicas: parseInt(values[matIndex],10)||0, lectura: parseInt(values[lecIndex],10)||0, sociales: parseInt(values[SIndex],10)||0, ciencias: parseInt(values[cienIndex],10)||0, ingles: parseInt(values[ingIndex],10)||0 },
                 puntajeGlobal: parseGlobalScore(values[globalIndex]), municipio: municipioIndex!==-1?(values[municipioIndex]||'Desconocido'):'Desconocido'
             };
         }
@@ -1738,7 +1738,8 @@
         const birthDateInput = elements.birthDateInput.value.trim(); // Fecha del input (ej. 04/02/2004 o 4/2/2004)
 
         // Admin login
-        if (docType === "CC" && docNumber === SUPER_USER_CREDENTIALS.username && birthDateInput === SUPER_USER_CREDENTIALS.password) {
+        // (ADDED .trim() to birthDateInput comparison)
+        if (docType === "CC" && docNumber === SUPER_USER_CREDENTIALS.username && birthDateInput.trim() === SUPER_USER_CREDENTIALS.password) {
             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'admin');
             sessionStorage.setItem(SESSION_USER_ID_KEY, 'admin'); 
             elements.loginError.classList.add('hidden');
@@ -1757,7 +1758,7 @@
 
         console.log("Intento Login Estudiante:", { docType, docNumber, birthDateInput, studentData: studentData ? {bd: studentData.birthDate} : 'No encontrado'});
         
-        // (CORREGIDO) Comparar directamente la fecha del input con la fecha formateada de la BD
+        // Comparar directamente la fecha del input con la fecha formateada de la BD
         if (studentData && studentData.docType === docType && studentData.birthDate === birthDateInput) { 
             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'student');
             sessionStorage.setItem(SESSION_USER_ID_KEY, docNumber); 
