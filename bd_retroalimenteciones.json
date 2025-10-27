@@ -4,21 +4,20 @@
     "sesion": 1,
     "rango_preguntas": "1-10",
     "descripcion": "Clase sobre operaciones básicas y álgebra inicial",
-    "enlace_drive": "https://link_a_tu_video_de_drive_1"
+    "enlace_drive": "https://drive.google.com/file/d/11qryc5Zv8vtnU6pmd8bU5k6EluBUrKpX/view?usp=drivesdk"
   },
   {
     "asignatura": "matematicas",
     "sesion": 1,
     "rango_preguntas": "11-20",
     "descripcion": "Repaso de geometría y estadística básica",
-    "enlace_drive": "https://link_a_tu_video_de_drive_2"
+    "enlace_drive": "https://drive.google.com/file/d/11qryc5Zv8vtnU6pmd8bU5k6EluBUrKpX/view?usp=drivesdk"
   },
   {
     "asignatura": "lectura",
     "sesion": 1,
     "rango_preguntas": "1-15",
     "descripcion": "Análisis de textos argumentativos",
-    "enlace_drive": "https://link_a_tu_video_de_drive_3"
+    "enlace_drive": "https://drive.google.com/file/d/11qryc5Zv8vtnU6pmd8bU5k6EluBUrKpX/view?usp=drivesdk"
   }
-  // ... Agrega aquí todas las entradas para cada asignatura, sesión y rango de preguntas
 ]
