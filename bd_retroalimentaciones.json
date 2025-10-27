@@ -1,23 +1,86 @@
-[
-  {
-    "asignatura": "matematicas",
-    "sesion": 1,
-    "rango_preguntas": "1-10",
-    "descripcion": "Clase sobre operaciones básicas y álgebra inicial",
-    "enlace_drive": "https://drive.google.com/file/d/11qryc5Zv8vtnU6pmd8bU5k6EluBUrKpX/view?usp=drivesdk"
-  },
-  {
-    "asignatura": "matematicas",
-    "sesion": 1,
-    "rango_preguntas": "11-20",
-    "descripcion": "Repaso de geometría y estadística básica",
-    "enlace_drive": "https://drive.google.com/file/d/11qryc5Zv8vtnU6pmd8bU5k6EluBUrKpX/view?usp=drivesdk"
-  },
-  {
-    "asignatura": "lectura",
-    "sesion": 1,
-    "rango_preguntas": "1-15",
-    "descripcion": "Análisis de textos argumentativos",
-    "enlace_drive": "https://drive.google.com/file/d/11qryc5Zv8vtnU6pmd8bU5k6EluBUrKpX/view?usp=drivesdk"
-  }
-]
+{
+
+    "matematicas": [
+
+        {
+
+            "title": "Clase 1: Geometría y Estadística",
+            "question_range": "Preguntas 1-10",
+            "video_link": "https://drive.google.com/...",
+            "description": "Repaso de conceptos de geometría y análisis de datos."
+
+        },
+
+        {
+
+            "title": "Clase 2: Álgebra y Funciones",
+            "question_range": "Preguntas 11-20",
+            "video_link": "https://drive.google.com/...",
+            "description": "Fundamentos de álgebra y tipos de funciones."
+
+        }
+
+    ],
+
+    "lectura": [
+
+        {
+
+            "title": "Clase 1: Análisis de Textos Argumentativos",
+            "question_range": "Preguntas 1-12",
+            "video_link": "https://drive.google.com/...",
+            "description": "Cómo identificar la idea principal y la postura del autor."
+
+        }
+
+    ],
+
+    "sociales": [
+
+        {
+
+            "title": "Clase 1: Constitución y Derechos",
+
+            "question_range": "Preguntas 1-15",
+
+            "video_link": "https://drive.google.com/...",
+
+            "description": "Análisis de los derechos fundamentales y la estructura del Estado."
+
+        }
+
+    ],
+
+    "ciencias": [
+
+        {
+
+            "title": "Clase 1: Biología y Química",
+
+            "question_range": "Preguntas 1-15",
+
+            "video_link": "https://drive.google.com/...",
+
+            "description": "Repaso de conceptos de célula, ecosistemas y reacciones."
+
+        }
+
+    ],
+
+    "ingles": [
+
+        {
+
+            "title": "Clase 1: Reading Comprehension Tips",
+
+            "question_range": "Preguntas 1-10",
+
+            "video_link": "https://drive.google.com/...",
+
+            "description": "Strategies for understanding texts (Parts 1-4)."
+
+        }
+
+    ]
+
+}
