@@ -27,8 +27,8 @@
                         'brand-text': '#374151',     // Gris oscuro para texto
                         'brand-bg': '#f4f4f0',       // Fondo ligeramente crema/gris
                         'brand-header': '#1f2937',   // Gris muy oscuro para encabezados
-                        'brand-red': '#DC2626',      // Rojo para errores/alertas
-                        'brand-green': '#16A34A',    // Verde para éxito
+                        'brand-red': '#DC2626',     // Rojo para errores/alertas
+                        'brand-green': '#16A34A',   // Verde para éxito
                         'brand-blue-dark': '#1e40af', // Azul oscuro para hover
                         'brand-surface': '#ffffff',   // Blanco para superficies (cards)
                         'brand-border': '#e5e7eb',    // Gris claro para bordes
@@ -296,6 +296,90 @@
         .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
         .tooltip .tooltiptext::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #374151 transparent transparent transparent; }
 
+
+        /* ----- INICIO: NUEVOS ESTILOS Videos Colapsables ----- */
+
+        /* Contenedor Principal (el <details> grande) */
+        .feedback-videos-container {
+            background-color: #f9fafb; /* Fondo gris muy claro */
+            border-radius: 0.5rem;
+            border: 1px solid var(--brand-border);
+            transition: all 0.2s ease-in-out;
+            overflow: hidden; /* Para que los bordes redondeados funcionen */
+        }
+        .feedback-videos-container:hover {
+            border-color: #d1d5db; /* Borde más oscuro al pasar */
+            box-shadow: var(--box-shadow-subtle);
+        }
+        .feedback-videos-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            list-style: none; /* Ocultar marcador por defecto */
+            transition: background-color 0.2s;
+        }
+        .feedback-videos-summary:hover {
+            background-color: #f3f4f6;
+        }
+        .feedback-videos-summary::-webkit-details-marker {
+            display: none; /* Ocultar marcador en Chrome/Safari */
+        }
+        
+        /* Rotación del chevrón (flecha) principal */
+        .feedback-videos-container[open] > .feedback-videos-summary .summary-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Contenido (padding y borde) */
+        .feedback-videos-content {
+            padding: 0.5rem 1rem 1rem 1rem;
+            border-top: 1px solid var(--brand-border);
+            background-color: var(--brand-surface); /* Fondo blanco */
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem; /* Espacio entre grupos de video */
+        }
+
+        /* Contenedor de Grupo (la "carpeta" <details> anidada) */
+        .video-group-container {
+            background-color: #f9fafb;
+            border: 1px solid var(--brand-border);
+            border-radius: 0.375rem;
+        }
+        .video-group-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            list-style: none;
+        }
+        .video-group-summary::-webkit-details-marker { display: none; }
+        .video-group-container[open] > .video-group-summary .summary-chevron {
+            transform: rotate(180deg);
+        }
+        .video-group-summary .summary-chevron {
+             transition: transform 0.2s;
+        }
+
+        /* Contenido del Grupo (la lista de videos) */
+        .video-group-content {
+            padding: 0.75rem;
+            border-top: 1px solid var(--brand-border);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Ajustes a los items de video (para que encajen bien) */
+        .feedback-video-item {
+            /* Los estilos que ya tenías están bien */
+            margin-bottom: 0; /* Quitar margen, ahora usamos 'gap' */
+        }
+
+        /* ----- FIN: NUEVOS ESTILOS Videos Colapsables ----- */
     </style>
 </head>
 <body class="bg-brand-bg text-brand-text">
@@ -420,7 +504,7 @@
                      </div>
                      <div class="card p-4 sm:p-5 flex items-center gap-4">
                           <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-100 text-brand-red flex items-center justify-center flex-shrink-0">
-                               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" /></svg>
                           </div>
                           <div><p class="text-xs sm:text-sm text-gray-500">Puntaje Bajo</p><p id="stat-min-score" class="text-2xl sm:text-3xl font-bold text-gray-800">0</p></div>
                      </div>
@@ -520,6 +604,28 @@
         session2Keys: `${BASE_CSV_URL}Claves_S2.csv?t=${TIMESTAMP}`
     };
 
+    // --- (Placeholder) Videos de Retroalimentación ---
+    // Este objeto será reemplazado o llenado desde un JSON/CSV en el futuro
+    const FEEDBACK_VIDEOS = {
+        matematicas: [
+            { title: "Repaso Ecuaciones Lineales", video_link: "#", description: "Álgebra (Competencia 2)", question_range: "1-5" },
+            { title: "Conceptos de Geometría Básica", video_link: "#", description: "Geometría (Competencia 1)", question_range: "6-10" },
+            { title: "Introducción a Estadística", video_link: "#", description: "Estadística (Competencia 3)", question_range: "11-15" },
+            { title: "Repaso General Matemáticas", video_link: "#", description: "General", question_range: "Todos" }
+        ],
+        lectura: [
+            { title: "Identificando Ideas Principales", video_link: "#", description: "Competencia 1", question_range: "1-8" },
+            { title: "Análisis de Textos Argumentativos", video_link: "#", description: "Competencia 3", question_range: "9-15" }
+        ],
+        sociales: [
+            { title: "Derechos Fundamentales", video_link: "#", description: "Competencia 3", question_range: "N/A" }
+        ],
+        ciencias: [], // Sin videos para este ejemplo
+        ingles: [
+            { title: "Uso del Presente Simple", video_link: "#", description: "Nivel A1", question_range: "1-10" }
+        ]
+    };
+
     // --- Definiciones de Skills (MODIFICADAS POR JSON) ---
     const skillsData = {
         lectura: {
@@ -537,9 +643,9 @@
                     { name: 'Habilidad 1.3', desc: 'Reconoce la función de conectores y signos de puntuación.', level: 3 }
                 ]},
                 { name: 'Comprender cómo se articulan las partes de un texto', skills: [
-                     { name: 'Habilidad 2.1', desc: 'Identifica la idea principal y las ideas secundarias.', level: 2 },
-                     { name: 'Habilidad 2.2', desc: 'Comprende la relación entre diferentes partes del texto (inicio, nudo, desenlace).', level: 3 },
-                     { name: 'Habilidad 2.3', desc: 'Analiza la estructura argumentativa de un texto.', level: 4 }
+                        { name: 'Habilidad 2.1', desc: 'Identifica la idea principal y las ideas secundarias.', level: 2 },
+                        { name: 'Habilidad 2.2', desc: 'Comprende la relación entre diferentes partes del texto (inicio, nudo, desenlace).', level: 3 },
+                        { name: 'Habilidad 2.3', desc: 'Analiza la estructura argumentativa de un texto.', level: 4 }
                 ]},
                 { name: 'Reflexionar a partir de un texto y evaluar su contenido', skills: [
                     { name: 'Habilidad 3.1', desc: 'Establece relaciones entre el texto y su contexto.', level: 3 },
@@ -558,20 +664,20 @@
             ],
             competencies: [
                 { name: 'Interpretación y representación', skills: [
-                     { name: 'Habilidad 1.1', desc: 'Extrae información de tablas, gráficos y esquemas.', level: 2 },
-                     { name: 'Habilidad 1.2', desc: 'Traduce entre diferentes representaciones (verbal, gráfica, simbólica).', level: 3 },
-                     { name: 'Habilidad 1.3', desc: 'Comprende y utiliza propiedades de figuras geométricas.', level: 3 }
+                        { name: 'Habilidad 1.1', desc: 'Extrae información de tablas, gráficos y esquemas.', level: 2 },
+                        { name: 'Habilidad 1.2', desc: 'Traduce entre diferentes representaciones (verbal, gráfica, simbólica).', level: 3 },
+                        { name: 'Habilidad 1.3', desc: 'Comprende y utiliza propiedades de figuras geométricas.', level: 3 }
                 ]},
                 { name: 'Formulación y ejecución', skills: [
-                     { name: 'Habilidad 2.1', desc: 'Realiza operaciones básicas (suma, resta, multiplicación, división).', level: 2 },
-                     { name: 'Habilidad 2.2', desc: 'Resuelve ecuaciones lineales y sistemas de ecuaciones.', level: 3 },
-                     { name: 'Habilidad 2.3', desc: 'Aplica conceptos de proporcionalidad, porcentaje y estadística.', level: 3 },
-                     { name: 'Habilidad 2.4', desc: 'Modela situaciones problema usando funciones.', level: 4 }
+                        { name: 'Habilidad 2.1', desc: 'Realiza operaciones básicas (suma, resta, multiplicación, división).', level: 2 },
+                        { name: 'Habilidad 2.2', desc: 'Resuelve ecuaciones lineales y sistemas de ecuaciones.', level: 3 },
+                        { name: 'Habilidad 2.3', desc: 'Aplica conceptos de proporcionalidad, porcentaje y estadística.', level: 3 },
+                        { name: 'Habilidad 2.4', desc: 'Modela situaciones problema usando funciones.', level: 4 }
                 ]},
                 { name: 'Argumentación', skills: [
-                     { name: 'Habilidad 3.1', desc: 'Justifica procedimientos y respuestas en problemas simples.', level: 3 },
-                     { name: 'Habilidad 3.2', desc: 'Valida la coherencia de los resultados obtenidos.', level: 4 },
-                     { name: 'Habilidad 3.3', desc: 'Plantea y evalúa conjeturas matemáticas.', level: 4 }
+                        { name: 'Habilidad 3.1', desc: 'Justifica procedimientos y respuestas en problemas simples.', level: 3 },
+                        { name: 'Habilidad 3.2', desc: 'Valida la coherencia de los resultados obtenidos.', level: 4 },
+                        { name: 'Habilidad 3.3', desc: 'Plantea y evalúa conjeturas matemáticas.', level: 4 }
                 ]}
             ]
         },
@@ -585,19 +691,19 @@
             ],
             competencies: [
                 { name: 'Pensamiento Social', skills: [
-                     { name: 'Habilidad 1.1', desc: 'Identifica actores y eventos en procesos históricos.', level: 2 },
-                     { name: 'Habilidad 1.2', desc: 'Comprende el funcionamiento de la economía básica.', level: 3 },
-                     { name: 'Habilidad 1.3', desc: 'Analiza relaciones espaciales y su impacto en la sociedad.', level: 3 }
+                        { name: 'Habilidad 1.1', desc: 'Identifica actores y eventos en procesos históricos.', level: 2 },
+                        { name: 'Habilidad 1.2', desc: 'Comprende el funcionamiento de la economía básica.', level: 3 },
+                        { name: 'Habilidad 1.3', desc: 'Analiza relaciones espaciales y su impacto en la sociedad.', level: 3 }
                 ]},
                 { name: 'Interpretación y Análisis de Perspectivas', skills: [
-                     { name: 'Habilidad 2.1', desc: 'Reconoce diferentes puntos de vista en un conflicto social.', level: 3 },
-                     { name: 'Habilidad 2.2', desc: 'Analiza fuentes primarias y secundarias.', level: 4 },
-                     { name: 'Habilidad 2.3', desc: 'Compara perspectivas de diferentes actores sociales.', level: 4 }
+                        { name: 'Habilidad 2.1', desc: 'Reconoce diferentes puntos de vista en un conflicto social.', level: 3 },
+                        { name: 'Habilidad 2.2', desc: 'Analiza fuentes primarias y secundarias.', level: 4 },
+                        { name: 'Habilidad 2.3', desc: 'Compara perspectivas de diferentes actores sociales.', level: 4 }
                 ]},
                 { name: 'Pensamiento Reflexivo y Sistémico', skills: [
-                     { name: 'Habilidad 3.1', desc: 'Comprende los derechos y deberes constitucionales.', level: 2 },
-                     { name: 'Habilidad 3.2', desc: 'Evalúa el impacto de decisiones políticas y económicas.', level: 4 },
-                     { name: 'Habilidad 3.3', desc: 'Propone soluciones éticas a problemas sociales.', level: 4 }
+                        { name: 'Habilidad 3.1', desc: 'Comprende los derechos y deberes constitucionales.', level: 2 },
+                        { name: 'Habilidad 3.2', desc: 'Evalúa el impacto de decisiones políticas y económicas.', level: 4 },
+                        { name: 'Habilidad 3.3', desc: 'Propone soluciones éticas a problemas sociales.', level: 4 }
                 ]}
             ]
         },
@@ -611,20 +717,20 @@
             ],
             competencies: [
                 { name: 'Uso comprensivo del conocimiento científico', skills: [
-                     { name: 'Habilidad 1.1', desc: 'Identifica conceptos básicos de biología (célula, ecosistema).', level: 2 },
-                     { name: 'Habilidad 1.2', desc: 'Reconoce conceptos básicos de química (materia, energía).', level: 2 },
-                     { name: 'Habilidad 1.3', desc: 'Explica fenómenos físicos (movimiento, ondas).', level: 3 },
-                     { name: 'Habilidad 1.4', desc: 'Relaciona conceptos de diferentes áreas de las ciencias.', level: 4 }
+                        { name: 'Habilidad 1.1', desc: 'Identifica conceptos básicos de biología (célula, ecosistema).', level: 2 },
+                        { name: 'Habilidad 1.2', desc: 'Reconoce conceptos básicos de química (materia, energía).', level: 2 },
+                        { name: 'Habilidad 1.3', desc: 'Explica fenómenos físicos (movimiento, ondas).', level: 3 },
+                        { name: 'Habilidad 1.4', desc: 'Relaciona conceptos de diferentes áreas de las ciencias.', level: 4 }
                 ]},
                 { name: 'Explicación de fenómenos', skills: [
-                     { name: 'Habilidad 2.1', desc: 'Describe fenómenos naturales cotidianos.', level: 2 },
-                     { name: 'Habilidad 2.2', desc: 'Construye explicaciones para fenómenos de mediana complejidad.', level: 3 },
-                     { name: 'Habilidad 2.3', desc: 'Utiliza modelos científicos para predecir resultados.', level: 4 }
+                        { name: 'Habilidad 2.1', desc: 'Describe fenómenos naturales cotidianos.', level: 2 },
+                        { name: 'Habilidad 2.2', desc: 'Construye explicaciones para fenómenos de mediana complejidad.', level: 3 },
+                        { name: 'Habilidad 2.3', desc: 'Utiliza modelos científicos para predecir resultados.', level: 4 }
                 ]},
                 { name: 'Indagación', skills: [
-                     { name: 'Habilidad 3.1', desc: 'Interpreta datos presentados en tablas y gráficas.', level: 2 },
-                     { name: 'Habilidad 3.2', desc: 'Identifica variables en un experimento simple.', level: 3 },
-                     { name: 'Habilidad 3.3', desc: 'Plantea hipótesis y diseña experimentos para validarlas.', level: 4 }
+                        { name: 'Habilidad 3.1', desc: 'Interpreta datos presentados en tablas y gráficas.', level: 2 },
+                        { name: 'Habilidad 3.2', desc: 'Identifica variables en un experimento simple.', level: 3 },
+                        { name: 'Habilidad 3.3', desc: 'Plantea hipótesis y diseña experimentos para validarlas.', level: 4 }
                 ]}
             ]
         },
@@ -638,19 +744,19 @@
             ],
             competencies: [
                  { name: 'Competencia Lingüística', skills: [
-                     { name: 'Habilidad 1.1', desc: 'Reconoce vocabulario básico (familia, colores, números).', level: 1 },
-                     { name: 'Habilidad 1.2', desc: 'Comprende avisos y letreros sencillos.', level: 1 },
-                     { name: 'Habilidad 1.3', desc: 'Entiende descripciones cortas de personas y lugares.', level: 2 },
-                     { name: 'Habilidad 1.4', desc: 'Maneja el presente simple y continuo.', level: 2 }
+                        { name: 'Habilidad 1.1', desc: 'Reconoce vocabulario básico (familia, colores, números).', level: 1 },
+                        { name: 'Habilidad 1.2', desc: 'Comprende avisos y letreros sencillos.', level: 1 },
+                        { name: 'Habilidad 1.3', desc: 'Entiende descripciones cortas de personas y lugares.', level: 2 },
+                        { name: 'Habilidad 1.4', desc: 'Maneja el presente simple y continuo.', level: 2 }
                  ]},
                  { name: 'Competencia Pragmática', skills: [
-                     { name: 'Habilidad 2.1', desc: 'Identifica la intención comunicativa en mensajes cortos.', level: 2 },
-                     { name: 'Habilidad 2.2', desc: 'Comprende la idea principal en textos sobre temas familiares.', level: 3 },
-                     { name: 'Habilidad 2.3', desc: 'Relaciona partes de un texto para entender su coherencia.', level: 3 }
+                        { name: 'Habilidad 2.1', desc: 'Identifica la intención comunicativa en mensajes cortos.', level: 2 },
+                        { name: 'Habilidad 2.2', desc: 'Comprende la idea principal en textos sobre temas familiares.', level: 3 },
+                        { name: 'Habilidad 2.3', desc: 'Relaciona partes de un texto para entender su coherencia.', level: 3 }
                  ]},
                  { name: 'Competencia Sociolingüística', skills: [
-                     { name: 'Habilidad 3.1', desc: 'Reconoce fórmulas de cortesía y saludos.', level: 1 },
-                     { name: 'Habilidad 3.2', desc: 'Adapta el lenguaje a situaciones formales e informales simples.', level: 2 }
+                        { name: 'Habilidad 3.1', desc: 'Reconoce fórmulas de cortesía y saludos.', level: 1 },
+                        { name: 'Habilidad 3.2', desc: 'Adapta el lenguaje a situaciones formales e informales simples.', level: 2 }
                  ]}
             ]
         }
@@ -670,7 +776,7 @@
          { id: 'sociales', name: 'Sociales y Ciudadanas', color: 'var(--color-sociales)' },
          { id: 'ciencias', name: 'Ciencias Naturales', color: 'var(--color-ciencias)' },
          { id: 'ingles', name: 'Inglés', color: 'var(--color-ingles)' },
-   ];
+    ];
     const subjects = ['lectura', 'matematicas', 'sociales', 'ciencias', 'ingles'];
 
     // --- Variables de Estado ---
@@ -701,7 +807,7 @@
 
     // --- Constantes para sessionStorage ---
     const SESSION_USER_TYPE_KEY = 'informeSaberUserType_v2'; 
-    const SESSION_USER_ID_KEY = 'informeSaberUserId_v2';   
+    const SESSION_USER_ID_KEY = 'informeSaberUserId_v2';    
 
     // --- Funciones Helper ---
     function parseCSVLine(line) {
@@ -842,25 +948,25 @@
     }
 
     function parseAnswerKeys(csvText, targetObject) {
-        if (csvText.charCodeAt(0) === 0xFEFF) csvText = csvText.substring(1);
-        const lines = csvText.trim().split(/\r?\n/).filter(Boolean);
-        if (lines.length < 2) {
-            console.error("Archivo de claves inválido o vacío.");
-            return;
-        }
-        const headers = parseCSVLine(lines[0]);
-        const keys = parseCSVLine(lines[1]);
+       if (csvText.charCodeAt(0) === 0xFEFF) csvText = csvText.substring(1);
+       const lines = csvText.trim().split(/\r?\n/).filter(Boolean);
+       if (lines.length < 2) {
+           console.error("Archivo de claves inválido o vacío.");
+           return;
+       }
+       const headers = parseCSVLine(lines[0]);
+       const keys = parseCSVLine(lines[1]);
 
-        if (headers.length !== keys.length) {
-            console.error("Discrepancia entre encabezados y claves.");
-            return;
-        }
+       if (headers.length !== keys.length) {
+           console.error("Discrepancia entre encabezados y claves.");
+           return;
+       }
 
-        headers.forEach((header, index) => {
-            if (header && keys[index]) {
-                targetObject[header] = keys[index];
-            }
-        });
+       headers.forEach((header, index) => {
+           if (header && keys[index]) {
+               targetObject[header] = keys[index];
+           }
+       });
     }
 
     function parseStudentAnswers(csvText, targetObject) {
@@ -1018,7 +1124,7 @@
                      </div>
                  `;
              }).join('');
-          };
+         };
 
          const subjectCardsHtml = filterOptions.map(subjectInfo => {
              const subjectKey = subjectInfo.id;
@@ -1046,14 +1152,19 @@
                              ${comparisonHtml}
                          </div>
                      </div>
+                     
+                     <!-- INICIO: Modificación Paso 1 y 2 -->
+                     ${renderFeedbackVideos(subjectKey)}
+                     <!-- FIN: Modificación Paso 1 y 2 -->
+                     
                      <div class="mb-5 sm:mb-6">
-                          <h3 class="text-base sm:text-lg font-semibold text-brand-header mb-1 sm:mb-2 flex items-center gap-2">
-                              Nivel: <span class="px-2 py-0.5 rounded text-sm font-bold text-white" style="background-color: ${levelData.color};">${levelData.label}</span>
-                              <span class="tooltip text-gray-400 cursor-help">
-                                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
-                                   <span class="tooltiptext">${levelData.desc}</span>
-                              </span>
-                          </h3>
+                         <h3 class="text-base sm:text-lg font-semibold text-brand-header mb-1 sm:mb-2 flex items-center gap-2">
+                             Nivel: <span class="px-2 py-0.5 rounded text-sm font-bold text-white" style="background-color: ${levelData.color};">${levelData.label}</span>
+                             <span class="tooltip text-gray-400 cursor-help">
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>
+                                 <span class="tooltiptext">${levelData.desc}</span>
+                             </span>
+                         </h3>
                          <div class="level-steps-container">
                              ${renderLevelSteps(score, subjectData.levels)}
                          </div>
@@ -1070,6 +1181,90 @@
 
          return subjectCardsHtml;
     }
+
+    <!-- INICIO: Modificación Paso 2 -->
+    // NUEVA FUNCIÓN: Renderizar videos de retroalimentación (colapsable e interactivo)
+    function renderFeedbackVideos(subjectKey) {
+        const videos = FEEDBACK_VIDEOS[subjectKey];
+        // Si no hay videos, no renderiza nada (ni el contenedor)
+        if (!videos || videos.length === 0) {
+            return ''; 
+        }
+
+        // 1. Agrupar videos por 'description' (¡Esto crea las "carpetas"!)
+        const videosAgrupados = {};
+        videos.forEach(video => {
+            // Usar 'General' si la descripción está vacía
+            const groupName = video.description || 'General'; 
+            if (!videosAgrupados[groupName]) {
+                videosAgrupados[groupName] = [];
+            }
+            videosAgrupados[groupName].push(video);
+        });
+
+        // 2. Generar el HTML para cada grupo (cada "carpeta")
+        const gruposHtml = Object.keys(videosAgrupados).map(groupName => {
+            
+            // Generar el HTML para cada video dentro de este grupo
+            const videoLinksHtml = videosAgrupados[groupName].map(video => `
+                <div class="feedback-video-item flex items-start gap-3">
+                    <div class="video-icon text-brand-primary mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <a href="${video.video_link || '#'}" target="_blank" rel="noopener noreferrer" class="video-link text-sm font-semibold block text-brand-secondary hover:text-brand-blue-dark hover:underline">
+                            ${video.title || 'Video de Repaso'}
+                        </a>
+                        <p class="text-xs text-gray-600 mt-0.5">
+                            Preguntas: ${video.question_range || 'N/A'}
+                        </p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Devolver la "carpeta" (otro <details> anidado) para este grupo
+            return `
+                <details class="video-group-container" open> <summary class="video-group-summary">
+                        <span class="font-semibold text-sm text-gray-700">${groupName}</span>
+                        <svg class="summary-chevron h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </summary>
+                    <div class="video-group-content">
+                        ${videoLinksHtml}
+                    </div>
+                </details>
+            `;
+
+        }).join('');
+
+
+        // 3. Devolver el contenedor principal colapsable
+        // El 'mb-4' lo separa del bloque "Nivel" que viene después
+        return `
+            <details class="feedback-videos-container mb-4">
+                <summary class="feedback-videos-summary group">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                        </svg>
+                        <h4 class="text-base font-semibold text-brand-header">Clases de Retroalimentación (${videos.length})</h4>
+                    </div>
+                    <svg class="summary-chevron h-5 w-5 text-gray-500 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </summary>
+                <div class="feedback-videos-content">
+                    ${gruposHtml}
+                </div>
+            </details>
+        `;
+    }
+    <!-- FIN: Modificación Paso 2 -->
+
 
     // --- Generar HTML para Feedback Detallado (CON DATOS) ---
     function generateDetailedFeedbackHtml(studentDocNumber) {
@@ -1098,8 +1293,8 @@
             orderedSubjects.forEach(subjectKey => {
                 const subjectInfo = filterOptions.find(opt => opt.id === subjectKey);
                 html += `<div class="feedback-subject-group">
-                            <h4 class="feedback-subject-title" style="border-color: ${subjectInfo?.color || '#ccc'}; color: ${subjectInfo?.color || 'inherit'};">${subjectInfo?.name || subjectKey}</h4>
-                            <div class="feedback-card-list">`;
+                             <h4 class="feedback-subject-title" style="border-color: ${subjectInfo?.color || '#ccc'}; color: ${subjectInfo?.color || 'inherit'};">${subjectInfo?.name || subjectKey}</h4>
+                             <div class="feedback-card-list">`;
 
                 questionsBySubject[subjectKey].forEach(header => {
                     const correctAnswer = answerKeys[header];
@@ -1278,7 +1473,7 @@
          elements.backToAdminBtn.classList.toggle('hidden', !isAdminViewingReport);
 
          if (!fromSession) window.scrollTo(0, 0);
-    }
+     }
 
     // --- Funciones Admin ---
     function calculateAdminStats() {
@@ -1305,46 +1500,46 @@
          return { scoreDistribution };
      }
     function renderSubjectAvgChart() {
-        if (subjectAvgChartInstance) subjectAvgChartInstance.destroy();
-        const ctx = elements.subjectAvgChartCanvas?.getContext('2d');
-        if (!ctx) return;
-        subjectAvgChartInstance = new Chart(ctx, {
-             type: 'bar',
-             data: {
-                 labels: ['Lectura', 'Matemáticas', 'Sociales', 'Ciencias', 'Inglés'],
-                 datasets: [{
-                     label: 'Promedio Grupal',
-                     data: [groupAverages.lectura, groupAverages.matematicas, groupAverages.sociales, groupAverages.ciencias, groupAverages.ingles],
-                     backgroundColor: [
-                         'rgba(2, 132, 199, 0.7)', 
-                         'rgba(220, 38, 38, 0.7)',  
-                         'rgba(202, 138, 4, 0.7)',  
-                         'rgba(22, 163, 74, 0.7)',  
-                         'rgba(147, 51, 234, 0.7)'
-                     ],
-                     borderColor: [
-                         '#0284c7', '#dc2626', '#ca8a04', '#16a34a', '#9333ea'
-                     ],
-                     borderWidth: 1.5, 
-                     borderRadius: 6,
-                     barPercentage: 0.7, 
-                     categoryPercentage: 0.8
-                 }]
-             },
-             options: {
-                 responsive: true, maintainAspectRatio: false,
-                 scales: {
-                     y: { beginAtZero: true, max: 100, grid: { color: '#e5e7eb' }, ticks: { color: '#374151', font: { size: 10 } } },
-                     x: { grid: { display: false }, ticks: { color: '#374151', font: { weight: '500', size: 11 } } }
-                 },
-                 plugins: {
-                     legend: { display: false },
-                     tooltip: {
-                         enabled: true, backgroundColor: '#1f2937', titleFont: { weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4, displayColors: false
-                     }
-                 }
-             }
-        });
+       if (subjectAvgChartInstance) subjectAvgChartInstance.destroy();
+       const ctx = elements.subjectAvgChartCanvas?.getContext('2d');
+       if (!ctx) return;
+       subjectAvgChartInstance = new Chart(ctx, {
+           type: 'bar',
+           data: {
+               labels: ['Lectura', 'Matemáticas', 'Sociales', 'Ciencias', 'Inglés'],
+               datasets: [{
+                   label: 'Promedio Grupal',
+                   data: [groupAverages.lectura, groupAverages.matematicas, groupAverages.sociales, groupAverages.ciencias, groupAverages.ingles],
+                   backgroundColor: [
+                       'rgba(2, 132, 199, 0.7)', 
+                       'rgba(220, 38, 38, 0.7)',  
+                       'rgba(202, 138, 4, 0.7)',  
+                       'rgba(22, 163, 74, 0.7)',  
+                       'rgba(147, 51, 234, 0.7)'
+                   ],
+                   borderColor: [
+                       '#0284c7', '#dc2626', '#ca8a04', '#16a34a', '#9333ea'
+                   ],
+                   borderWidth: 1.5, 
+                   borderRadius: 6,
+                   barPercentage: 0.7, 
+                   categoryPercentage: 0.8
+               }]
+           },
+           options: {
+               responsive: true, maintainAspectRatio: false,
+               scales: {
+                   y: { beginAtZero: true, max: 100, grid: { color: '#e5e7eb' }, ticks: { color: '#374151', font: { size: 10 } } },
+                   x: { grid: { display: false }, ticks: { color: '#374151', font: { weight: '500', size: 11 } } }
+               },
+               plugins: {
+                   legend: { display: false },
+                   tooltip: {
+                       enabled: true, backgroundColor: '#1f2937', titleFont: { weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4, displayColors: false
+                   }
+               }
+           }
+       });
      }
     function renderScoreDistChart(scoreDistribution) {
          if (scoreDistChartInstance) scoreDistChartInstance.destroy();
@@ -1487,16 +1682,16 @@
          if (nextPageBtn) nextPageBtn.disabled = (currentAdminPage === totalPages);
 
          updateAdminSortIcons();
-    }
+     }
     
     function updateAdminSortIcons() {
-       document.querySelectorAll('#admin-screen .sortable-header').forEach(header => {
-           const key = header.dataset.sortKey; const icon = header.querySelector('.sort-icon'); if (icon) icon.remove();
-           let iconSvg = '';
-           if (currentAdminSort.key === key) { iconSvg = currentAdminSort.direction === 'asc' ? '<svg class="sort-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>' : '<svg class="sort-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'; }
-           else { iconSvg = '<svg class="sort-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="opacity: 0.3;"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>'; }
-           header.insertAdjacentHTML('beforeend', iconSvg);
-       });
+     document.querySelectorAll('#admin-screen .sortable-header').forEach(header => {
+         const key = header.dataset.sortKey; const icon = header.querySelector('.sort-icon'); if (icon) icon.remove();
+         let iconSvg = '';
+         if (currentAdminSort.key === key) { iconSvg = currentAdminSort.direction === 'asc' ? '<svg class="sort-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>' : '<svg class="sort-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>'; }
+         else { iconSvg = '<svg class="sort-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="opacity: 0.3;"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>'; }
+         header.insertAdjacentHTML('beforeend', iconSvg);
+     });
     }
 
     // --- Manejar Login ---
@@ -1509,18 +1704,18 @@
         const birthDate = m ? `${parseInt(m[1])}/${parseInt(m[2])}/${m[3]}` : birthDateInput;
 
         if (docType === "CC" && docNumber === SUPER_USER_CREDENTIALS.username && birthDate === SUPER_USER_CREDENTIALS.password) {
-             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'admin');
-             sessionStorage.setItem(SESSION_USER_ID_KEY, 'admin');
-             elements.loginError.classList.add('hidden');
-             isAdminViewingReport = false;
-             showAdminView();
-             return;
+            sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'admin');
+            sessionStorage.setItem(SESSION_USER_ID_KEY, 'admin');
+            elements.loginError.classList.add('hidden');
+            isAdminViewingReport = false;
+            showAdminView();
+            return;
         }
 
         if (!docType || !docNumber || !birthDate) {
-             elements.loginError.textContent = 'Por favor, complete todos los campos.';
-             elements.loginError.classList.remove('hidden');
-             return;
+            elements.loginError.textContent = 'Por favor, complete todos los campos.';
+            elements.loginError.classList.remove('hidden');
+            return;
          }
         const studentData = STUDENT_DATA_INTERNAL[docNumber];
 
@@ -1531,14 +1726,14 @@
         console.log("Intento Login:", { inputDocType: inputDocTypeNormalized, inputDocNumber: docNumber, inputBirthDate: birthDate, foundDocType: studentDocTypeNormalized, foundBirthDate: studentData?.birthDate });
 
         if (studentData && studentDocTypeNormalized === inputDocTypeNormalized && studentData.birthDate === birthDate) {
-             sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'student');
-             sessionStorage.setItem(SESSION_USER_ID_KEY, docNumber);
-             elements.loginError.classList.add('hidden');
-             isAdminViewingReport = false;
-             showIndividualReport(studentData);
+            sessionStorage.setItem(SESSION_USER_TYPE_KEY, 'student');
+            sessionStorage.setItem(SESSION_USER_ID_KEY, docNumber);
+            elements.loginError.classList.add('hidden');
+            isAdminViewingReport = false;
+            showIndividualReport(studentData);
         } else {
-             elements.loginError.textContent = 'Datos incorrectos o no encontrados. Verifique.';
-             elements.loginError.classList.remove('hidden');
+            elements.loginError.textContent = 'Datos incorrectos o no encontrados. Verifique.';
+            elements.loginError.classList.remove('hidden');
         }
     }
 
@@ -1598,22 +1793,22 @@
              adminModalBackdrop: document.getElementById('admin-modal-backdrop'), adminModalContainer: document.getElementById('admin-modal-container'), adminModalHeader: document.getElementById('admin-modal-header'), adminModalBody: document.getElementById('admin-modal-body'), adminModalCloseBtn: document.getElementById('admin-modal-close-btn'),
              statTotalStudents: document.getElementById('stat-total-students'), statAvgScore: document.getElementById('stat-avg-score'), statMaxScore: document.getElementById('stat-max-score'), statMinScore: document.getElementById('stat-min-score'),
              subjectAvgChartCanvas: document.getElementById('subject-avg-chart'), scoreDistChartCanvas: document.getElementById('score-dist-chart'),
-        };
+         };
 
-        birthDatePicker = flatpickr(elements.birthDateInput, { locale: "es", dateFormat: "d/m/Y", allowInput: true, disableMobile: "true" });
-        elements.birthDateInput.addEventListener('input', (e) => {
+         birthDatePicker = flatpickr(elements.birthDateInput, { locale: "es", dateFormat: "d/m/Y", allowInput: true, disableMobile: "true" });
+         elements.birthDateInput.addEventListener('input', (e) => {
              let value = e.target.value.replace(/\D/g, '');
              if (value.length > 2) { value = value.substring(0, 2) + '/' + value.substring(2); }
              if (value.length > 5) { value = value.substring(0, 5) + '/' + value.substring(5, 9); }
              e.target.value = value;
          });
 
-        await loadAllData();
+         await loadAllData();
 
-        const savedUserType = sessionStorage.getItem(SESSION_USER_TYPE_KEY);
-        const savedUserId = sessionStorage.getItem(SESSION_USER_ID_KEY);
-        let restoredSession = false;
-        if (savedUserType && savedUserId) {
+         const savedUserType = sessionStorage.getItem(SESSION_USER_TYPE_KEY);
+         const savedUserId = sessionStorage.getItem(SESSION_USER_ID_KEY);
+         let restoredSession = false;
+         if (savedUserType && savedUserId) {
              if (savedUserType === 'admin' && savedUserId === 'admin') {
                   isAdminViewingReport = false; showAdminView(true); restoredSession = true;
              } else if (savedUserType === 'student') {
@@ -1621,85 +1816,84 @@
                   if (studentData) { isAdminViewingReport = false; showIndividualReport(studentData, true); restoredSession = true; }
                   else { console.warn("Estudiante en sesión no encontrado."); handleLogout(); }
              }
-        }
+         }
 
-        // Listeners Principales
-        elements.loginForm?.addEventListener('submit', handleLogin);
-        elements.logoutBtnReport?.addEventListener('click', handleLogout);
-        elements.logoutBtnAdmin?.addEventListener('click', handleLogout);
-        elements.backToAdminBtn?.addEventListener('click', handleBackToAdmin);
-        elements.adminModalCloseBtn?.addEventListener('click', handleCloseModal);
-        elements.adminModalBackdrop?.addEventListener('click', (e) => { if (e.target === elements.adminModalBackdrop) handleCloseModal(); });
-        
-        // Listeners Paginación y Filtro
-        elements.adminSearchInput?.addEventListener('input', (e) => { 
-            currentAdminFilter = e.target.value; 
-            currentAdminPage = 1; // Resetear a página 1 al filtrar
-            renderAdminTable(); 
-        });
+         // Listeners Principales
+         elements.loginForm?.addEventListener('submit', handleLogin);
+         elements.logoutBtnReport?.addEventListener('click', handleLogout);
+         elements.logoutBtnAdmin?.addEventListener('click', handleLogout);
+         elements.backToAdminBtn?.addEventListener('click', handleBackToAdmin);
+         elements.adminModalCloseBtn?.addEventListener('click', handleCloseModal);
+         elements.adminModalBackdrop?.addEventListener('click', (e) => { if (e.target === elements.adminModalBackdrop) handleCloseModal(); });
+         
+         // Listeners Paginación y Filtro
+         elements.adminSearchInput?.addEventListener('input', (e) => { 
+             currentAdminFilter = e.target.value; 
+             currentAdminPage = 1; // Resetear a página 1 al filtrar
+             renderAdminTable(); 
+         });
 
-        document.getElementById('admin-prev-page')?.addEventListener('click', () => {
-            if (currentAdminPage > 1) {
-                currentAdminPage--;
-                renderAdminTable();
-            }
-        });
+         document.getElementById('admin-prev-page')?.addEventListener('click', () => {
+             if (currentAdminPage > 1) {
+                 currentAdminPage--;
+                 renderAdminTable();
+             }
+         });
 
-        document.getElementById('admin-next-page')?.addEventListener('click', () => {
-            if (currentAdminPage < lastCalculatedTotalPages) { // Usar variable guardada
-                currentAdminPage++;
-                renderAdminTable();
-            }
-        });
+         document.getElementById('admin-next-page')?.addEventListener('click', () => {
+             if (currentAdminPage < lastCalculatedTotalPages) { // Usar variable guardada
+                 currentAdminPage++;
+                 renderAdminTable();
+             }
+         });
 
 
-         const thead = elements.adminTable?.querySelector('thead');
-         if (thead) { thead.addEventListener('click', (e) => {
+          const thead = elements.adminTable?.querySelector('thead');
+          if (thead) { thead.addEventListener('click', (e) => {
              const header = e.target.closest('.sortable-header'); if (!header) return; const key = header.dataset.sortKey; if (!key) return;
              if (currentAdminSort.key === key) { 
-                currentAdminSort.direction = currentAdminSort.direction === 'asc' ? 'desc' : 'asc'; 
+                 currentAdminSort.direction = currentAdminSort.direction === 'asc' ? 'desc' : 'asc'; 
              } else { 
-                currentAdminSort.key = key; 
-                currentAdminSort.direction = ['nombre', 'email', 'docType', 'docNumber', 'municipio', 'birthDate'].includes(key) ? 'asc' : 'desc'; 
+                 currentAdminSort.key = key; 
+                 currentAdminSort.direction = ['nombre', 'email', 'docType', 'docNumber', 'municipio', 'birthDate'].includes(key) ? 'asc' : 'desc'; 
              }
              currentAdminPage = 1; // Resetear a página 1 al ordenar
              renderAdminTable();
           }); }
-          
-         if (elements.adminTableBody) { elements.adminTableBody.addEventListener('click', (e) => {
+         
+          if (elements.adminTableBody) { elements.adminTableBody.addEventListener('click', (e) => {
               const viewButton = e.target.closest('.view-report-btn');
               if (viewButton) {
-                   const studentId = viewButton.dataset.studentId; const studentData = STUDENT_DATA_INTERNAL[studentId];
-                   if (studentData) {
-                       elements.adminModalBody.innerHTML = '<p class="text-center text-gray-500 p-4">Cargando informe...</p>'; 
-                       elements.adminModalHeader.textContent = `Informe: ${studentData.nombre}`;
-                       elements.adminModalBackdrop.style.display = 'flex';
-                       setTimeout(() => { elements.adminModalBackdrop.classList.add('shown'); }, 10);
-                       elements.body.classList.add('overflow-hidden');
+                  const studentId = viewButton.dataset.studentId; const studentData = STUDENT_DATA_INTERNAL[studentId];
+                  if (studentData) {
+                      elements.adminModalBody.innerHTML = '<p class="text-center text-gray-500 p-4">Cargando informe...</p>'; 
+                      elements.adminModalHeader.textContent = `Informe: ${studentData.nombre}`;
+                      elements.adminModalBackdrop.style.display = 'flex';
+                      setTimeout(() => { elements.adminModalBackdrop.classList.add('shown'); }, 10);
+                      elements.body.classList.add('overflow-hidden');
 
-                       setTimeout(() => {
-                           const reportHtml = generateReportHtml(studentData);
-                           const feedbackHtml = generateDetailedFeedbackHtml(studentData.docNumber);
-                           elements.adminModalBody.innerHTML = `
-                                <div class="global-score-container" style="margin-bottom: 1.5rem;">
-                                    <p class="text-xs font-semibold uppercase opacity-80 mb-1">Puntaje Global</p>
-                                    <p class="text-4xl font-extrabold">${studentData.puntajeGlobal || 0}<span class="text-2xl font-medium opacity-70">/500</span></p>
-                                </div>
-                                ${reportHtml}
-                                ${feedbackHtml}
-                           `;
-                           addToggleListeners('#admin-modal-body');
-                       }, 100); 
-                   }
+                      setTimeout(() => {
+                          const reportHtml = generateReportHtml(studentData);
+                          const feedbackHtml = generateDetailedFeedbackHtml(studentData.docNumber);
+                          elements.adminModalBody.innerHTML = `
+                               <div class="global-score-container" style="margin-bottom: 1.5rem;">
+                                   <p class="text-xs font-semibold uppercase opacity-80 mb-1">Puntaje Global</p>
+                                   <p class="text-4xl font-extrabold">${studentData.puntajeGlobal || 0}<span class="text-2xl font-medium opacity-70">/500</span></p>
+                               </div>
+                               ${reportHtml}
+                               ${feedbackHtml}
+                          `;
+                          addToggleListeners('#admin-modal-body');
+                      }, 100); 
+                  }
               }
           }); }
-        
-        if (!restoredSession) {
-            elements.loginScreen.classList.remove('hidden');
-        }
+         
+         if (!restoredSession) {
+             elements.loginScreen.classList.remove('hidden');
+         }
 
     });
     </script>
 </body>
 </html>
-
